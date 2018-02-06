@@ -17,7 +17,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.Text, nullable=False, unique=True)
     password = db.Column(db.Text, nullable=False)   # Temporary.
-    twitch_usrname = db.Column(db.Text, unique=True)
+    twitch_username = db.Column(db.Text, unique=True)
     twitch_id = db.Column(db.Text, unique=True)
     twitter_id = db.Column(db.Text, unique=True)
 
@@ -30,7 +30,7 @@ class User(db.Model):
 
         rep = "<User user_id={}, email='{}'".format(self.user_id, self.email)
         if self.twitch_usrname:
-            rep += ", twitch_usrname='{}'>".format(self.twitch_usrname)
+            rep += ", twitch_username='{}'>".format(self.twitch_username)
             return rep
         rep += ">"
         return rep
@@ -41,11 +41,10 @@ class AccessToken(db.Model):
 
     __tablename__ = "access_tokens"
 
+    token_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.user_id"),
-                        primary_key=True)
+                        db.ForeignKey("users.user_id"))
     twitter_token = db.Column(db.Text, unique=True)
-    twitch_token = db.Column(db.Text, unique=True)
 
     user = db.relationship("User",
                            backref="token")
@@ -57,13 +56,9 @@ class AccessToken(db.Model):
             twitter_token_exists = "True"
         else:
             twitter_token_exists = "False" 
-        if self.twitch_token:
-            twitch_token_exists = "True"
-        else:
-            twitch_token_exists = "False"
 
-        return "<AccessToken twitter_exists={}, twitch_exists={}>" \
-            .format(twitter_token_exists, twitch_token_exists)
+        return "<AccessToken twitter_exists={}>" \
+            .format(twitter_token_exists)
 
 
 class UserTemplate(db.Model):
@@ -71,15 +66,12 @@ class UserTemplate(db.Model):
 
     __tablename__ = "users_templates"
 
+    user_template_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.user_id"),
-                        primary_key=True,
-                        autoincrement=False)
+                        db.ForeignKey("users.user_id"))
 
     template_id = db.Column(db.Integer,
-                            db.ForeignKey("templates.template_id"),
-                            primary_key=True,
-                            autoincrement=False)
+                            db.ForeignKey("templates.template_id"))
 
     def __repr__(self):
         """Print helpful information."""
@@ -142,8 +134,9 @@ class StreamSession(db.Model):
     started_at = db.Column(db.DateTime, nullable=False)
     ended_at = db.Column(db.DateTime)
 
-    log_entry = db.relationship("StreamLogEntry",
-                                backref="stream_sessions")
+    feedback = db.relationship("StreamSessionUserFeedback",
+                               back_populates="session",
+                               uselist=False)
 
     def __repr__(self):
         """Print helpful information."""
@@ -198,30 +191,28 @@ class TwitchClip(db.Model):
         return "<TwitchClip clip_id={}, slug='{}'>"
 
 
-class StreamLogEntry(db.Model):
-    """Entry for the live stream log."""
+class StreamSessionUserFeedback(db.Model):
+    """Stores user-input for stream session."""
 
-    __tablename__ = "stream_log_entries"
+    __tablename__ = "stream_session_user_feedback"
 
-    entry_id = db.Column(db.Integer,
-                         primary_key=True)
+    feedback_id = db.Column(db.Integer,
+                            primary_key=True)
     stream_id = db.Column(db.Integer,
                           db.ForeignKey("stream_session.stream_id"),
                           nullable=False)
-    user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.user_id"),
-                        nullable=False)
     mood_rating = db.Column(db.Integer)
     notes = db.Column(db.Text)
 
-    user = db.relationship("User",
-                           backref="log_entries")
+    session = db.relationship("StreamSession",
+                              back_populates="feedback",
+                              uselist=False)
 
     def __repr__(self):
         """Print helpful information."""
 
-        return "<StreamLogEntry stream_id={}, user_id={}>" \
-            .format(self.stream_id, self.user_id)
+        return "<StreamLogEntry feedback_id={}, stream_id={}>" \
+            .format(self.feedback_id, self.stream_id)
 
 ###############################################################################
 # HELPER FUNCTIONS
