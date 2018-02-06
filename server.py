@@ -8,7 +8,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import *
 
-
 app = Flask(__name__)
 
 # Set so we can use Flask's default toolbar
@@ -17,6 +16,9 @@ app.secret_key = "18db2d51c63606dece6e98a196c6a262c2026c6f9cbc3e4f"
 # Raise an exception if we use an undefined variable in Jinja.
 app.jinja_env.undefined = StrictUndefined
 
+###############################################################################
+# ROUTES
+###############################################################################
 
 @app.route("/")
 def show_index():
@@ -49,6 +51,10 @@ def process_user_registration():
     flash("Account created successfully.")
 
     return redirect("/")
+
+###############################################################################
+# HELPER FUNCTIONS
+###############################################################################
 
 
 if __name__ == "__main__":
