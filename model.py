@@ -21,6 +21,7 @@ class User(db.Model):
     password = db.Column(db.Text, nullable=False)   # Temporary.
     twitch_usrname = db.Column(db.Text, unique=True)
     twitch_id = db.Column(db.Text, unique=True)
+    twitter_id = db.Column(db.Text, unique=True)
 
     templates = db.relationship("Template",
                                 secondary="users_templates",
@@ -70,3 +71,15 @@ class Template(db.Model):
 
         return "<Template template_id={}, contents(trunc)={}>" \
             .format(self.template_id, self.contents[0:14])
+
+
+class SentTweet(db.Model):
+    """Tweets created and sent."""
+
+    tweet_id = db.Column(db.Text, primary_key=True)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.user_id"),
+                        nullable=False)
+    created_at = db.Column(db.Timestamp)
+    message = db.Column(db.Text)
+    permalink = db.Column(db.Text)
