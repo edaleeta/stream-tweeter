@@ -112,7 +112,7 @@ class SentTweet(db.Model):
 
     user = db.relationship("User",
                            backref="sent_tweets")
-    clip = db.relationship("SentTweet", back_populates="tweet", uselist=False)
+    clip = db.relationship("TwitchClip", back_populates="tweet", uselist=False)
 
     def __repr__(self):
         """Print helpful information."""
@@ -219,12 +219,12 @@ class StreamSessionUserFeedback(db.Model):
 ###############################################################################
 
 
-def connect_to_db(my_app):
+def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use PostgreSQL database
-    my_app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///yattk'
-    my_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///yattk'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
 

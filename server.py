@@ -1,10 +1,13 @@
 """Yet Another Twitch Toolkit."""
 
-from jinja2 import StrictUndefined
+import bcrypt
 from flask import (Flask, flash,
                    render_template, redirect,
                    request, session)
 from flask_debugtoolbar import DebugToolbarExtension
+from jinja2 import StrictUndefined
+from model import *
+
 
 app = Flask(__name__)
 
@@ -22,11 +25,40 @@ def show_index():
     return render_template("index.html")
 
 
+@app.route("/register", methods=['GET'])
+def show_user_registration():
+    """Show user registration form."""
+
+    return render_template("register.html")
+
+
+@app.route("/register", methods=['POST'])
+def process_user_registration():
+    """Process user registration form."""
+
+    submitted_email = request.form.get("email")
+    submitted_password = request.form.get("password").encode("utf-8")
+
+    hashed_password = bcrypt.hashpw(submitted_password, bcrypt.gensalt(10))
+
+    new_user = User(email=submitted_email,
+                    password=hashed_password)
+
+    db.session.add(new_user)
+    db.session.commit()
+    flash("Account created successfully.")
+
+    return redirect("/")
+
+
 if __name__ == "__main__":
     # Debug mode enabled for Flask Debug Toolbar
     app.debug = True
     # Don't cache templates.
     app.jinja_env.auto_reload = app.debug
+
+    # Connect to db
+    connect_to_db(app)
 
     # Use Debug Toolbar
     DebugToolbarExtension(app)
