@@ -69,8 +69,8 @@ class Template(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        return "<Template template_id={}, contents(trunc)={}>" \
-            .format(self.template_id, self.contents[0:14])
+        return "<Template template_id={}, contents={}>" \
+            .format(self.template_id, (self.contents[0:14] + "..."))
 
 
 class SentTweet(db.Model):
@@ -80,6 +80,33 @@ class SentTweet(db.Model):
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"),
                         nullable=False)
-    created_at = db.Column(db.Timestamp)
-    message = db.Column(db.Text)
-    permalink = db.Column(db.Text)
+    created_at = db.Column(db.Timestamp, nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    permalink = db.Column(db.Text, nullable=False)
+
+    def __repr__(self):
+        """Print helpful information."""
+
+        return "<SentTweet tweet_id={}, user_id={}, message={}>" \
+            .format(self.tweet_id, self.user_id, (self.message[0:14] + "..."))
+
+
+class StreamData(db.Model):
+    """Data gathered from Twitch when user is live."""
+
+    data_id = db.Column(db.Integer, primary_key=True)
+    twitch_id = db.Column(db.Integer, db.ForeignKey("users.twitch_id"))
+    started_at = db.Column(db.Timestamp, nullable=False)
+    game_played = db.Column(db.String(50), nullable=False)
+    stream_title = db.Column(db.String(140), nullable=False)
+    viewer_count = db.Column(db.Integer, nullable=False)
+    stream_id = db.Column(db.String(16), nullable=False)
+
+    user = db.relationship("User",
+                           backref="stream_data")
+
+    def __repr__(self):
+        """Print helpful information."""
+
+        return "<StreamData data_id={}, twitch_id={}, v_count={}>" \
+            .format(self.data_id, self.twitch_id, self.viewer_count)
