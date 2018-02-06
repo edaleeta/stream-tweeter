@@ -59,7 +59,13 @@ def process_user_registration():
 
 def is_email_exists(submitted_email):
     """Check if email is already registered."""
-    
+
+    emails = db.session.query(User.email).all()
+
+    for email in emails:
+        if submitted_email in email:
+            return True
+    return False
 
 
 if __name__ == "__main__":
