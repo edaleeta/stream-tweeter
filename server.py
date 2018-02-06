@@ -57,6 +57,11 @@ def process_user_registration():
 ###############################################################################
 
 
+def is_email_exists(submitted_email):
+    """Check if email is already registered."""
+    
+
+
 if __name__ == "__main__":
     # Debug mode enabled for Flask Debug Toolbar
     app.debug = True

@@ -29,7 +29,7 @@ class User(db.Model):
         """Print helpful information."""
 
         rep = "<User user_id={}, email='{}'".format(self.user_id, self.email)
-        if self.twitch_usrname:
+        if self.twitch_username:
             rep += ", twitch_username='{}'>".format(self.twitch_username)
             return rep
         rep += ">"
