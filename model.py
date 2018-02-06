@@ -13,6 +13,7 @@ class User(db.Model):
     """User of Yet Another Twitch Toolkit."""
 
     # TODO: Not final; need to deal with access tokens, ect.
+    # Will break into seperate table.
 
     __tablename__ = "users"
 
@@ -101,10 +102,11 @@ class StreamSession(db.Model):
 
     __tablename__ = "stream_session"
 
-    stream_id = db.Column(db.String(16), primary_key=True)
-    twitch_id = db.Column(db.Text,
-                          db.ForeignKey("users.twitch_id"),
-                          nullable=False)
+    stream_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.user_id"),
+                        nullable=False)
+    twitch_session_id = db.Column(db.String(16), nullable=False)
     started_at = db.Column(db.Timestamp, nullable=False)
     ended_at = db.Column(db.Timestamp)
 
@@ -114,8 +116,10 @@ class StreamSession(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        return "<StreamSession stream_id={}, twitch_id='{}', started={}>" \
-            .format(self.data_id, self.twitch_id, self.started_at)
+        return "<StreamSession stream_id={}, twitch_session_id='{}', \
+            started={}>".format(self.data_id,
+                                self.twitch_session_id,
+                                self.started_at)
 
 
 class StreamDatum(db.Model):
@@ -124,15 +128,15 @@ class StreamDatum(db.Model):
     __tablename__ = "stream_data"
 
     data_id = db.Column(db.Integer, primary_key=True)
-    game_played = db.Column(db.String(50), nullable=False)
-    stream_title = db.Column(db.String(140), nullable=False)
-    viewer_count = db.Column(db.Integer, nullable=False)
     stream_id = db.Column(db.String(16),
                           db.ForeignKey("stream_session.stream_id"),
                           nullable=False)
+    game_played = db.Column(db.String(50), nullable=False)
+    stream_title = db.Column(db.String(140), nullable=False)
+    viewer_count = db.Column(db.Integer, nullable=False)
 
-    stream_session = db.relationship("StreamSession",
-                                     backref="stream_data")
+    session = db.relationship("StreamSession",
+                              backref="data")
 
     def __repr__(self):
         """Print helpful information."""
@@ -148,7 +152,12 @@ class TwitchClip(db.Model):
 
     clip_id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.Text, nullable=False)
-    stream_id = db.Column(db.String(16), nullable=False)
+    stream_id = db.Column(db.Integer,
+                          db.ForeignKey("stream_session.stream_id"),
+                          nullable=False)
+
+    session = db.relationship("StreamSession",
+                              backref="clips")
 
     def __repr__(self):
         """Print helpful information."""
@@ -161,14 +170,19 @@ class StreamLogEntry(db.Model):
 
     __tablename__ = "stream_log_entries"
 
-    stream_id = db.Column(db.String(16),
-                          db.ForeignKey("stream_data.stream_id"),
-                          primary_key=True)
+    entry_id = db.Column(db.Integer,
+                         primary_key=True)
+    stream_id = db.Column(db.Integer,
+                          db.ForeignKey("stream_session.stream_id"),
+                          nullable=False)
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"),
                         nullable=False)
     mood_rating = db.Column(db.Integer)
     notes = db.Column(db.Text)
+
+    user = db.relationship("User",
+                           backref="log_entries")
 
     def __repr__(self):
         """Print helpful information."""
