@@ -108,7 +108,8 @@ class SentTweet(db.Model):
 
     __tablename__ = "sent_tweets"
 
-    tweet_id = db.Column(db.Text, primary_key=True)
+    tweet_id = db.Column(db.Integer, primary_key=True)
+    tweet_twtr_id = db.Column(db.Text, nullable=False, unique=True)
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"),
                         nullable=False)
@@ -116,6 +117,10 @@ class SentTweet(db.Model):
     message = db.Column(db.Text, nullable=False)
     permalink = db.Column(db.Text, nullable=False)
     clip_id = db.Column(db.Integer, db.ForeignKey("twitch_clips.clip_id"))
+
+    user = db.relationship("User",
+                           backref="sent_tweets")
+    clip = db.relationship("SentTweet", back_populates="tweet", uselist=False)
 
     def __repr__(self):
         """Print helpful information."""
@@ -185,6 +190,7 @@ class TwitchClip(db.Model):
 
     session = db.relationship("StreamSession",
                               backref="clips")
+    tweet = db.relationship("SentTweet", back_populates="clip", uselist=False)
 
     def __repr__(self):
         """Print helpful information."""
