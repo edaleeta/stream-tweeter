@@ -30,9 +30,9 @@ class User(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        rep = "<User user_id={}, email={}".format(self.user_id, self.email)
+        rep = "<User user_id={}, email='{}'".format(self.user_id, self.email)
         if self.twitch_usrname:
-            rep += ", twitch_usrname={}>".format(self.twitch_usrname)
+            rep += ", twitch_usrname='{}'>".format(self.twitch_usrname)
             return rep
         rep += ">"
         return rep
@@ -63,18 +63,22 @@ class UserTemplate(db.Model):
 class Template(db.Model):
     """Template used for Tweets."""
 
+    __tablename__ = "templates"
+
     template_id = db.Column(db.Integer, primary_key=True)
     contents = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         """Print helpful information."""
 
-        return "<Template template_id={}, contents={}>" \
+        return "<Template template_id={}, contents='{}'>" \
             .format(self.template_id, (self.contents[0:14] + "..."))
 
 
 class SentTweet(db.Model):
     """Tweets created and sent."""
+
+    __tablename__ = "sent_tweets"
 
     tweet_id = db.Column(db.Text, primary_key=True)
     user_id = db.Column(db.Integer,
@@ -83,30 +87,91 @@ class SentTweet(db.Model):
     created_at = db.Column(db.Timestamp, nullable=False)
     message = db.Column(db.Text, nullable=False)
     permalink = db.Column(db.Text, nullable=False)
+    clip_id = db.Column(db.Integer, db.ForeignKey("twitch_clips.clip_id"))
 
     def __repr__(self):
         """Print helpful information."""
 
-        return "<SentTweet tweet_id={}, user_id={}, message={}>" \
+        return "<SentTweet tweet_id='{}', user_id={}, message='{}'>" \
             .format(self.tweet_id, self.user_id, (self.message[0:14] + "..."))
 
 
-class StreamData(db.Model):
-    """Data gathered from Twitch when user is live."""
+class StreamSession(db.Model):
+    """A Twitch Stream session."""
 
-    data_id = db.Column(db.Integer, primary_key=True)
-    twitch_id = db.Column(db.Integer, db.ForeignKey("users.twitch_id"))
+    __tablename__ = "stream_session"
+
+    stream_id = db.Column(db.String(16), primary_key=True)
+    twitch_id = db.Column(db.Text,
+                          db.ForeignKey("users.twitch_id"),
+                          nullable=False)
     started_at = db.Column(db.Timestamp, nullable=False)
-    game_played = db.Column(db.String(50), nullable=False)
-    stream_title = db.Column(db.String(140), nullable=False)
-    viewer_count = db.Column(db.Integer, nullable=False)
-    stream_id = db.Column(db.String(16), nullable=False)
+    ended_at = db.Column(db.Timestamp)
 
-    user = db.relationship("User",
-                           backref="stream_data")
+    log_entry = db.relationship("StreamLogEntry",
+                                backref="stream_sessions")
 
     def __repr__(self):
         """Print helpful information."""
 
-        return "<StreamData data_id={}, twitch_id={}, v_count={}>" \
+        return "<StreamSession stream_id={}, twitch_id='{}', started={}>" \
+            .format(self.data_id, self.twitch_id, self.started_at)
+
+
+class StreamDatum(db.Model):
+    """Data gathered from Twitch when user is live."""
+
+    __tablename__ = "stream_data"
+
+    data_id = db.Column(db.Integer, primary_key=True)
+    game_played = db.Column(db.String(50), nullable=False)
+    stream_title = db.Column(db.String(140), nullable=False)
+    viewer_count = db.Column(db.Integer, nullable=False)
+    stream_id = db.Column(db.String(16),
+                          db.ForeignKey("stream_session.stream_id"),
+                          nullable=False)
+
+    stream_session = db.relationship("StreamSession",
+                                     backref="stream_data")
+
+    def __repr__(self):
+        """Print helpful information."""
+
+        return "<StreamDatum data_id={}, twitch_id='{}', v_count={}>" \
             .format(self.data_id, self.twitch_id, self.viewer_count)
+
+
+class TwitchClip(db.Model):
+    """Clips auto-generated for Tweets."""
+
+    __tablename__ = "twitch_clips"
+
+    clip_id = db.Column(db.Integer, primary_key=True)
+    slug = db.Column(db.Text, nullable=False)
+    stream_id = db.Column(db.String(16), nullable=False)
+
+    def __repr__(self):
+        """Print helpful information."""
+
+        return "<TwitchClip clip_id={}, slug='{}'>"
+
+
+class StreamLogEntry(db.Model):
+    """Entry for the live stream log."""
+
+    __tablename__ = "stream_log_entries"
+
+    stream_id = db.Column(db.String(16),
+                          db.ForeignKey("stream_data.stream_id"),
+                          primary_key=True)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.user_id"),
+                        nullable=False)
+    mood_rating = db.Column(db.Integer)
+    notes = db.Column(db.Text)
+
+    def __repr__(self):
+        """Print helpful information."""
+
+        return "<StreamLogEntry stream_id={}, user_id={}>" \
+            .format(self.stream_id, self.user_id)
