@@ -12,9 +12,6 @@ db = SQLAlchemy()
 class User(db.Model):
     """User of Yet Another Twitch Toolkit."""
 
-    # TODO: Not final; need to deal with access tokens, ect.
-    # Will break into seperate table.
-
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True)
@@ -37,6 +34,36 @@ class User(db.Model):
             return rep
         rep += ">"
         return rep
+
+
+class AccessToken(db.Model):
+    """Access tokens for a user."""
+
+    __tablename__ = "access_tokens"
+
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.user_id"),
+                        primary_key=True)
+    twitter_token = db.Column(db.Text, unique=True)
+    twitch_token = db.Column(db.Text, unique=True)
+
+    user = db.relationship("User",
+                           backref="token")
+
+    def __repr__(self):
+        """Print helpful information."""
+
+        if self.twitter_token:
+            twitter_token_exists = "True"
+        else:
+            twitter_token_exists = "False" 
+        if self.twitch_token:
+            twitch_token_exists = "True"
+        else:
+            twitch_token_exists = "False"
+
+        return "<AccessToken twitter_exists={}, twitch_exists={}>" \
+            .format(twitter_token_exists, twitch_token_exists)
 
 
 class UserTemplate(db.Model):
