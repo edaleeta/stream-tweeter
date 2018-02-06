@@ -112,7 +112,7 @@ class SentTweet(db.Model):
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"),
                         nullable=False)
-    created_at = db.Column(db.Timestamp, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
     message = db.Column(db.Text, nullable=False)
     permalink = db.Column(db.Text, nullable=False)
     clip_id = db.Column(db.Integer, db.ForeignKey("twitch_clips.clip_id"))
@@ -134,8 +134,8 @@ class StreamSession(db.Model):
                         db.ForeignKey("users.user_id"),
                         nullable=False)
     twitch_session_id = db.Column(db.String(16), nullable=False)
-    started_at = db.Column(db.Timestamp, nullable=False)
-    ended_at = db.Column(db.Timestamp)
+    started_at = db.Column(db.DateTime, nullable=False)
+    ended_at = db.Column(db.DateTime)
 
     log_entry = db.relationship("StreamLogEntry",
                                 backref="stream_sessions")
@@ -155,7 +155,7 @@ class StreamDatum(db.Model):
     __tablename__ = "stream_data"
 
     data_id = db.Column(db.Integer, primary_key=True)
-    stream_id = db.Column(db.String(16),
+    stream_id = db.Column(db.Integer,
                           db.ForeignKey("stream_session.stream_id"),
                           nullable=False)
     game_played = db.Column(db.String(50), nullable=False)
@@ -216,3 +216,26 @@ class StreamLogEntry(db.Model):
 
         return "<StreamLogEntry stream_id={}, user_id={}>" \
             .format(self.stream_id, self.user_id)
+
+###############################################################################
+# HELPER FUNCTIONS
+###############################################################################
+
+
+def connect_to_db(my_app):
+    """Connect the database to our Flask app."""
+
+    # Configure to use PostgreSQL database
+    my_app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///yattk'
+    my_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.app = app
+    db.init_app(app)
+
+
+if __name__ == "__main__":
+    # As a convenience, if we run this module interactively, it will leave
+    # you in a state of being able to work with the database directly.
+
+    from server import app
+    connect_to_db(app)
+    print("Connected to DB.")
