@@ -53,6 +53,9 @@ def process_user_registration():
                         password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
+
+        # Add base templates for user.
+        add_basic_templates(submitted_email)
         flash("Account created successfully.")
         return redirect("/")
 
@@ -64,6 +67,7 @@ def process_user_registration():
 def is_email_exists(submitted_email):
     """Check if email is already registered."""
 
+    # TODO: Update to use User object.
     emails = db.session.query(User.email).all()
 
     for email in emails:
@@ -72,10 +76,16 @@ def is_email_exists(submitted_email):
     return False
 
 
-def add_basic_templates(current_user):
+def add_basic_templates(current_user_email):
     """Add basic templates for new user."""
 
-    pass
+    this_user = User.query.filter_by(email=current_user_email).one()
+    base_templates = Template.query.filter_by(base_template=True)
+
+    for base_template in base_templates:
+        db.session.add(UserTemplate(user_id=this_user.user_id,
+                                    template_id=base_template.template_id))
+    db.session.commit()
 
 
 if __name__ == "__main__":
