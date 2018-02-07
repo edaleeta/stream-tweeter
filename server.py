@@ -39,7 +39,7 @@ def show_user_registration():
 def process_user_registration():
     """Process user registration form."""
 
-    submitted_email = request.form.get("email")
+    submitted_email = request.form.get("email").lower()
     submitted_password = request.form.get("password").encode("utf-8")
 
     if is_email_exists(submitted_email):
@@ -67,7 +67,6 @@ def process_user_registration():
 def is_email_exists(submitted_email):
     """Check if email is already registered."""
 
-    # TODO: Update to use User object.
     emails = db.session.query(User.email).all()
 
     for email in emails:
