@@ -55,7 +55,7 @@ def process_user_registration():
         db.session.commit()
 
         # Add base templates for user.
-        add_basic_templates(submitted_email)
+        add_basic_templates(new_user)
         flash("Account created successfully.")
         return redirect("/")
 
@@ -76,15 +76,16 @@ def is_email_exists(submitted_email):
     return False
 
 
-def add_basic_templates(current_user_email):
-    """Add basic templates for new user."""
+def add_basic_templates(current_user):
+    """Add basic templates for current user."""
 
-    this_user = User.query.filter_by(email=current_user_email).one()
     base_templates = Template.query.filter_by(base_template=True)
 
-    for base_template in base_templates:
-        db.session.add(UserTemplate(user_id=this_user.user_id,
-                                    template_id=base_template.template_id))
+    temps_to_add = [(UserTemplate(user_id=current_user.user_id,
+                                  template_id=base_template.template_id))
+                    for base_template in base_templates]
+
+    db.session.bulk_save_objects(temps_to_add)
     db.session.commit()
 
 

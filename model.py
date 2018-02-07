@@ -261,13 +261,13 @@ def sample_data():
 ###############################################################################
 
 
-def connect_to_db(app, db_uri="postgresql:///yattk"):
+def connect_to_db(app, db_uri="postgresql:///yattk", show_sql=True):
     """Connect the database to our Flask app."""
 
     # Configure to use PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_ECHO'] = show_sql
     db.app = app
     db.init_app(app)
 
