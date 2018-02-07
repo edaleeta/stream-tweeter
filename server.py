@@ -80,8 +80,10 @@ def login_user():
         # Add user_id to session
         session["user_id"] = get_user_id_from_email(submitted_email)
         print(session["user_id"])
-
-    return redirect("/")
+        return redirect("/")
+    else:
+        flash("Incorrect credentials. Please try again.")
+        return redirect("/login")
 
 ###############################################################################
 # HELPER FUNCTIONS
@@ -108,7 +110,7 @@ def is_email_exists(submitted_email):
 def is_valid_credentials(submitted_email, submitted_password):
     """Check to see if submitted password matches hashed password for user."""
     # TODO: Write test.
-    user = User.query.filter_by(email=submitted_email).one()
+    user = User.query.filter_by(email=submitted_email).first()
 
     if user:
         return bcrypt.checkpw(submitted_password.encode("utf-8"),
