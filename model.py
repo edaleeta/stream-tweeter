@@ -224,12 +224,14 @@ def sample_data():
     """Create sample data."""
 
     # Empty existing data
+    UserTemplate.query.delete()
     User.query.delete()
     Template.query.delete()
 
     # Add sample users
     user_1 = User(email="test@testing.com", password="test")
-    db.session.add_all([user_1])
+    user_2 = User(email="eda@leeta.com", password="derpydoo")
+    db.session.add_all([user_1, user_2])
     db.session.commit()
 
     # Add base templates
@@ -239,8 +241,19 @@ def sample_data():
     template_2 = Template(contents="We're playing $game!\r\nJoin me on \
         Twitch: $url.",
                           base_template=True)
+    template_3 = Template(contents="This should not be initialized for User.")
 
-    db.session.add_all([template_1, template_2])
+    db.session.add_all([template_1, template_2, template_3])
+    db.session.commit()
+
+    # Add UserTemplates entry per base template for each initial user.
+    base_templates = Template.query.filter_by(base_template=True)
+    initial_users = User.query
+
+    for user in initial_users:
+        for base_template in base_templates:
+            db.session.add(UserTemplate(user_id=user.user_id,
+                                        template_id=base_template.template_id))
     db.session.commit()
 
 ###############################################################################

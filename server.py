@@ -71,7 +71,8 @@ def is_email_exists(submitted_email):
             return True
     return False
 
-def add_basic_temlplates(current_user):
+
+def add_basic_templates(current_user):
     """Add basic templates for new user."""
 
     pass
