@@ -77,7 +77,8 @@ def login_user():
     submitted_password = request.form.get("password")
 
     if is_valid_credentials(submitted_email, submitted_password):
-        pass
+        # Add user_id to session
+        session["user_id"] = get_user_id_from_email(submitted_email)
 
     return redirect("/")
 
@@ -88,7 +89,9 @@ def login_user():
 
 def get_user_id_from_email(user_email):
     """Find the user id for the given email."""
-    pass
+
+    return User.query.filter_by(email=user_email).one().user_id
+
 
 def is_email_exists(submitted_email):
     """Check if email is already registered."""
