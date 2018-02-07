@@ -28,14 +28,14 @@ def show_index():
     return render_template("index.html")
 
 
-@app.route("/register", methods=['GET'])
+@app.route("/register", methods=["GET"])
 def show_user_registration():
     """Show user registration form."""
 
     return render_template("register.html")
 
 
-@app.route("/register", methods=['POST'])
+@app.route("/register", methods=["POST"])
 def process_user_registration():
     """Process user registration form."""
 
@@ -58,6 +58,13 @@ def process_user_registration():
         add_basic_templates(new_user)
         flash("Account created successfully.")
         return redirect("/")
+
+
+@app.route("/login", methods=["GET"])
+def show_login():
+    """Show login form."""
+
+    return render_template("login.html")
 
 ###############################################################################
 # HELPER FUNCTIONS
