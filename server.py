@@ -41,16 +41,19 @@ def process_user_registration():
     submitted_email = request.form.get("email")
     submitted_password = request.form.get("password").encode("utf-8")
 
-    hashed_password = bcrypt.hashpw(submitted_password, bcrypt.gensalt(10))
+    if is_email_exists(submitted_email):
+        flash("Sorry. That email address is taken.")
+        return redirect("/register")
 
-    new_user = User(email=submitted_email,
-                    password=hashed_password)
+    else:
+        hashed_password = bcrypt.hashpw(submitted_password, bcrypt.gensalt(10))
 
-    db.session.add(new_user)
-    db.session.commit()
-    flash("Account created successfully.")
-
-    return redirect("/")
+        new_user = User(email=submitted_email,
+                        password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("Account created successfully.")
+        return redirect("/")
 
 ###############################################################################
 # HELPER FUNCTIONS
