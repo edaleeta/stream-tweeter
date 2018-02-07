@@ -72,13 +72,14 @@ def show_login():
 @app.route("/login", methods=["POST"])
 def login_user():
     """Handles submitted data for user login."""
-
+    # TODO: Write tests.
     submitted_email = request.form.get("email")
     submitted_password = request.form.get("password")
 
     if is_valid_credentials(submitted_email, submitted_password):
         # Add user_id to session
         session["user_id"] = get_user_id_from_email(submitted_email)
+        print(session["user_id"])
 
     return redirect("/")
 
