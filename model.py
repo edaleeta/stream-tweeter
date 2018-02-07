@@ -215,15 +215,33 @@ class StreamSessionUserFeedback(db.Model):
             .format(self.feedback_id, self.stream_id)
 
 ###############################################################################
+# SAMPLE DATA
+###############################################################################
+
+
+def sample_data():
+    """Create sample data."""
+
+    # Empty existing data
+    User.query.delete()
+
+    # Add sample users
+    user_1 = User(email="test@testing.com", password="test")
+
+    db.session.add_all([user_1])
+    db.session.commit()
+
+
+###############################################################################
 # HELPER FUNCTIONS
 ###############################################################################
 
 
-def connect_to_db(app):
+def connect_to_db(app, db_uri="postgresql:///yattk"):
     """Connect the database to our Flask app."""
 
     # Configure to use PostgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///yattk'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
