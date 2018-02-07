@@ -87,6 +87,7 @@ class Template(db.Model):
 
     template_id = db.Column(db.Integer, primary_key=True)
     contents = db.Column(db.Text, nullable=False)
+    base_template = db.Column(db.Boolean)
 
     def __repr__(self):
         """Print helpful information."""
@@ -224,13 +225,23 @@ def sample_data():
 
     # Empty existing data
     User.query.delete()
+    Template.query.delete()
 
     # Add sample users
     user_1 = User(email="test@testing.com", password="test")
-
     db.session.add_all([user_1])
     db.session.commit()
 
+    # Add base templates
+    template_1 = Template(contents="I'm live on Twitch!\r\n \
+        Join me here: $url.",
+                          base_template=True)
+    template_2 = Template(contents="We're playing $game!\r\nJoin me on \
+        Twitch: $url.",
+                          base_template=True)
+
+    db.session.add_all([template_1, template_2])
+    db.session.commit()
 
 ###############################################################################
 # HELPER FUNCTIONS

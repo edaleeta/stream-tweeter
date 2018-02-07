@@ -20,6 +20,7 @@ app.jinja_env.undefined = StrictUndefined
 # ROUTES
 ###############################################################################
 
+
 @app.route("/")
 def show_index():
     "Show homepage."
@@ -69,6 +70,11 @@ def is_email_exists(submitted_email):
         if submitted_email in email:
             return True
     return False
+
+def add_basic_temlplates(current_user):
+    """Add basic templates for new user."""
+
+    pass
 
 
 if __name__ == "__main__":
