@@ -85,6 +85,16 @@ def login_user():
         flash("Incorrect credentials. Please try again.")
         return redirect("/login")
 
+
+@app.route("/logout")
+def logout_user():
+    """Logs out user."""
+
+    session.clear()
+    flash("You were logged out!")
+    return redirect("/")
+
+
 ###############################################################################
 # HELPER FUNCTIONS
 ###############################################################################
