@@ -24,6 +24,11 @@ app.jinja_env.undefined = StrictUndefined
 @app.route("/")
 def show_index():
     "Show homepage."
+    if session.get("user_id"):
+        current_user = get_user_from_session()
+
+        return render_template("index.html",
+                               user=current_user)
 
     return render_template("index.html")
 
@@ -77,9 +82,10 @@ def login_user():
     submitted_password = request.form.get("password")
 
     if is_valid_credentials(submitted_email, submitted_password):
+        current_user = get_user_from_email(submitted_email)
+        current_user.isLoggedIn = True
         # Add user_id to session
-        session["user_id"] = get_user_id_from_email(submitted_email)
-        print(session["user_id"])
+        session["user_id"] = current_user.user_id
         return redirect("/")
     else:
         flash("Incorrect credentials. Please try again.")
@@ -90,6 +96,7 @@ def login_user():
 def logout_user():
     """Logs out user."""
 
+    get_user_from_session().isLoggedIn = False
     session.clear()
     flash("You were logged out!")
     return redirect("/")
@@ -100,10 +107,17 @@ def logout_user():
 ###############################################################################
 
 
-def get_user_id_from_email(user_email):
+def get_user_from_session():
+    """Find the current user object based on current session."""
+    current_user_id = session.get("user_id")
+    current_user = User.query.filter_by(user_id=current_user_id).first()
+    return current_user
+
+
+def get_user_from_email(user_email):
     """Find the user id for the given email."""
 
-    return User.query.filter_by(email=user_email).one().user_id
+    return User.query.filter_by(email=user_email).one()
 
 
 def is_email_exists(submitted_email):

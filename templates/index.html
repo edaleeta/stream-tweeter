@@ -6,7 +6,12 @@
     <p>Welcome!</p>
     {% if session.get("user_id") %}
         <div>
-            Show this content when logged in.
+            <h2>Your Tweet Templates</h2>
+            <ul>
+                {% for template in user.templates %}
+                    <li>{{ template.contents }}</li>
+                {% endfor %}
+            </ul>
         </div>
     {% else %}
         <a href="/login">Please sign in here.</a>
