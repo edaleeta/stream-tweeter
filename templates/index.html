@@ -4,4 +4,11 @@
 
 {% block page_content %}
     <p>Welcome!</p>
+    {% if session.get("user_id") %}
+        <div>
+            Show this content when logged in.
+        </div>
+    {% else %}
+        <a href="/login">Please sign in here.</a>
+    {% endif %}
 {% endblock %}
