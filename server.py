@@ -47,7 +47,9 @@ def process_user_registration():
         return redirect("/register")
 
     else:
-        hashed_password = bcrypt.hashpw(submitted_password, bcrypt.gensalt(10))
+        hashed_password = bcrypt.hashpw(submitted_password,
+                                        bcrypt.gensalt()) \
+                          .decode("utf-8")
 
         new_user = User(email=submitted_email,
                         password=hashed_password)
@@ -66,10 +68,27 @@ def show_login():
 
     return render_template("login.html")
 
+
+@app.route("/login", methods=["POST"])
+def login_user():
+    """Handles submitted data for user login."""
+
+    submitted_email = request.form.get("email")
+    submitted_password = request.form.get("password")
+
+    if is_valid_credentials(submitted_email, submitted_password):
+        pass
+
+    return redirect("/")
+
 ###############################################################################
 # HELPER FUNCTIONS
 ###############################################################################
 
+
+def get_user_id_from_email(user_email):
+    """Find the user id for the given email."""
+    pass
 
 def is_email_exists(submitted_email):
     """Check if email is already registered."""
@@ -80,6 +99,18 @@ def is_email_exists(submitted_email):
         if submitted_email in email:
             return True
     return False
+
+
+def is_valid_credentials(submitted_email, submitted_password):
+    """Check to see if submitted password matches hashed password for user."""
+    # TODO: Write test.
+    user = User.query.filter_by(email=submitted_email).one()
+
+    if user:
+        return bcrypt.checkpw(submitted_password.encode("utf-8"),
+                              user.password.encode("utf-8"))
+    else:
+        return False
 
 
 def add_basic_templates(current_user):
