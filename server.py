@@ -118,12 +118,21 @@ def add_user_created_template():
 
 @app.route("/webhooktest", methods=["POST"])
 def test_webhook():
-    print("Webhook Request: {}".format(request.form))
+    print("Webhook Request: {}".format(request.form.items()))
+    print("User stream state has changed.")
+
+    return ('', 204)
 
 
 @app.route("/webhooktest", methods=["GET"])
 def test_webhook_get():
-    print("Webhook Request: {}".format(list(request.args.keys())))
+    print("Webhook Request: {}".format(list(request.args.items())))
+
+    if request.args.get("hub.mode") == "subscribe":
+        print("Successfully subscribed to webhook.")
+    else:
+        print("Subscription to webhook unsuccessful.")
+    return ('', 204)
 
 
 ###############################################################################
