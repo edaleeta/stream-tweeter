@@ -102,9 +102,26 @@ def logout_user():
     return redirect("/")
 
 
+@app.route("/add-tweet-template", methods=["POST"])
+def add_user_created_template():
+    """Adds template the current user created to DB."""
+
+    template_contents = request.form.get("template_contents", "").strip()
+    if template_contents:
+        flash("You entered something!")
+        # add_template_to_db(get_user_from_session())
+    else:
+        flash("You didn't enter anything.")
+
+    return redirect("/")
+
+
 ###############################################################################
 # HELPER FUNCTIONS
 ###############################################################################
+
+
+
 
 
 def get_user_from_session():
