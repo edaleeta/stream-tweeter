@@ -116,6 +116,16 @@ def add_user_created_template():
     return redirect("/")
 
 
+@app.route("/webhooktest", methods=["POST"])
+def test_webhook():
+    print("Webhook Request: {}".format(request.form))
+
+
+@app.route("/webhooktest", methods=["GET"])
+def test_webhook_get():
+    print("Webhook Request: {}".format(list(request.args.keys())))
+
+
 ###############################################################################
 # HELPER FUNCTIONS
 ###############################################################################
