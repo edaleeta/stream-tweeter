@@ -109,7 +109,7 @@ def add_user_created_template():
     template_contents = request.form.get("template_contents", "").strip()
     if template_contents:
         flash("You entered something!")
-        # add_template_to_db(get_user_from_session())
+        add_template_to_db(get_user_from_session(), template_contents)
     else:
         flash("You didn't enter anything.")
 
@@ -121,7 +121,17 @@ def add_user_created_template():
 ###############################################################################
 
 
+def add_template_to_db(current_user, temp_contents):
+    """Adds a user-created template to db for user."""
 
+    new_template = Template(contents=temp_contents)
+    db.session.add(new_template)
+    db.session.commit()
+
+    new_user_template = UserTemplate(user_id=current_user.user_id,
+                                     template_id=new_template.template_id)
+    db.session.add(new_user_template)
+    db.session.commit()
 
 
 def get_user_from_session():
