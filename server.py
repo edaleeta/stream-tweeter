@@ -118,7 +118,8 @@ def add_user_created_template():
 
 @app.route("/webhooktest", methods=["POST"])
 def test_webhook():
-    print("Webhook Request: {}".format(request.form.items()))
+    """Prints webhook response payload. """
+    print("Webhook Request: {}".format(request.get_json()))
     print("User stream state has changed.")
 
     return ('', 204)
@@ -126,13 +127,15 @@ def test_webhook():
 
 @app.route("/webhooktest", methods=["GET"])
 def test_webhook_get():
+    """Echos back challenge for subscribing."""
     print("Webhook Request: {}".format(list(request.args.items())))
 
     if request.args.get("hub.mode") == "subscribe":
         print("Successfully subscribed to webhook.")
+        return (request.args.get("hub.challenge"))
     else:
         print("Subscription to webhook unsuccessful.")
-    return ('', 204)
+        return ('', 204)
 
 
 ###############################################################################
