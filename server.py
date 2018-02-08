@@ -124,6 +124,10 @@ def test_webhook():
 
     return ('', 204)
 
+###############################################################################
+# TEST ROUTES
+###############################################################################
+
 
 @app.route("/webhooktest", methods=["GET"])
 def test_webhook_get():
@@ -136,6 +140,11 @@ def test_webhook_get():
     else:
         print("Subscription to webhook unsuccessful.")
         return ('', 204)
+
+
+@app.route("/login-twitch")
+def login_with_twitch():
+
 
 ###############################################################################
 # HELPER FUNCTIONS
