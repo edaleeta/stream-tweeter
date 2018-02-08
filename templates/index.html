@@ -13,6 +13,9 @@
                 {% endfor %}
             </ul>
         </div>
+        {% block add_tweet_temp %}
+            ADD TWEET TEMPLATE FORM HERE.
+        {% endblock %}
     {% else %}
         <a href="/login">Please sign in here.</a>
     {% endif %}

@@ -27,7 +27,7 @@ def show_index():
     if session.get("user_id"):
         current_user = get_user_from_session()
 
-        return render_template("index.html",
+        return render_template("add-tweet-template.html",
                                user=current_user)
 
     return render_template("index.html")

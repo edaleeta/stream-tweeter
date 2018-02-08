@@ -1,0 +1,15 @@
+{% extends 'index.html' %}
+
+{% block add_tweet_temp %}
+
+    <form action="/add-tweet-template" method="POST" id="add-tweet-template-form">
+        <label>
+            Enter your Tweet Template:<br>
+            <!-- TODO: Add JS to limit chars -->
+            <textarea name="template_contents" id="template-contents-field">
+            </textarea>
+            <button type="submit">Save</button>
+        </label>  
+    </form>
+
+{% endblock %}
