@@ -36,18 +36,27 @@ class User(db.Model):
         return rep
 
 
-class AccessToken(db.Model):
-    """Access tokens for a user."""
+class TwitchToken(db.Model):
+    """Twitch access tokens for a user."""
+    # TODO: Store these encrypted.
 
-    __tablename__ = "access_tokens"
+    __tablename__ = "twitch_tokens"
 
     token_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"))
-    twitter_token = db.Column(db.Text, unique=True)
+    access_token = db.Column(db.Text,
+                             unique=True,
+                             nullable=False)
+    refresh_token = db.Column(db.Text,
+                              unique=True,
+                              nullable=False)
+    expires_in = db.Column(db.Integer)
+    scope = db.Column(db.Text,
+                      nullable=False)
 
     user = db.relationship("User",
-                           backref="token")
+                           backref="twitch_tokens")
 
     def __repr__(self):
         """Print helpful information."""
