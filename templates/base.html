@@ -11,7 +11,7 @@
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/register">Create Account</a></li>
-            {% if session.get("user_id") %}
+            {% if "user_id" in session or "current_twitch_user" in session %}
                 <li><a href="/logout">Logout</a></li>
             {% else %}
                 <li><a href="/login">Login</a></li>

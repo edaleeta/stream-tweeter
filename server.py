@@ -64,7 +64,7 @@ def show_index():
         return render_template("add-tweet-template.html",
                                user=current_user)
 
-    if session.get("current_twitch_user"):
+    if "current_twitch_user" in session:
         twitch_display_name = session["current_twitch_user"]["display_name"]
         print("Twitch Display Name: {}".format(twitch_display_name))
 
@@ -167,8 +167,24 @@ def authorize_twitch():
 def logout_user():
     """Logs out user."""
 
-    get_user_from_session().isLoggedIn = False
+    if "user_id" in session:
+        get_user_from_session().isLoggedIn = False
+    
+    # TODO: Move revoking a Twitch access token to a seperate component.
+    # We still need the token to be active to generate clips on behalf of user.
+    # if "twitch_access_token" in session:
+
+    #     data = "client_id=" + twitch.consumer_key
+    #     twitch.post("https://api.twitch.tv/kraken/oauth2/revoke",
+    #                 data=data,
+    #                 content_type="application/json")
+
+        # Not working, but would like to know why:
+        # data = {"client_id": twitch.consumer_key}
+        # twitch.post("https://api.twitch.tv/kraken/oauth2/revoke", data=data, format="json")
+
     session.clear()
+
     flash("You were logged out!")
     return redirect("/")
 
@@ -211,6 +227,7 @@ def test_webhook_get():
     else:
         print("Subscription to webhook unsuccessful.")
         return ('', 204)
+
 
 @twitch.tokengetter
 def twitch_tokengetter():

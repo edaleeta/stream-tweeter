@@ -5,12 +5,12 @@
 {% block page_content %}
     <p>
         Welcome
-        {% if twitch_display_name %}
+        {%- if "current_twitch_user" in session %}
             {{ twitch_display_name }}
-        {% endif %}!
+        {%- endif -%}!
 
     </p>
-    {% if session.get("user_id") %}
+    {% if "user_id" in session %}
         <div>
             <h2>Your Tweet Templates</h2>
             <ul>
@@ -22,7 +22,8 @@
         {% block add_tweet_temp %}
             ADD TWEET TEMPLATE FORM HERE.
         {% endblock %}
-    {% else %}
+    {% endif %}
+    {% if "user_id" not in session and "current_twitch_user" not in session %}
         <a href="/login">Please sign in here.</a>
     {% endif %}
 {% endblock %}
