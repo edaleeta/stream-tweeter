@@ -64,6 +64,13 @@ def show_index():
         return render_template("add-tweet-template.html",
                                user=current_user)
 
+    if session.get("current_twitch_user"):
+        twitch_display_name = session["current_twitch_user"]["display_name"]
+        print("Twitch Display Name: {}".format(twitch_display_name))
+
+        return render_template("add-tweet-template.html",
+                               twitch_display_name=twitch_display_name)
+
     return render_template("index.html")
 
 
@@ -126,6 +133,36 @@ def login_user():
         return redirect("/login")
 
 
+@app.route("/login/twitch")
+def login_with_twitch():
+    """Logs in user with Twitch account."""
+    callback_uri = url_for("authorize_twitch", _external=True)
+    print(callback_uri)
+    return (twitch.authorize(callback=callback_uri,
+            next=request.args.get("next") or request.referrer or None))   
+
+
+@app.route("/login/twitch/authorized")
+def authorize_twitch():
+    """Get access token from Twitch user after auth."""
+    next_url = request.args.get('next') or url_for('show_index')
+    resp = twitch.authorized_response()
+
+    # Redirect with message if user does not authorize Twitch account.
+    if resp is None:
+        flash('You denied the request to sign in.')
+        return redirect(next_url)
+
+    session["twitch_access_token"] = (resp.get("access_token"), "")
+
+    current_twitch_user = twitch.get("users")
+    if current_twitch_user.status == 200:
+        session["current_twitch_user"] = current_twitch_user.data["data"][0]
+        print(session["current_twitch_user"])
+
+    return redirect("/")
+
+
 @app.route("/logout")
 def logout_user():
     """Logs out user."""
@@ -175,39 +212,8 @@ def test_webhook_get():
         print("Subscription to webhook unsuccessful.")
         return ('', 204)
 
-
-@app.route("/login-twitch")
-def login_with_twitch():
-    """Test to login to to app with Twitch account."""
-    print("url_for result: {}".format(url_for("get_twitch_access_token")))
-    callback_uri = url_for("get_twitch_access_token", _external=True)
-    print(callback_uri)
-    return (twitch.authorize(callback=callback_uri,
-            next=request.args.get("next") or request.referrer or None))
-
-
-@app.route("/login-twitch-authorized")
-def get_twitch_access_token():
-    """Get access token from Twitch user after auth."""
-    next_url = request.args.get('next') or url_for('show_index')
-    resp = twitch.authorized_response()
-
-    # Redirect with message if user does not authorize Twitch account.
-    if resp is None:
-        flash(u'You denied the request to sign in.')
-        return redirect(next_url)
-    
-    session["twitch_access_token"] = (resp.get("access_token"), "")
-    current_twitch_user = twitch.get("users")
-    if current_twitch_user.status == 200:
-        current_twitch_user = current_twitch_user.data["data"][0]
-        print(current_twitch_user)
-
-    return ('', 204)
-
-
 @twitch.tokengetter
-def get_twitch_access_token():
+def twitch_tokengetter():
     return session.get('twitch_access_token')
 
 ###############################################################################

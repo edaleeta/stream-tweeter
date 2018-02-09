@@ -3,7 +3,13 @@
 {% block title %}| Home{% endblock %}
 
 {% block page_content %}
-    <p>Welcome!</p>
+    <p>
+        Welcome
+        {% if twitch_display_name %}
+            {{ twitch_display_name }}
+        {% endif %}!
+
+    </p>
     {% if session.get("user_id") %}
         <div>
             <h2>Your Tweet Templates</h2>
