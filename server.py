@@ -31,6 +31,7 @@ try:
 except KeyError:
     print("Please set the environment variable TWITCH_CLIENT_SECRET")
 
+twitch_base_url = "https://api.twitch.tv/helix/"
 twitch_authorize_url = "https://api.twitch.tv/kraken/oauth2/authorize"
 twitch_access_token_url = "https://api.twitch.tv/kraken/oauth2/token"
 redirect_uri = "http://localhost:7000/login-twitch-redirect"
@@ -38,6 +39,7 @@ params = {"scope": "clips:edit user:read:email"}
 
 twitch = oauth.remote_app(
     "twitch",
+    base_url=twitch_base_url,
     request_token_params=params,
     request_token_url=None,
     access_token_method="POST",
@@ -178,7 +180,7 @@ def test_webhook_get():
 def login_with_twitch():
     """Test to login to to app with Twitch account."""
     print("url_for result: {}".format(url_for("get_twitch_access_token")))
-    callback_uri = "http://localhost:7000" + url_for("get_twitch_access_token")
+    callback_uri = url_for("get_twitch_access_token", _external=True)
     print(callback_uri)
     return (twitch.authorize(callback=callback_uri,
             next=request.args.get("next") or request.referrer or None))
@@ -187,9 +189,26 @@ def login_with_twitch():
 @app.route("/login-twitch-authorized")
 def get_twitch_access_token():
     """Get access token from Twitch user after auth."""
+    next_url = request.args.get('next') or url_for('show_index')
+    resp = twitch.authorized_response()
+
+    # Redirect with message if user does not authorize Twitch account.
+    if resp is None:
+        flash(u'You denied the request to sign in.')
+        return redirect(next_url)
     
-    print(list(request.args.items()))
+    session["twitch_access_token"] = (resp.get("access_token"), "")
+    current_twitch_user = twitch.get("users")
+    if current_twitch_user.status == 200:
+        current_twitch_user = current_twitch_user.data["data"][0]
+        print(current_twitch_user)
+
     return ('', 204)
+
+
+@twitch.tokengetter
+def get_twitch_access_token():
+    return session.get('twitch_access_token')
 
 ###############################################################################
 # HELPER FUNCTIONS
