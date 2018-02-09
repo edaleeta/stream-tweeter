@@ -1,9 +1,12 @@
 """Yet Another Twitch Toolkit."""
 
+import os
 import bcrypt
 from flask import (Flask, flash,
                    render_template, redirect,
-                   request, session)
+                   request, session, url_for)
+from flask_oauthlib.client import OAuth
+from flask.json import jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import *
@@ -15,6 +18,35 @@ app.secret_key = "18db2d51c63606dece6e98a196c6a262c2026c6f9cbc3e4f"
 
 # Raise an exception if we use an undefined variable in Jinja.
 app.jinja_env.undefined = StrictUndefined
+
+
+# Set up requirements for Twitch OAuth2
+oauth = OAuth(app)
+try:
+    twitch_client_id = os.environ["TWITCH_CLIENT_ID"]
+except KeyError:
+    print("Please set the environment variable TWITCH_CLIENT_ID")
+try:
+    twitch_client_secret = os.environ["TWITCH_CLIENT_SECRET"]
+except KeyError:
+    print("Please set the environment variable TWITCH_CLIENT_SECRET")
+
+twitch_authorize_url = "https://api.twitch.tv/kraken/oauth2/authorize"
+twitch_access_token_url = "https://api.twitch.tv/kraken/oauth2/token"
+redirect_uri = "http://localhost:7000/login-twitch-redirect"
+params = {"scope": "clips:edit user:read:email"}
+
+twitch = oauth.remote_app(
+    "twitch",
+    request_token_params=params,
+    request_token_url=None,
+    access_token_method="POST",
+    access_token_url=twitch_access_token_url,
+    authorize_url=twitch_authorize_url,
+    consumer_key=twitch_client_id,
+    consumer_secret=twitch_client_secret
+)
+
 
 ###############################################################################
 # ROUTES
@@ -144,7 +176,20 @@ def test_webhook_get():
 
 @app.route("/login-twitch")
 def login_with_twitch():
+    """Test to login to to app with Twitch account."""
+    print("url_for result: {}".format(url_for("get_twitch_access_token")))
+    callback_uri = "http://localhost:7000" + url_for("get_twitch_access_token")
+    print(callback_uri)
+    return (twitch.authorize(callback=callback_uri,
+            next=request.args.get("next") or request.referrer or None))
 
+
+@app.route("/login-twitch-authorized")
+def get_twitch_access_token():
+    """Get access token from Twitch user after auth."""
+    
+    print(list(request.args.items()))
+    return ('', 204)
 
 ###############################################################################
 # HELPER FUNCTIONS
