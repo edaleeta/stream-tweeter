@@ -4,11 +4,7 @@
 
 {% block page_content %}
     <p>
-        Welcome
-        {%- if "current_twitch_user" in session %}
-            {{ twitch_display_name }}
-        {%- endif -%}!
-
+        Welcome!
     </p>
     {% if current_user.is_authenticated %}
         <div>
