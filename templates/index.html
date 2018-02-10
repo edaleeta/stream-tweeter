@@ -4,11 +4,10 @@
 
 {% block page_content %}
     <p>Welcome!</p>
-    {% if session.get("user_id") %}
-        <div>
+    {% if current_user.is_authenticated %}
             <h2>Your Tweet Templates</h2>
             <ul>
-                {% for template in user.templates %}
+                {% for template in current_user.templates %}
                     <li>{{ template.contents }}</li>
                 {% endfor %}
             </ul>
@@ -16,7 +15,7 @@
         {% block add_tweet_temp %}
             ADD TWEET TEMPLATE FORM HERE.
         {% endblock %}
-    {% else %}
+    {% else %} 
         <a href="/login">Please sign in here.</a>
     {% endif %}
 {% endblock %}

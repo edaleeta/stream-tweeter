@@ -25,6 +25,10 @@ class User(db.Model):
                                 secondary="users_templates",
                                 backref="users")
 
+    is_active = True
+    is_authenticated = True
+    is_anonymous = False
+
     def __repr__(self):
         """Print helpful information."""
 
@@ -34,6 +38,10 @@ class User(db.Model):
             return rep
         rep += ">"
         return rep
+
+    def get_id(self):
+        """Return a unicode string; for flask-login."""
+        return str(self.user_id)
 
 
 class TwitchToken(db.Model):

@@ -2,9 +2,11 @@
 
 import os
 import bcrypt
+import flask
 from flask import (Flask, flash,
                    render_template, redirect,
                    request, session, url_for)
+from flask_login import current_user, LoginManager, login_user, logout_user
 from flask_oauthlib.client import OAuth
 from flask.json import jsonify
 from flask_debugtoolbar import DebugToolbarExtension
@@ -19,6 +21,10 @@ app.secret_key = "18db2d51c63606dece6e98a196c6a262c2026c6f9cbc3e4f"
 # Raise an exception if we use an undefined variable in Jinja.
 app.jinja_env.undefined = StrictUndefined
 
+# Login manager for Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "/"
 
 # Set up requirements for Twitch OAuth2
 oauth = OAuth(app)
@@ -58,12 +64,8 @@ twitch = oauth.remote_app(
 @app.route("/")
 def show_index():
     "Show homepage."
-    if session.get("user_id"):
-        current_user = get_user_from_session()
-
-        return render_template("add-tweet-template.html",
-                               user=current_user)
-
+    if current_user:
+        return render_template("add-tweet-template.html")
     return render_template("index.html")
 
 
@@ -109,28 +111,29 @@ def show_login():
 
 
 @app.route("/login", methods=["POST"])
-def login_user():
+def login_user_process():
     """Handles submitted data for user login."""
     # TODO: Write tests.
     submitted_email = request.form.get("email")
     submitted_password = request.form.get("password")
 
     if is_valid_credentials(submitted_email, submitted_password):
-        current_user = get_user_from_email(submitted_email)
-        current_user.isLoggedIn = True
-        # Add user_id to session
-        session["user_id"] = current_user.user_id
-        return redirect("/")
+        authed_user = get_user_from_email(submitted_email)
+        login_user(authed_user)
+        flask.next = request.args.get('next')
+        # # Add user_id to session
+        # session["user_id"] = current_user.user_id
+
+        return redirect(flask.next or flask.url_for('show_index'))
     else:
-        flash("Incorrect credentials. Please try again.")
         return redirect("/login")
 
 
 @app.route("/logout")
-def logout_user():
+def logout_user_cleanup():
     """Logs out user."""
 
-    get_user_from_session().isLoggedIn = False
+    logout_user()
     session.clear()
     flash("You were logged out!")
     return redirect("/")
@@ -143,7 +146,7 @@ def add_user_created_template():
     template_contents = request.form.get("template_contents", "").strip()
     if template_contents:
         flash("You entered something!")
-        add_template_to_db(get_user_from_session(), template_contents)
+        add_template_to_db(current_user, template_contents)
     else:
         flash("You didn't enter anything.")
 
@@ -207,12 +210,19 @@ def get_twitch_access_token():
 
 
 @twitch.tokengetter
-def get_twitch_access_token():
+def get_twitch_access_token_from_session():
     return session.get('twitch_access_token')
 
 ###############################################################################
 # HELPER FUNCTIONS
 ###############################################################################
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Loads user from db. user_id must be unicode."""
+    print("Found user {}".format(User.query.get(user_id)))
+    return User.query.get(user_id)
 
 
 def add_template_to_db(current_user, temp_contents):
@@ -226,13 +236,6 @@ def add_template_to_db(current_user, temp_contents):
                                      template_id=new_template.template_id)
     db.session.add(new_user_template)
     db.session.commit()
-
-
-def get_user_from_session():
-    """Find the current user object based on current session."""
-    current_user_id = session.get("user_id")
-    current_user = User.query.filter_by(user_id=current_user_id).first()
-    return current_user
 
 
 def get_user_from_email(user_email):
