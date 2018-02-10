@@ -3,8 +3,15 @@
 {% block title %}| Home{% endblock %}
 
 {% block page_content %}
-    <p>Welcome!</p>
+    <p>
+        Welcome
+        {%- if "current_twitch_user" in session %}
+            {{ twitch_display_name }}
+        {%- endif -%}!
+
+    </p>
     {% if current_user.is_authenticated %}
+        <div>
             <h2>Your Tweet Templates</h2>
             <ul>
                 {% for template in current_user.templates %}
@@ -15,7 +22,8 @@
         {% block add_tweet_temp %}
             ADD TWEET TEMPLATE FORM HERE.
         {% endblock %}
-    {% else %} 
+    {% endif %}
+    {% if not current_user.is_authenticated and "current_twitch_user" not in session %}
         <a href="/login">Please sign in here.</a>
     {% endif %}
 {% endblock %}
