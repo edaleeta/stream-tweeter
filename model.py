@@ -1,6 +1,7 @@
 """Models and database functions for Yet Another Twitch Toolkit."""
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import backref
 
 db = SQLAlchemy()
 
@@ -55,10 +56,29 @@ class User(db.Model):
         """Return a unicode string; for flask-login."""
         return str(self.user_id)
 
+    def update_twitch_access_token(self,
+                                   access_token,
+                                   refresh_token,
+                                   expires_in):
+        """Updates the Twitch access token and info for user."""
+        my_token = self.twitch_token
+        if my_token:
+            my_token.access_token = access_token
+            my_token.refresh_token = refresh_token
+            my_token.expires_in = expires_in
+        else:
+            new_token = TwitchToken(
+                user_id=self.user_id,
+                access_token=access_token,
+                refresh_token=refresh_token,
+                expires_in=expires_in
+            )
+            db.session.add(new_token)
+        db.session.commit()
+
 
 class TwitchToken(db.Model):
     """Twitch access tokens for a user."""
-    # TODO: Store these encrypted.
 
     __tablename__ = "twitch_tokens"
 
@@ -74,7 +94,7 @@ class TwitchToken(db.Model):
     expires_in = db.Column(db.Integer)
 
     user = db.relationship("User",
-                           backref="twitch_tokens")
+                           backref=backref("twitch_token", uselist=False))
 
     def __repr__(self):
         """Print helpful information."""
@@ -256,6 +276,7 @@ def sample_data():
     Template.query.delete()
 
     # Add sample users
+    # TODO: Update this so user creation doesn't fail. :)
     user_1 = User(email="test@testing.com")
     user_2 = User(email="eda@leeta.com")
     db.session.add_all([user_1, user_2])

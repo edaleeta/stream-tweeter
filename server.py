@@ -94,7 +94,21 @@ def process_user_registration():
     # Add base templates for user.
     add_basic_templates(new_user)
     flash("Account created successfully.")
+    # Login new user
     login_user(new_user)
+
+    # Get token info from session.
+    access_token = session["twitch_access_token"]["access_token"]
+    refresh_token = session["twitch_access_token"]["refresh_token"]
+    expires_in = session["twitch_access_token"]["expires_in"]
+
+    # Add token info for new user.
+    current_user.update_twitch_access_token(
+        access_token,
+        refresh_token,
+        expires_in
+    )
+
     return redirect("/")
 
 
@@ -125,13 +139,17 @@ def authorize_twitch():
         flash('You denied the request to sign in.')
         return redirect(next_url)
 
-    session["twitch_access_token"] = (resp.get("access_token"), "")
-    import pdb; pdb.set_trace()
+    session["twitch_access_token"] = resp
+    access_token = session["twitch_access_token"]["access_token"]
+    refresh_token = session["twitch_access_token"]["refresh_token"]
+    expires_in = session["twitch_access_token"]["expires_in"]
 
+    # Send a request to Twitch to get information about authed Twitch user.
     current_twitch_user = twitch.get("users")
+
+    # If the response is OK...
     if current_twitch_user.status == 200:
         session["current_twitch_user"] = current_twitch_user.data["data"][0]
-        print(session["current_twitch_user"])
         current_twitch_user_id = session["current_twitch_user"]["id"]
 
         # Get all Twitch IDs in db
@@ -145,6 +163,11 @@ def authorize_twitch():
         else:
             print("Twitch ID recognized. Logging you in.")
             login_user(User.get_user_from_twitch_id(current_twitch_user_id))
+            current_user.update_twitch_access_token(
+                access_token,
+                refresh_token,
+                expires_in
+            )
             flask.next = request.args.get('next')
             return redirect(flask.next or url_for('show_index'))
 
