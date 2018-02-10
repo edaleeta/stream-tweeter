@@ -15,9 +15,9 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.Text, nullable=False, unique=True)
-    password = db.Column(db.Text, nullable=False)   # Temporary.
-    twitch_username = db.Column(db.Text, unique=True)
+    email = db.Column(db.Text)
+    twitch_displayname = db.Column(db.Text, nullable=False)
+    twitch_username = db.Column(db.Text)
     twitch_id = db.Column(db.Text, unique=True)
     twitter_id = db.Column(db.Text, unique=True)
 
@@ -28,6 +28,18 @@ class User(db.Model):
     is_active = True
     is_authenticated = True
     is_anonymous = False
+
+    @staticmethod
+    def get_user_from_email(user_email):
+        """Find the user for the given email."""
+
+        return User.query.filter_by(email=user_email).one()
+
+    @staticmethod
+    def get_user_from_twitch_id(twitch_id):
+        """Find the user for the given Twitch ID."""
+
+        return User.query.filter_by(twitch_id=twitch_id).one()
 
     def __repr__(self):
         """Print helpful information."""
@@ -60,8 +72,6 @@ class TwitchToken(db.Model):
                               unique=True,
                               nullable=False)
     expires_in = db.Column(db.Integer)
-    scope = db.Column(db.Text,
-                      nullable=False)
 
     user = db.relationship("User",
                            backref="twitch_tokens")
@@ -246,8 +256,8 @@ def sample_data():
     Template.query.delete()
 
     # Add sample users
-    user_1 = User(email="test@testing.com", password="test")
-    user_2 = User(email="eda@leeta.com", password="derpydoo")
+    user_1 = User(email="test@testing.com")
+    user_2 = User(email="eda@leeta.com")
     db.session.add_all([user_1, user_2])
     db.session.commit()
 
