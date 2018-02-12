@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'macros.html' import tweet_template_list %}
 
 {% block title %}| Home{% endblock %}
 
@@ -13,17 +14,9 @@
     {% if current_user.is_authenticated %}
         <div>
             <h2>Your Tweet Templates</h2>
-            <ul>
-                {% for template in current_user.templates %}
-                    <li>
-                        <button type="submit" class="del-tweet-button" value="{{ template.template_id }}">
-                            Delete
-                        </button>
-                        <button type="submit">Edit</button>    
-                        {{ template.contents }}
-                    </li>
-                {% endfor %}
-            </ul>
+            <div id="tweet_templates">
+                {{ tweet_template_list(current_user) }}
+            </div>
         </div>
         {% block add_tweet_temp %}
             ADD TWEET TEMPLATE FORM HERE.
@@ -38,7 +31,7 @@
 {% block custom_javascript %}
 <script>
     $(document).ready(function(){
-        $(".del-tweet-button").click(deleteTweet)
+        $("#tweet_templates").on('click', ".del-tweet-button", deleteTweet);
     });
 
     function deleteTweet(e){
@@ -46,7 +39,9 @@
         console.log(e);
         let template_id = e.target.value
         let payload = { "template_id": template_id }
-        $.post("/delete-tweet-template", payload)
+        $.post("/delete-tweet-template", payload, (result) => {
+            $("#tweet_templates").html(result)
+        });
     }
 </script>
 {% endblock %}

@@ -2,7 +2,7 @@
 
 import os
 import flask
-from flask import (Flask, flash,
+from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
                    request, session, url_for)
 from flask_login import current_user, LoginManager, login_user, logout_user
@@ -205,7 +205,9 @@ def delete_template_for_user():
     print(temp_to_del)
     current_user.delete_template(temp_to_del)
 
-    return redirect("/")
+    tweet_template_list = get_template_attribute("macros.html",
+                                                 "tweet_template_list")
+    return tweet_template_list(current_user)
 
 ###############################################################################
 # TEST ROUTES
