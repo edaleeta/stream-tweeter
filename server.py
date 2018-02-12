@@ -197,6 +197,21 @@ def add_user_created_template():
     return redirect("/")
 
 
+@app.route("/delete-tweet-template", methods=["POST"])
+def delete_template_for_user():
+    """Deletes a specific template owned by user."""
+
+    temp_to_del = request.form.get("template_id")
+    print(temp_to_del)
+    current_user.delete_template(temp_to_del)
+
+    return redirect("/")
+
+###############################################################################
+# TEST ROUTES
+###############################################################################
+
+
 @app.route("/webhooktest", methods=["POST"])
 def test_webhook():
     """Prints webhook response payload. """
@@ -204,10 +219,6 @@ def test_webhook():
     print("User stream state has changed.")
 
     return ('', 204)
-
-###############################################################################
-# TEST ROUTES
-###############################################################################
 
 
 @app.route("/webhooktest", methods=["GET"])
