@@ -15,7 +15,13 @@
             <h2>Your Tweet Templates</h2>
             <ul>
                 {% for template in current_user.templates %}
-                    <li>{{ template.contents }}</li>
+                    <li>
+                        <button type="submit" formaction="/delete-template"
+                            formmethod="POST">Delete</button>
+                        <button type="submit" formaction="/edit-template"
+                            formmethod="POST">Edit</button>    
+                        {{ template.contents }}
+                    </li>
                 {% endfor %}
             </ul>
         </div>
