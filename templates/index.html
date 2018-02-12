@@ -30,18 +30,27 @@
 <!-- Move this later. -->
 {% block custom_javascript %}
 <script>
-    $(document).ready(function(){
-        $("#tweet_templates").on('click', ".del-tweet-button", deleteTweet);
+    $(document).ready(function() {
+        $("#tweet_templates").on("click", ".del-tweet-button", deleteTweetTemplate);
+        $("tweet_templates").on("click", ".edit-tweet-button", editTweetTemplate);
     });
 
-    function deleteTweet(e){
+    function deleteTweetTemplate(e) {
         // Send the value of this button to route delete-tweet-template
-        console.log(e);
-        let template_id = e.target.value
+        let template_id = e.target.value;
         let payload = { "template_id": template_id }
         $.post("/delete-tweet-template", payload, (result) => {
             $("#tweet_templates").html(result)
         });
+    }
+
+    function editTweetTemplate(e) {
+        // Send the value of this button to route edit-tweet-template
+        let template_id = e.target.value;
+        let payload = { "template_id": template_id };
+        $.post("/edit-tweet-template", payload, (result) => {
+            $("#tweet_templates").html(result)
+        })
     }
 </script>
 {% endblock %}
