@@ -72,6 +72,13 @@ class User(db.Model):
             db.session.add(new_token)
         db.session.commit()
 
+    def delete_template(self, template_id):
+        """Allows a user to delete an owned template."""
+        temp_to_del = Template.query.filter_by(template_id=template_id,
+                                               user_id=self.user_id).one()
+        db.session.delete(temp_to_del)
+        db.session.commit()
+
 
 class TwitchToken(db.Model):
     """Twitch access tokens for a user."""
@@ -98,7 +105,7 @@ class TwitchToken(db.Model):
         if self.twitter_token:
             twitter_token_exists = "True"
         else:
-            twitter_token_exists = "False" 
+            twitter_token_exists = "False"
 
         return "<AccessToken twitter_exists={}>" \
             .format(twitter_token_exists)
