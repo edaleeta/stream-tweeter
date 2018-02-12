@@ -17,7 +17,7 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.Text)
-    twitch_displayname = db.Column(db.Text, nullable=False)
+    twitch_displayname = db.Column(db.Text)
     twitch_username = db.Column(db.Text)
     twitch_id = db.Column(db.Text, unique=True)
     twitter_id = db.Column(db.Text, unique=True)
@@ -111,7 +111,8 @@ class Template(db.Model):
 
     template_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.user_id"))
+                        db.ForeignKey("users.user_id"),
+                        nullable=False)
     contents = db.Column(db.Text, nullable=False)
 
     user = db.relationship("User",
@@ -264,7 +265,7 @@ def sample_data():
     """Create sample data."""
 
     # Empty existing data
-    UserTemplate.query.delete()
+    BaseTemplate.query.delete()
     User.query.delete()
     Template.query.delete()
 
@@ -276,25 +277,22 @@ def sample_data():
     db.session.commit()
 
     # Add base templates
-    template_1 = Template(contents="I'm live on Twitch!\r\n \
-        Join me here: $url.",
-                          base_template=True)
-    template_2 = Template(contents="We're playing $game!\r\nJoin me on \
-        Twitch: $url.",
-                          base_template=True)
-    template_3 = Template(contents="This should not be initialized for User.")
+    template_1 = BaseTemplate(contents="I'm live on Twitch!\r\n \
+        Join me here: $url.")
+    template_2 = BaseTemplate(contents="We're playing $game!\r\nJoin me on \
+        Twitch: $url.")
 
-    db.session.add_all([template_1, template_2, template_3])
+    db.session.add_all([template_1, template_2])
     db.session.commit()
 
-    # Add UserTemplates entry per base template for each initial user.
-    base_templates = Template.query.filter_by(base_template=True)
+    # Add Template entry per base template for each initial user.
+    base_templates = BaseTemplate.query
     initial_users = User.query
 
     for user in initial_users:
         for base_template in base_templates:
-            db.session.add(UserTemplate(user_id=user.user_id,
-                                        template_id=base_template.template_id))
+            db.session.add(Template(user_id=user.user_id,
+                                    contents=base_template.contents))
     db.session.commit()
 
 ###############################################################################
