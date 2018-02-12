@@ -22,10 +22,6 @@ class User(db.Model):
     twitch_id = db.Column(db.Text, unique=True)
     twitter_id = db.Column(db.Text, unique=True)
 
-    templates = db.relationship("Template",
-                                secondary="users_templates",
-                                backref="users")
-
     is_active = True
     is_authenticated = True
     is_anonymous = False
@@ -108,39 +104,36 @@ class TwitchToken(db.Model):
             .format(twitter_token_exists)
 
 
-class UserTemplate(db.Model):
-    """User to Template associations."""
-
-    __tablename__ = "users_templates"
-
-    user_template_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.user_id"))
-
-    template_id = db.Column(db.Integer,
-                            db.ForeignKey("templates.template_id"))
-
-    def __repr__(self):
-        """Print helpful information."""
-
-        return "<UserTemplate user_id={}, template_id={}>" \
-            .format(self.user_id, self.template_id)
-
-
 class Template(db.Model):
     """Template used for Tweets."""
 
     __tablename__ = "templates"
 
     template_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.user_id"))
     contents = db.Column(db.Text, nullable=False)
-    base_template = db.Column(db.Boolean)
+
+    user = db.relationship("User",
+                           backref="templates",
+                           uselist=False)
+
+
+class BaseTemplate(db.Model):
+    """Base templates used to create templates for user upon user creation."""
+
+    __tablename__ = "base_templates"
+
+    template_id = db.Column(db.Integer, primary_key=True)
+    contents = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         """Print helpful information."""
 
-        return "<Template template_id={}, contents='{}'>" \
-            .format(self.template_id, (self.contents[0:14] + "..."))
+        return "<Template template_id={}, user_id={}, contents='{}'>" \
+            .format(self.template_id,
+                    self.user_id,
+                    (self.contents[0:14] + "..."))
 
 
 class SentTweet(db.Model):
