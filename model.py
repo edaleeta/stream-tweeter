@@ -79,6 +79,13 @@ class User(db.Model):
         db.session.delete(temp_to_del)
         db.session.commit()
 
+    def edit_template(self, template_id, new_contents):
+        """Allows a user to edit an owned template."""
+        temp_to_edit = Template.query.filter_by(template_id=template_id,
+                                                user_id=self.user_id).one()
+        temp_to_edit.contents = new_contents
+        db.session.commit()
+
 
 class TwitchToken(db.Model):
     """Twitch access tokens for a user."""
