@@ -266,10 +266,10 @@ def is_email_exists(submitted_email):
 def add_basic_templates(this_user):
     """Add basic templates for current user."""
 
-    base_templates = Template.query.filter_by(base_template=True)
+    base_templates = BaseTemplate.query
 
-    temps_to_add = [(UserTemplate(user_id=this_user.user_id,
-                                  template_id=base_template.template_id))
+    temps_to_add = [(Template(user_id=this_user.user_id,
+                              contents=base_template.contents))
                     for base_template in base_templates]
 
     db.session.bulk_save_objects(temps_to_add)
