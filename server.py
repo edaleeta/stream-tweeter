@@ -242,13 +242,8 @@ def load_user(user_id):
 def add_template_to_db(user, temp_contents):
     """Adds a user-created template to db for user."""
 
-    new_template = Template(contents=temp_contents)
+    new_template = Template(user_id=user.user_id, contents=temp_contents)
     db.session.add(new_template)
-    db.session.commit()
-
-    new_user_template = UserTemplate(user_id=user.user_id,
-                                     template_id=new_template.template_id)
-    db.session.add(new_user_template)
     db.session.commit()
 
 
