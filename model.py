@@ -130,7 +130,8 @@ class Template(db.Model):
     contents = db.Column(db.Text, nullable=False)
 
     user = db.relationship("User",
-                           backref="templates",
+                           backref=backref("templates",
+                                           order_by="Template.template_id"),
                            uselist=False)
 
 

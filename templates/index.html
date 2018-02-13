@@ -31,8 +31,16 @@
 {% block custom_javascript %}
 <script>
     $(document).ready(function() {
+        // Workaround to prevent .val() from stripping line breaks from textareas.
+        $.valHooks.textarea = {
+            get: function( elem ) {
+              return elem.value.replace( /\r?\n/g, "\r\n" );
+            }
+          };
+        // Event listeners
         $("#tweet_templates").on("click", ".del-tweet-button", deleteTweetTemplate);
-        $("tweet_templates").on("click", ".edit-tweet-button", editTweetTemplate);
+        $("#tweet_templates").on("click", ".edit-tweet-button", showEditForm);
+        $("#tweet_templates").on("submit", ".edit-tweet-template-form", editTweetTemplate);
     });
 
     function deleteTweetTemplate(e) {
@@ -44,10 +52,22 @@
         });
     }
 
+    function showEditForm(e) {
+        // Show the edit form for the current tweet.
+        let template_id = e.target.value;
+        $(`#edit-tweet-template-container-${template_id}`).toggle();
+    }
+
     function editTweetTemplate(e) {
         // Send the value of this button to route edit-tweet-template
-        let template_id = e.target.value;
-        let payload = { "template_id": template_id };
+        e.preventDefault();
+        // console.log($(this).serialize())
+        let template_id = e.target.dataset.templateId;
+        let contents = $(`#edit-template-contents-field-${template_id}`).val();
+
+        let payload = { "template_id": template_id,
+                        "contents": contents };
+
         $.post("/edit-tweet-template", payload, (result) => {
             $("#tweet_templates").html(result)
         })

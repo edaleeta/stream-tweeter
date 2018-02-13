@@ -202,12 +202,27 @@ def delete_template_for_user():
     """Deletes a specific template owned by user."""
 
     temp_to_del = request.form.get("template_id")
-    print(temp_to_del)
     current_user.delete_template(temp_to_del)
 
     tweet_template_list = get_template_attribute("macros.html",
                                                  "tweet_template_list")
     return tweet_template_list(current_user)
+
+
+@app.route("/edit-tweet-template", methods=["POST"])
+def edit_template_for_user():
+    """Edits a specific template owned by a user."""
+
+    temp_to_edit = request.form.get("template_id").strip()
+    contents = request.form.get("contents")
+
+    current_user.edit_template(temp_to_edit, contents)
+
+    tweet_template_list = get_template_attribute("macros.html",
+                                                 "tweet_template_list")
+
+    return tweet_template_list(current_user)
+
 
 ###############################################################################
 # TEST ROUTES
