@@ -134,6 +134,12 @@ class Template(db.Model):
                                            order_by="Template.template_id"),
                            uselist=False)
 
+    @staticmethod
+    def get_template_from_id(template_id):
+        """Find the template for the given template_id."""
+
+        return Template.query.filter_by(template_id=template_id).one()
+
 
 class BaseTemplate(db.Model):
     """Base templates used to create templates for user upon user creation."""

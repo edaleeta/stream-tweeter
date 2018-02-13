@@ -30,6 +30,7 @@
 <!-- Move this later. -->
 {% block custom_javascript %}
 <script>
+    "use strict";
     $(document).ready(function() {
         // Workaround to prevent .val() from stripping line breaks from textareas.
         $.valHooks.textarea = {
@@ -38,9 +39,15 @@
             }
           };
         // Event listeners
+        // Delete Tweet Template button
         $("#tweet_templates").on("click", ".del-tweet-button", deleteTweetTemplate);
+        // Send Test Tweet button; to be removed
+        $("#tweet_templates").on("click", ".send-test-tweet-button", sendTestTweet);
+        // Edit Tweet Template button
         $("#tweet_templates").on("click", ".edit-tweet-button", showEditForm);
+        // Submitting Edit Tweet Template
         $("#tweet_templates").on("submit", ".edit-tweet-template-form", editTweetTemplate);
+        // Submitting Add Tweet Template form
         $(document).on("submit", "#add-tweet-template-form", addTweetTemplate);
     });
 
@@ -84,6 +91,16 @@
             // Clear the textarea.
             $("#add-template-contents-field").val("");
         });
+    }
+
+    function sendTestTweet(e) {
+        // Test a test "tweet"; mocking some data
+        let template_id = e.target.value;
+        let payload = { "template_id": template_id }
+        alert(`Sending test tweet for Template ID: ${template_id}`);
+        $.post("/send-test-tweet", payload, (result) => {
+            alert(`Tweet sent: ${result}`)
+        })
     }
 
 </script>

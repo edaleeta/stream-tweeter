@@ -1,6 +1,7 @@
 """Yet Another Twitch Toolkit."""
 
 import os
+import string
 import flask
 from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
@@ -233,7 +234,6 @@ def delete_template_for_user():
 @app.route("/edit-tweet-template", methods=["POST"])
 def edit_template_for_user():
     """Edits a specific template owned by a user."""
-
     # TODO: Handle trimming of whitespace and validation post trim in JS
     temp_to_edit = request.form.get("template_id").strip()
     contents = request.form.get("contents")
@@ -245,6 +245,14 @@ def edit_template_for_user():
 
     return tweet_template_list(current_user)
 
+
+@app.route("/send-test-tweet", methods=["POST"])
+def send_test_tweet():
+    """Sends a test tweet using received tweet template id."""
+    template_id = request.form.get("template_id")
+    template_contents = Template.get_template_from_id(template_id).contents
+
+    return populate_tweet_template(template_contents)
 
 ###############################################################################
 # TEST ROUTES
@@ -319,6 +327,19 @@ def add_basic_templates(this_user):
 
     db.session.bulk_save_objects(temps_to_add)
     db.session.commit()
+
+
+def populate_tweet_template(contents):
+    """Inserts data into placeholders."""
+    # TODO: Update to use data received through Twitch API.
+
+    mock_stream_data = {"game": "Pokemon Silver",
+                        "url": "http://twitch.tv/the_pixxel",
+                        "viewers": 180,
+                        "stream_desc": "Thowback - Starting Pokemon Silver!"}
+    tweet_template = string.Template(contents)
+    populated_template = tweet_template.safe_substitute(mock_stream_data)
+    return populated_template
 
 
 if __name__ == "__main__":
