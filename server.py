@@ -12,6 +12,13 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import *
 
+# TESTING NL2BR FILTER
+import re
+from jinja2 import evalcontextfilter, Markup, escape
+_paragraph_re = re.compile(r'(?:\r)?')
+
+
+
 app = Flask(__name__)
 
 # Set so we can use Flask's default toolbar
@@ -54,6 +61,16 @@ twitch = oauth.remote_app(
     consumer_secret=twitch_client_secret
 )
 
+
+# TESTING NL2BR
+@app.template_filter()
+@evalcontextfilter
+def nl2br(eval_ctx, value):
+    result = u'\n\n'.join(u'%s' % p.replace('\n', '<br>\n') \
+        for p in _paragraph_re.split(escape(value)))
+    if eval_ctx.autoescape:
+        result = Markup(result)
+    return result
 
 ###############################################################################
 # ROUTES
