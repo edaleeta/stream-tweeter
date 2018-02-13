@@ -219,6 +219,23 @@ class SentTweet(db.Model):
         return "<SentTweet tweet_id='{}', user_id={}, message='{}'>" \
             .format(self.tweet_id, self.user_id, (self.message[0:14] + "..."))
 
+    @staticmethod
+    def store_sent_tweet(response, user_id):
+        """Saves a sent tweet in db."""
+        tweet_twtr_id = response.id_str
+        created_at = response.created_at
+        message = response.text
+        user_twtr_id = response.user.id_str
+        permalink = "https://twitter.com/{}/status/{}".format(user_twtr_id,
+                                                              tweet_twtr_id)
+        new_sent_tweet = SentTweet(tweet_twtr_id=tweet_twtr_id,
+                                   user_id=user_id,
+                                   created_at=created_at,
+                                   message=message,
+                                   permalink=permalink)
+        db.session.add(new_sent_tweet)
+        db.session.commit()
+
 
 class StreamSession(db.Model):
     """A Twitch Stream session."""

@@ -264,7 +264,8 @@ def send_test_tweet():
     # Post the tweet to Twitter
     publish_to_twitter(populated_tweet_template,
                        current_user.twitter_token.access_token,
-                       current_user.twitter_token.access_token_secret)
+                       current_user.twitter_token.access_token_secret,
+                       current_user.user_id)
 
     # Currently sending back the populated tweet for confirmation alert.abs
     return populated_tweet_template
@@ -406,14 +407,22 @@ def populate_tweet_template(contents):
     return populated_template
 
 
-def publish_to_twitter(content, access_token, access_token_secret):
+def publish_to_twitter(content, access_token,
+                       access_token_secret, user_id):
     """Publishes given content to a user's Twitter account."""
     twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
                                        TWITTER_CONSUMER_SECRET)
     twitter_auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(twitter_auth)
-    response = api.update_status(content)
-    import pdb; pdb.set_trace()
+    try:
+        # Send Tweet and catch response
+        response = api.update_status(content)
+        # Create function to save published tweet data to db
+        SentTweet.store_sent_tweet(response, user_id)
+    except tweepy.TweepError as error:
+        # TODO: Set up better handler for errors.
+        print(error.reason)
+
 
 
 if __name__ == "__main__":
