@@ -255,10 +255,19 @@ def edit_template_for_user():
 @app.route("/send-test-tweet", methods=["POST"])
 def send_test_tweet():
     """Sends a test tweet using received tweet template id."""
+
     template_id = request.form.get("template_id")
     template_contents = Template.get_template_from_id(template_id).contents
 
-    return populate_tweet_template(template_contents)
+    # Fill in tweet template with data.
+    populated_tweet_template = populate_tweet_template(template_contents)
+    # Post the tweet to Twitter
+    publish_to_twitter(populated_tweet_template,
+                       current_user.twitter_token.access_token,
+                       current_user.twitter_token.access_token_secret)
+
+    # Currently sending back the populated tweet for confirmation alert.abs
+    return populated_tweet_template
 
 
 @app.route("/auth-twitter")
@@ -395,6 +404,16 @@ def populate_tweet_template(contents):
     tweet_template = string.Template(contents)
     populated_template = tweet_template.safe_substitute(mock_stream_data)
     return populated_template
+
+
+def publish_to_twitter(content, access_token, access_token_secret):
+    """Publishes given content to a user's Twitter account."""
+    twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
+                                       TWITTER_CONSUMER_SECRET)
+    twitter_auth.set_access_token(access_token, access_token_secret)
+    api = tweepy.API(twitter_auth)
+    response = api.update_status(content)
+    import pdb; pdb.set_trace()
 
 
 if __name__ == "__main__":
