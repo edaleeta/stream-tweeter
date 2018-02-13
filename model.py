@@ -72,6 +72,21 @@ class User(db.Model):
             db.session.add(new_token)
         db.session.commit()
 
+    def update_twitter_access_token(self,
+                                    access_token,
+                                    access_token_secret):
+        """Updates the Twitter access token and info for user."""
+        my_token = self.twitter_token
+        if my_token:
+            my_token.access_token = access_token
+            my_token.access_token_secret = access_token_secret
+        else:
+            new_token = TwitterToken(user_id=self.user_id,
+                                     access_token=access_token,
+                                     access_token_secret=access_token_secret)
+            db.session.add(new_token)
+        db.session.commit()
+
     def delete_template(self, template_id):
         """Allows a user to delete an owned template."""
         temp_to_del = Template.query.filter_by(template_id=template_id,

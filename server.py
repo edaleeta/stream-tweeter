@@ -2,6 +2,7 @@
 
 import os
 import string
+import re
 import flask
 from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
@@ -10,15 +11,9 @@ from flask_login import current_user, LoginManager, login_user, logout_user
 from flask_oauthlib.client import OAuth
 from flask.json import jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from jinja2 import StrictUndefined
+from jinja2 import StrictUndefined, evalcontextfilter, Markup, escape
+import tweepy
 from model import *
-
-# TESTING NL2BR FILTER
-import re
-from jinja2 import evalcontextfilter, Markup, escape
-_paragraph_re = re.compile(r'(?:\r)?')
-
-
 
 app = Flask(__name__)
 
@@ -33,8 +28,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "/"
 
-# Set up requirements for Twitch OAuth2
-oauth = OAuth(app)
+###############################################################################
+# Twitch OAuth2 Requirements
+###############################################################################
+twitch_oauth = OAuth(app)
 try:
     twitch_client_id = os.environ["TWITCH_CLIENT_ID"]
 except KeyError:
@@ -50,7 +47,7 @@ twitch_access_token_url = "https://api.twitch.tv/kraken/oauth2/token"
 redirect_uri = "http://localhost:7000/login-twitch-redirect"
 params = {"scope": "clips:edit user:read:email"}
 
-twitch = oauth.remote_app(
+twitch = twitch_oauth.remote_app(
     "twitch",
     base_url=twitch_base_url,
     request_token_params=params,
@@ -63,7 +60,20 @@ twitch = oauth.remote_app(
 )
 
 
-# TESTING NL2BR
+###############################################################################
+# Twitter Oauth Requirements
+###############################################################################
+TWITTER_CONSUMER_KEY = os.environ["TWITTER_CONSUMER_KEY"]
+TWITTER_CONSUMER_SECRET = os.environ["TWITTER_CONSUMER_SECRET"]
+TWITTER_REDIRECT_URL = "http://localhost:7000/auth-twitter/authorized"
+
+###############################################################################
+# NL2BR CUSTOM JINJA FILTER
+###############################################################################
+# Regex for custom nlbr filter
+_paragraph_re = re.compile(r'(?:\r)?')
+
+
 @app.template_filter()
 @evalcontextfilter
 def nl2br(eval_ctx, value):
@@ -72,10 +82,6 @@ def nl2br(eval_ctx, value):
     if eval_ctx.autoescape:
         result = Markup(result)
     return result
-
-###############################################################################
-# ROUTES
-###############################################################################
 
 
 @app.route("/")
@@ -253,6 +259,55 @@ def send_test_tweet():
     template_contents = Template.get_template_from_id(template_id).contents
 
     return populate_tweet_template(template_contents)
+
+
+@app.route("/auth-twitter")
+def authorize_twitter():
+    """Authorize a user's Twitter account."""
+
+    twitter_oauth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
+                                        TWITTER_CONSUMER_SECRET,
+                                        TWITTER_REDIRECT_URL)
+
+    try:
+        redirect_url = twitter_oauth.get_authorization_url()
+        print(redirect_url)
+        session["twitter_request_token"] = twitter_oauth.request_token
+        print("Twitter request token: {}".format(session.get("twitter_request_token")))
+        return redirect(redirect_url)
+    except tweepy.TweepError:
+        # TODO: Set up a handler for auth errors.
+        flash("Authorization failed.")
+        return redirect("/")
+
+
+@app.route("/auth-twitter/authorized")
+def get_twitter_token():
+    """Get access token and secret from Twitter user after auth."""
+
+    twitter_oauth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
+                                        TWITTER_CONSUMER_SECRET)
+
+    verifier = request.args.get("oauth_verifier")
+    request_token = session.get("twitter_request_token")
+    session.pop("twitter_request_token", None)
+    # Note: In the app's current structure it isn't necessary to rebuild from
+    # session; More for future proofing if/when token handler moves.
+    twitter_oauth.request_token = request_token
+
+    try:
+        twitter_oauth.get_access_token(verifier)
+        access_token = twitter_oauth.access_token
+        access_token_secret = twitter_oauth.access_token_secret
+        print(access_token)
+        print(access_token_secret)
+        current_user.update_twitter_access_token(access_token,
+                                                 access_token_secret)
+        flash("Twitter account connected.")
+    except tweepy.TweepError:
+        flash("Authorization failed.")
+
+    return redirect("/")
 
 ###############################################################################
 # TEST ROUTES
