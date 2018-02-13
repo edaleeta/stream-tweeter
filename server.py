@@ -203,15 +203,19 @@ def logout_user_cleanup():
 @app.route("/add-tweet-template", methods=["POST"])
 def add_user_created_template():
     """Adds template the current user created to DB."""
-
-    template_contents = request.form.get("template_contents", "").strip()
+    # TODO: Handle trimming of whitespace and validation post trim in JS
+    template_contents = request.form.get("contents", "").strip()
     if template_contents:
-        flash("You entered something!")
+        # TODO: Need to add messaging that plays nicely with AJAX.
+        # flash("You entered something!")
         add_template_to_db(current_user, template_contents)
     else:
-        flash("You didn't enter anything.")
+        # flash("You didn't enter anything.")
+        return redirect("/")
 
-    return redirect("/")
+    tweet_template_list = get_template_attribute("macros.html",
+                                                 "tweet_template_list")
+    return tweet_template_list(current_user)
 
 
 @app.route("/delete-tweet-template", methods=["POST"])
@@ -230,6 +234,7 @@ def delete_template_for_user():
 def edit_template_for_user():
     """Edits a specific template owned by a user."""
 
+    # TODO: Handle trimming of whitespace and validation post trim in JS
     temp_to_edit = request.form.get("template_id").strip()
     contents = request.form.get("contents")
 

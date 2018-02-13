@@ -41,6 +41,7 @@
         $("#tweet_templates").on("click", ".del-tweet-button", deleteTweetTemplate);
         $("#tweet_templates").on("click", ".edit-tweet-button", showEditForm);
         $("#tweet_templates").on("submit", ".edit-tweet-template-form", editTweetTemplate);
+        $(document).on("submit", "#add-tweet-template-form", addTweetTemplate);
     });
 
     function deleteTweetTemplate(e) {
@@ -70,7 +71,20 @@
 
         $.post("/edit-tweet-template", payload, (result) => {
             $("#tweet_templates").html(result)
-        })
+        });
     }
+
+    function addTweetTemplate(e) {
+        // Post the contents to add-tweet-template route for processing.
+        e.preventDefault();
+        let contents = $("#add-template-contents-field").val();
+        let payload = { "contents": contents };
+        $.post("/add-tweet-template", payload, (result) => {
+            $("#tweet_templates").html(result);
+            // Clear the textarea.
+            $("#add-template-contents-field").val("");
+        });
+    }
+
 </script>
 {% endblock %}
