@@ -88,13 +88,14 @@ class User(db.Model):
 
 
 class TwitchToken(db.Model):
-    """Twitch access tokens for a user."""
+    """Twitch access token for a user."""
 
     __tablename__ = "twitch_tokens"
 
     token_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.user_id"))
+                        db.ForeignKey("users.user_id"),
+                        nullable=False)
     access_token = db.Column(db.Text,
                              unique=True,
                              nullable=False)
@@ -105,6 +106,26 @@ class TwitchToken(db.Model):
 
     user = db.relationship("User",
                            backref=backref("twitch_token", uselist=False))
+
+
+class TwitterToken(db.Model):
+    """Twitter access token for a user."""
+
+    __tablename__ = "twitter_tokens"
+
+    token_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.user_id"),
+                        nullable=False)
+    access_token = db.Column(db.Text,
+                             unique=True,
+                             nullable=False)
+    access_token_secret = db.Column(db.Text,
+                                    unique=True,
+                                    nullable=False)
+
+    user = db.relationship("User",
+                           backref=backref("twitter_token", uselist=False))
 
     def __repr__(self):
         """Print helpful information."""
@@ -298,10 +319,10 @@ def sample_data():
     db.session.commit()
 
     # Add base templates
-    template_1 = BaseTemplate(contents="I'm live on Twitch!\r\n \
-        Join me here: $url.")
-    template_2 = BaseTemplate(contents="We're playing $game!\r\nJoin me on \
-        Twitch: $url.")
+    template_1 = BaseTemplate(contents="I'm live on Twitch!\r\n\
+Join me here: ${url}.")
+    template_2 = BaseTemplate(contents="We're playing ${game}!\r\nJoin me on \
+Twitch: ${url}.")
 
     db.session.add_all([template_1, template_2])
     db.session.commit()
