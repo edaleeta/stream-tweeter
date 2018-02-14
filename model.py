@@ -2,6 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
+from sqlalchemy import desc
 
 db = SQLAlchemy()
 
@@ -262,10 +263,10 @@ class StreamSession(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        return "<StreamSession stream_id={}, twitch_session_id='{}', \
-            started={}>".format(self.data_id,
-                                self.twitch_session_id,
-                                self.started_at)
+        return "<StreamSession stream_id={}, twitch_session_id='{}',\
+ started={}>".format(self.stream_id,
+                     self.twitch_session_id,
+                     self.started_at)
 
     @classmethod
     def save_stream_session(cls, user, stream_data):
@@ -287,10 +288,23 @@ class StreamSession(db.Model):
         StreamDatum.save_stream_data(twitch_session, stream_data)
 
     @classmethod
+    def end_stream_session(cls, user, timestamp):
+        """Update a closed steam session with the time it was found to end."""
+
+        pass
+
+    @classmethod
     def get_session_from_twitch_session_id(cls, twitch_session_id):
         """Gets the corresponding Twitch Session based on Twitch Session id."""
 
         return cls.query.filter_by(twitch_session_id=twitch_session_id).first()
+
+    @classmethod
+    def get_user_most_recent_session(cls, user):
+        """Get the most recent session for a user."""
+
+        most_recent_sesson = cls.query.filter_by(user_id=user.user_id).order_by(cls.started_at.desc()).first()
+        return most_recent_sesson
 
 
 class StreamDatum(db.Model):

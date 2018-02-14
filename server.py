@@ -451,6 +451,8 @@ def get_twitch_stream_data(user):
         # Otherwise, return None.
         return None
     # If the stream is live..
+    # TODO: DELETE THIS AFTER TESTING OFFLINE CASE.
+    all_stream_data = []    # REMOVE THIS LINE AFTER TESTING.
     if all_stream_data:
         all_stream_data = all_stream_data[0]
         timestamp = datetime.now()
