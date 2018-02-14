@@ -436,38 +436,47 @@ def get_twitch_stream_data(user):
     # Note: 401 response when a new token must be fetched.
     # TODO: Add handler for reauthorization
     if r_streams.status_code == 200:
-        all_stream_data = r_streams.json().get("data")[0]
+        all_stream_data = r_streams.json().get("data")
     else:
         # Otherwise, return None.
         return None
+    # If stream is "live"...
+    if all_stream_data.get("type", "") == "live":
+        all_stream_data = all_stream_data[0]
+        timestamp = datetime.now()
+        stream_id = all_stream_data.get("id")
+        streamer_id = all_stream_data.get("user_id")
+        stream_title = all_stream_data.get("title")
+        stream_viewer_count = all_stream_data.get("viewer_count")
+        stream_started_at = all_stream_data.get("started_at")
+        stream_game_id = all_stream_data.get("game_id")
 
-    timestamp = datetime.now()
-    stream_id = all_stream_data.get("id")
-    streamer_id = all_stream_data.get("user_id")
-    stream_title = all_stream_data.get("title")
-    stream_viewer_count = all_stream_data.get("viewer_count")
-    stream_started_at = all_stream_data.get("started_at")
-    stream_game_id = all_stream_data.get("game_id")
+        # Helper function to get game info
+        stream_game_title = get_twitch_game_data(stream_game_id, headers)
+        # Helper function to construct stream url
+        stream_url = create_stream_url(streamer_id, headers)
+        # Convert started_at str to datetime
+        datetime_format = "%Y-%m-%dT%H:%M:%SZ"
+        stream_started_at = datetime.strptime(stream_started_at,
+                                              datetime_format)
 
-    # Helper function to get game info
-    stream_game_title = get_twitch_game_data(stream_game_id, headers)
-    # Helper function to construct stream url
-    stream_url = create_stream_url(streamer_id, headers)
-    # Convert started_at str to datetime
-    datetime_format = "%Y-%m-%dT%H:%M:%SZ"
-    stream_started_at = datetime.strptime(stream_started_at, datetime_format)
-
-    stream_data = {"timestamp": timestamp,
-                   "stream_id": stream_id,
-                   "twitch_id": streamer_id,
-                   "stream_title": stream_title,
-                   "viewer_count": stream_viewer_count,
-                   "started_at": stream_started_at,
-                   "game_id": stream_game_id,
-                   "game_name": stream_game_title,
-                   "url": stream_url}
-    # TODO: Save stream data to db
-    return stream_data
+        stream_data = {"timestamp": timestamp,
+                       "stream_id": stream_id,
+                       "twitch_id": streamer_id,
+                       "stream_title": stream_title,
+                       "viewer_count": stream_viewer_count,
+                       "started_at": stream_started_at,
+                       "game_id": stream_game_id,
+                       "game_name": stream_game_title,
+                       "url": stream_url}
+        # TODO: Save stream data to db
+        return stream_data
+    # Else... things that happen when stream is offline.
+    else:
+        # TODO: We'll want to update the most recent stream session for user's
+        # ended_at
+        # We'll want to end the job that is sending tweets on an interval.
+        return None
 
 
 def create_stream_url(twitch_id, headers):
