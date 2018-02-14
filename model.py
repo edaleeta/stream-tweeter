@@ -273,8 +273,8 @@ class StreamDatum(db.Model):
     stream_id = db.Column(db.Integer,
                           db.ForeignKey("stream_session.stream_id"),
                           nullable=False)
-    game_played_id = db.Column(db.String(50), nullable=False)
-    game_played_name = db.Column(db.String(50), nullable=False)
+    game_id = db.Column(db.String(50), nullable=False)
+    game_name = db.Column(db.String(50), nullable=False)
     stream_title = db.Column(db.String(140), nullable=False)
     viewer_count = db.Column(db.Integer, nullable=False)
 

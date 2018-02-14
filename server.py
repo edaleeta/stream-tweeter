@@ -361,6 +361,7 @@ def twitch_tokengetter():
 @login_manager.user_loader
 def load_user(user_id):
     """Loads user from db. user_id must be unicode."""
+
     print("Found user {}".format(User.query.get(user_id)))
     return User.query.get(user_id)
 
@@ -399,16 +400,22 @@ def add_basic_templates(this_user):
 
 def populate_tweet_template(contents, user):
     """Inserts data into placeholders."""
-    # TODO: Update to use data received through Twitch API.
-    twitch_stream_data = get_twitch_stream_data(user)
 
-    mock_stream_data = {"game": "Pokemon Silver",
-                        "url": "http://twitch.tv/the_pixxel",
-                        "viewers": 180,
-                        "stream_desc": "Thowback - Starting Pokemon Silver!"}
+    data_for_template = get_twitch_template_data(user)
     tweet_template = string.Template(contents)
-    populated_template = tweet_template.safe_substitute(mock_stream_data)
+    populated_template = tweet_template.safe_substitute(data_for_template)
     return populated_template
+
+
+def get_twitch_template_data(user):
+    """Creates a dictionary to use for tweet template filler."""
+
+    all_stream_data = get_twitch_stream_data(user)
+    stream_template_data = {"url": all_stream_data["url"],
+                            "game": all_stream_data["game_name"],
+                            "stream_title": all_stream_data["stream_title"],
+                            "viewers": all_stream_data["viewer_count"]}
+    return stream_template_data
 
 
 def get_twitch_stream_data(user):
@@ -417,7 +424,7 @@ def get_twitch_stream_data(user):
     twitch_id = user.twitch_id
     token = user.twitch_token.access_token
     # For the purposes of testing, will get stream data about some other user.
-    testing_twitch_id = "49161847"
+    testing_twitch_id = "48937001"
     payload_streams = {"user_id": testing_twitch_id,
                        "first": 1,
                        "type": "live"}
@@ -426,10 +433,12 @@ def get_twitch_stream_data(user):
                              params=payload_streams,
                              headers=headers)
     # If OK response received, save stream data.
+    # Note: 401 response when a new token must be fetched.
+    # TODO: Add handler for reauthorization
     if r_streams.status_code == 200:
         all_stream_data = r_streams.json().get("data")[0]
     else:
-    # Otherwise, return None.
+        # Otherwise, return None.
         return None
 
     timestamp = datetime.now()
@@ -439,12 +448,26 @@ def get_twitch_stream_data(user):
     stream_viewer_count = all_stream_data.get("viewer_count")
     stream_started_at = all_stream_data.get("started_at")
     stream_game_id = all_stream_data.get("game_id")
+
     # Helper function to get game info
     stream_game_title = get_twitch_game_data(stream_game_id, headers)
     # Helper function to construct stream url
     stream_url = create_stream_url(streamer_id, headers)
-    import pdb; pdb.set_trace()
-    return "Something useful will be here later."
+    # Convert started_at str to datetime
+    datetime_format = "%Y-%m-%dT%H:%M:%SZ"
+    stream_started_at = datetime.strptime(stream_started_at, datetime_format)
+
+    stream_data = {"timestamp": timestamp,
+                   "stream_id": stream_id,
+                   "twitch_id": streamer_id,
+                   "stream_title": stream_title,
+                   "viewer_count": stream_viewer_count,
+                   "started_at": stream_started_at,
+                   "game_id": stream_game_id,
+                   "game_name": stream_game_title,
+                   "url": stream_url}
+    # TODO: Save stream data to db
+    return stream_data
 
 
 def create_stream_url(twitch_id, headers):
