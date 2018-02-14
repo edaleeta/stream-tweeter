@@ -8,6 +8,7 @@ db = SQLAlchemy()
 ###############################################################################
 # MODEL DEFINITIONS
 ###############################################################################
+# TODO: Clean up static/class methods
 
 
 class User(db.Model):
@@ -240,19 +241,23 @@ class SentTweet(db.Model):
 class StreamSession(db.Model):
     """A Twitch Stream session."""
 
-    __tablename__ = "stream_session"
+    __tablename__ = "stream_sessions"
 
     stream_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer,
                         db.ForeignKey("users.user_id"),
                         nullable=False)
-    twitch_session_id = db.Column(db.String(16), nullable=False)
+    twitch_session_id = db.Column(db.String(16),
+                                  nullable=False,
+                                  unique=True)
     started_at = db.Column(db.DateTime, nullable=False)
     ended_at = db.Column(db.DateTime)
 
     feedback = db.relationship("StreamSessionUserFeedback",
                                back_populates="session",
                                uselist=False)
+    user = db.relationship("User",
+                           backref="sessions")
 
     def __repr__(self):
         """Print helpful information."""
@@ -261,6 +266,31 @@ class StreamSession(db.Model):
             started={}>".format(self.data_id,
                                 self.twitch_session_id,
                                 self.started_at)
+
+    @classmethod
+    def save_stream_session(cls, user, stream_data):
+        """Adds a new stream session linked to user."""
+
+        t_session_id = stream_data["stream_id"]
+        twitch_session = cls.get_session_from_twitch_session_id(t_session_id)
+        if not twitch_session:
+            user_id = user.user_id
+            started_at = stream_data["started_at"]
+            new_session = StreamSession(user_id=user_id,
+                                        twitch_session_id=t_session_id,
+                                        started_at=started_at)
+            db.session.add(new_session)
+            db.session.commit()
+            twitch_session = new_session
+
+        # Also add an entry in stream_data to store snapshot.
+        StreamDatum.save_stream_data(twitch_session, stream_data)
+
+    @classmethod
+    def get_session_from_twitch_session_id(cls, twitch_session_id):
+        """Gets the corresponding Twitch Session based on Twitch Session id."""
+
+        return cls.query.filter_by(twitch_session_id=twitch_session_id).first()
 
 
 class StreamDatum(db.Model):
@@ -271,7 +301,7 @@ class StreamDatum(db.Model):
     data_id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, nullable=False)
     stream_id = db.Column(db.Integer,
-                          db.ForeignKey("stream_session.stream_id"),
+                          db.ForeignKey("stream_sessions.stream_id"),
                           nullable=False)
     game_id = db.Column(db.String(50), nullable=False)
     game_name = db.Column(db.String(50), nullable=False)
@@ -287,6 +317,26 @@ class StreamDatum(db.Model):
         return "<StreamDatum data_id={}, twitch_id='{}', timestamp={}>" \
             .format(self.data_id, self.twitch_id, self.timestamp)
 
+    @classmethod
+    def save_stream_data(cls, session, stream_data):
+        """Saves stream data for user."""
+
+        timestamp = stream_data["timestamp"]
+        stream_id = session.stream_id
+        game_id = stream_data["game_id"]
+        game_name = stream_data["game_name"]
+        stream_title = stream_data["stream_title"]
+        viewer_count = stream_data["viewer_count"]
+
+        new_data = cls(timestamp=timestamp,
+                       stream_id=stream_id,
+                       game_id=game_id,
+                       game_name=game_name,
+                       stream_title=stream_title,
+                       viewer_count=viewer_count)
+        db.session.add(new_data)
+        db.session.commit()
+
 
 class TwitchClip(db.Model):
     """Clips auto-generated for Tweets."""
@@ -296,7 +346,7 @@ class TwitchClip(db.Model):
     clip_id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.Text, nullable=False)
     stream_id = db.Column(db.Integer,
-                          db.ForeignKey("stream_session.stream_id"),
+                          db.ForeignKey("stream_sessions.stream_id"),
                           nullable=False)
 
     session = db.relationship("StreamSession",
@@ -317,7 +367,7 @@ class StreamSessionUserFeedback(db.Model):
     feedback_id = db.Column(db.Integer,
                             primary_key=True)
     stream_id = db.Column(db.Integer,
-                          db.ForeignKey("stream_session.stream_id"),
+                          db.ForeignKey("stream_sessions.stream_id"),
                           nullable=False)
     mood_rating = db.Column(db.Integer)
     notes = db.Column(db.Text)

@@ -265,15 +265,19 @@ def send_test_tweet():
     # TODO: Edit this function to use data from Twitch API
     populated_tweet_template = populate_tweet_template(template_contents,
                                                        current_user)
+    if populated_tweet_template:
     # Post the tweet to Twitter
     # TODO: UNCOMMENT WHEN DONE TESTING TWITCH API
-    # publish_to_twitter(populated_tweet_template,
-    #                    current_user.twitter_token.access_token,
-    #                    current_user.twitter_token.access_token_secret,
-    #                    current_user.user_id)
+    #
+        # publish_to_twitter(populated_tweet_template,
+        #                    current_user.twitter_token.access_token,
+        #                    current_user.twitter_token.access_token_secret,
+        #                    current_user.user_id)
 
-    # Currently sending back the populated tweet for confirmation alert.abs
-    return populated_tweet_template
+        # Currently sending back the populated tweet for confirmation alert.abs
+        return populated_tweet_template
+    # TODO: Error handler for case when stream is offline.
+    return "Stream is offline."
 
 
 @app.route("/auth-twitter")
@@ -402,20 +406,26 @@ def populate_tweet_template(contents, user):
     """Inserts data into placeholders."""
 
     data_for_template = get_twitch_template_data(user)
-    tweet_template = string.Template(contents)
-    populated_template = tweet_template.safe_substitute(data_for_template)
-    return populated_template
+    if data_for_template:
+        tweet_template = string.Template(contents)
+        populated_template = tweet_template.safe_substitute(data_for_template)
+        return populated_template
+    # TODO: Error handler for case when stream is offline.
+    return None
 
 
 def get_twitch_template_data(user):
     """Creates a dictionary to use for tweet template filler."""
 
     all_stream_data = get_twitch_stream_data(user)
-    stream_template_data = {"url": all_stream_data["url"],
-                            "game": all_stream_data["game_name"],
-                            "stream_title": all_stream_data["stream_title"],
-                            "viewers": all_stream_data["viewer_count"]}
-    return stream_template_data
+    if all_stream_data:
+        stream_template_data = {"url": all_stream_data["url"],
+                                "game": all_stream_data["game_name"],
+                                "stream_title": all_stream_data["stream_title"],
+                                "viewers": all_stream_data["viewer_count"]}
+        return stream_template_data
+    # TODO: Error handler for case when stream is offline.
+    return None
 
 
 def get_twitch_stream_data(user):
@@ -424,7 +434,7 @@ def get_twitch_stream_data(user):
     twitch_id = user.twitch_id
     token = user.twitch_token.access_token
     # For the purposes of testing, will get stream data about some other user.
-    testing_twitch_id = "48937001"
+    testing_twitch_id = "65171890"
     payload_streams = {"user_id": testing_twitch_id,
                        "first": 1,
                        "type": "live"}
@@ -440,8 +450,8 @@ def get_twitch_stream_data(user):
     else:
         # Otherwise, return None.
         return None
-    # If stream is "live"...
-    if all_stream_data.get("type", "") == "live":
+    # If the stream is live..
+    if all_stream_data:
         all_stream_data = all_stream_data[0]
         timestamp = datetime.now()
         stream_id = all_stream_data.get("id")
@@ -469,10 +479,11 @@ def get_twitch_stream_data(user):
                        "game_id": stream_game_id,
                        "game_name": stream_game_title,
                        "url": stream_url}
-        # TODO: Save stream data to db
+        StreamSession.save_stream_session(user, stream_data)
         return stream_data
     # Else... things that happen when stream is offline.
     else:
+        print("Stream is offline!")
         # TODO: We'll want to update the most recent stream session for user's
         # ended_at
         # We'll want to end the job that is sending tweets on an interval.
