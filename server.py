@@ -260,6 +260,7 @@ def send_test_tweet():
     template_contents = Template.get_template_from_id(template_id).contents
 
     # Fill in tweet template with data.
+    # TODO: Edit this function to use data from Twitch API
     populated_tweet_template = populate_tweet_template(template_contents)
     # Post the tweet to Twitter
     publish_to_twitter(populated_tweet_template,
@@ -281,9 +282,7 @@ def authorize_twitter():
 
     try:
         redirect_url = twitter_oauth.get_authorization_url()
-        print(redirect_url)
         session["twitter_request_token"] = twitter_oauth.request_token
-        print("Twitter request token: {}".format(session.get("twitter_request_token")))
         return redirect(redirect_url)
     except tweepy.TweepError:
         # TODO: Set up a handler for auth errors.
@@ -414,10 +413,11 @@ def publish_to_twitter(content, access_token,
                                        TWITTER_CONSUMER_SECRET)
     twitter_auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(twitter_auth)
+
     try:
         # Send Tweet and catch response
         response = api.update_status(content)
-        # Create function to save published tweet data to db
+        # Store sent tweet data in db
         SentTweet.store_sent_tweet(response, user_id)
     except tweepy.TweepError as error:
         # TODO: Set up better handler for errors.
