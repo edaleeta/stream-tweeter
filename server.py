@@ -485,10 +485,10 @@ def get_twitch_stream_data(user):
         return stream_data
     # Else... things that happen when stream is offline.
     else:
+        # TODO: Add logic to CONFIRM the stream is down before proceeding.
         print("Stream is offline!")
-        # TODO: We'll want to update the most recent stream session for user's
-        # ended_at
-        # We'll want to end the job that is sending tweets on an interval.
+        StreamSession.end_stream_session(user, datetime.now())
+        # TODO: End the job that is sending tweets on an interval.
         return None
 
 

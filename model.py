@@ -291,7 +291,12 @@ class StreamSession(db.Model):
     def end_stream_session(cls, user, timestamp):
         """Update a closed steam session with the time it was found to end."""
 
-        pass
+        current_session = cls.get_user_current_session(user)
+        if current_session:
+            current_session.ended_at = timestamp
+            db.session.commit()
+        else:
+            print("All sessions ended.")
 
     @classmethod
     def get_session_from_twitch_session_id(cls, twitch_session_id):
@@ -300,10 +305,12 @@ class StreamSession(db.Model):
         return cls.query.filter_by(twitch_session_id=twitch_session_id).first()
 
     @classmethod
-    def get_user_most_recent_session(cls, user):
-        """Get the most recent session for a user."""
+    def get_user_current_session(cls, user):
+        """Get the current open session for a user."""
 
-        most_recent_sesson = cls.query.filter_by(user_id=user.user_id).order_by(cls.started_at.desc()).first()
+        most_recent_sesson = cls.query.filter_by(user_id=user.user_id,
+                                                 ended_at=None) \
+            .order_by(cls.started_at.desc()).first()
         return most_recent_sesson
 
 
