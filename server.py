@@ -3,6 +3,7 @@
 import os
 import string
 import re
+from datetime import datetime
 import flask
 from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
@@ -12,6 +13,7 @@ from flask_oauthlib.client import OAuth
 from flask.json import jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined, evalcontextfilter, Markup, escape
+import requests
 import tweepy
 from model import *
 
@@ -261,12 +263,14 @@ def send_test_tweet():
 
     # Fill in tweet template with data.
     # TODO: Edit this function to use data from Twitch API
-    populated_tweet_template = populate_tweet_template(template_contents)
+    populated_tweet_template = populate_tweet_template(template_contents,
+                                                       current_user)
     # Post the tweet to Twitter
-    publish_to_twitter(populated_tweet_template,
-                       current_user.twitter_token.access_token,
-                       current_user.twitter_token.access_token_secret,
-                       current_user.user_id)
+    # TODO: UNCOMMENT WHEN DONE TESTING TWITCH API
+    # publish_to_twitter(populated_tweet_template,
+    #                    current_user.twitter_token.access_token,
+    #                    current_user.twitter_token.access_token_secret,
+    #                    current_user.user_id)
 
     # Currently sending back the populated tweet for confirmation alert.abs
     return populated_tweet_template
@@ -393,9 +397,10 @@ def add_basic_templates(this_user):
     db.session.commit()
 
 
-def populate_tweet_template(contents):
+def populate_tweet_template(contents, user):
     """Inserts data into placeholders."""
     # TODO: Update to use data received through Twitch API.
+    twitch_stream_data = get_twitch_stream_data(user)
 
     mock_stream_data = {"game": "Pokemon Silver",
                         "url": "http://twitch.tv/the_pixxel",
@@ -404,6 +409,80 @@ def populate_tweet_template(contents):
     tweet_template = string.Template(contents)
     populated_template = tweet_template.safe_substitute(mock_stream_data)
     return populated_template
+
+
+def get_twitch_stream_data(user):
+    """Get Twitch stream data for user's stream."""
+
+    twitch_id = user.twitch_id
+    token = user.twitch_token.access_token
+    # For the purposes of testing, will get stream data about some other user.
+    testing_twitch_id = "49161847"
+    payload_streams = {"user_id": testing_twitch_id,
+                       "first": 1,
+                       "type": "live"}
+    headers = {"Authorization": "Bearer {}".format(token)}
+    r_streams = requests.get("https://api.twitch.tv/helix/streams",
+                             params=payload_streams,
+                             headers=headers)
+    # If OK response received, save stream data.
+    if r_streams.status_code == 200:
+        all_stream_data = r_streams.json().get("data")[0]
+    else:
+    # Otherwise, return None.
+        return None
+
+    timestamp = datetime.now()
+    stream_id = all_stream_data.get("id")
+    streamer_id = all_stream_data.get("user_id")
+    stream_title = all_stream_data.get("title")
+    stream_viewer_count = all_stream_data.get("viewer_count")
+    stream_started_at = all_stream_data.get("started_at")
+    stream_game_id = all_stream_data.get("game_id")
+    # Helper function to get game info
+    stream_game_title = get_twitch_game_data(stream_game_id, headers)
+    # Helper function to construct stream url
+    stream_url = create_stream_url(streamer_id, headers)
+    import pdb; pdb.set_trace()
+    return "Something useful will be here later."
+
+
+def create_stream_url(twitch_id, headers):
+    """Construct a URL to Twitch stream for given twitch id.
+    Purposefully pulls current Twitch user data in case stored username
+    is out of date."""
+
+    # TODO: When this is triggered, also update stored value in db?
+
+    payload = {"id": twitch_id}
+    r_users = requests.get("https://api.twitch.tv/helix/users",
+                           params=payload,
+                           headers=headers)
+
+    # If OK response received, store Twitch username.
+    if r_users.status_code == 200:
+        user_name = r_users.json().get("data")[0].get("login")
+    else:
+        return None
+
+    url = "https://www.twitch.tv/{}".format(user_name)
+    return url
+
+
+def get_twitch_game_data(game_id, headers):
+    """Sends a request to Twitch API to retrieve game info from given id."""
+
+    payload_games = {"id": game_id}
+    r_games = requests.get("https://api.twitch.tv/helix/games",
+                           params=payload_games,
+                           headers=headers)
+    # If OK response received, save game data.
+    if r_games.status_code == 200:
+        game_data = r_games.json().get("data")[0]
+    # Otherwise return None.
+    else:
+        return None
+    return game_data.get("name", "")
 
 
 def publish_to_twitter(content, access_token,
@@ -422,7 +501,6 @@ def publish_to_twitter(content, access_token,
     except tweepy.TweepError as error:
         # TODO: Set up better handler for errors.
         print(error.reason)
-
 
 
 if __name__ == "__main__":

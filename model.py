@@ -269,10 +269,12 @@ class StreamDatum(db.Model):
     __tablename__ = "stream_data"
 
     data_id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, nullable=False)
     stream_id = db.Column(db.Integer,
                           db.ForeignKey("stream_session.stream_id"),
                           nullable=False)
-    game_played = db.Column(db.String(50), nullable=False)
+    game_played_id = db.Column(db.String(50), nullable=False)
+    game_played_name = db.Column(db.String(50), nullable=False)
     stream_title = db.Column(db.String(140), nullable=False)
     viewer_count = db.Column(db.Integer, nullable=False)
 
@@ -282,8 +284,8 @@ class StreamDatum(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        return "<StreamDatum data_id={}, twitch_id='{}', v_count={}>" \
-            .format(self.data_id, self.twitch_id, self.viewer_count)
+        return "<StreamDatum data_id={}, twitch_id='{}', timestamp={}>" \
+            .format(self.data_id, self.twitch_id, self.timestamp)
 
 
 class TwitchClip(db.Model):
