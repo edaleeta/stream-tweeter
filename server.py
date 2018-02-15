@@ -3,7 +3,6 @@
 import os
 import string
 import re
-from datetime import datetime
 import flask
 from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
@@ -13,14 +12,12 @@ from flask_oauthlib.client import OAuth
 from flask.json import jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined, evalcontextfilter, Markup, escape
-import requests
 import tweepy
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from model import *
 from twitch_helpers import get_and_write_twitch_stream_data
 # FOR APSCHEDULER
-from apscheduler_sandbox import start_fetching_twitch_data
-from flask_apscheduler import APScheduler
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from apscheduler_handlers import start_fetching_twitch_data
 
 app = Flask(__name__)
 

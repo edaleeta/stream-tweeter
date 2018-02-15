@@ -1,9 +1,9 @@
 """Twitch API Helper Functions for Yet Another Twitch Toolkit."""
 
+from datetime import datetime
 import requests
 from model import StreamSession
-from datetime import datetime
-
+from apscheduler_handlers import stop_fetching_twitch_data
 
 # Stores user_id and corresponding number of failtures.
 get_stream_failures = {}
