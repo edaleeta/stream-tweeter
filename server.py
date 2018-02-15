@@ -429,10 +429,14 @@ def get_twitch_template_data(user):
 
     all_stream_data = get_and_write_twitch_stream_data(user)
     if all_stream_data:
-        stream_template_data = {"url": all_stream_data["url"],
-                                "game": all_stream_data["game_name"],
-                                "stream_title": all_stream_data["stream_title"],
-                                "viewers": all_stream_data["viewer_count"]}
+        stream_template_data = {
+            "url": all_stream_data["url"],
+            "game": all_stream_data["game_name"],
+            "stream_title": all_stream_data["stream_title"],
+            "viewers": all_stream_data["viewer_count"],
+            "timestamp": all_stream_data["timestamp"]
+        }
+
         return stream_template_data
     # TODO: Error handler for case when stream is offline.
     return None

@@ -24,6 +24,23 @@ def stop_fetching_twitch_data(user_id):
     stop_job(job_type, user_id)
 
 
+def start_tweeting(user_id, interval):
+    """Start tweeting for the given user on the specified interval."""
+
+    # Interval will be defined in minutes.
+    # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.
+    # Reassigning interval for testing.
+    interval = 1
+    job_type = "send_tweets"
+    job_id = job_type + str(user_id)
+    scheduler.add_job(func=jobs.send_tweets,
+                      id=job_id,
+                      trigger="interval",
+                      args=[user_id],
+                      replace_existing=True,
+                      minutes=interval)
+
+
 def stop_job(job_type, user_id):
     """Given a job type and user_id, stop the job."""
     scheduler.delete_job(job_type + user_id)
