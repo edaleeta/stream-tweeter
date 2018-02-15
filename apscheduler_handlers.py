@@ -12,8 +12,9 @@ def start_fetching_twitch_data(user_id):
                       trigger="interval",
                       args=[user_id],
                       replace_existing=True,
-                      seconds=10)
+                      minutes=5)
 
 
 def stop_fetching_twitch_data(user_id):
-    scheduler.remove_job(str(user_id))
+    """End the currently running job for the user."""
+    scheduler.delete_job(str(user_id))

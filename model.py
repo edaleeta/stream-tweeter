@@ -22,7 +22,7 @@ class User(db.Model):
     twitch_displayname = db.Column(db.Text)
     twitch_username = db.Column(db.Text)
     twitch_id = db.Column(db.Text, unique=True)
-    twitter_id = db.Column(db.Text, unique=True)
+    twitter_id = db.Column(db.Text)
 
     is_active = True
     is_authenticated = True
@@ -141,10 +141,8 @@ class TwitterToken(db.Model):
                         db.ForeignKey("users.user_id"),
                         nullable=False)
     access_token = db.Column(db.Text,
-                             unique=True,
                              nullable=False)
     access_token_secret = db.Column(db.Text,
-                                    unique=True,
                                     nullable=False)
 
     user = db.relationship("User",
