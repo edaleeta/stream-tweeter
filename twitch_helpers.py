@@ -14,11 +14,12 @@ def get_and_write_twitch_stream_data(user):
 
     user_id = int(user.user_id)
 
-    twitch_id = user.twitch_id
+    twitch_id = str(user.twitch_id)
+    print(twitch_id)
     token = user.twitch_token.access_token
     # For the purposes of testing, will get stream data about some other user.
     testing_twitch_id = "28036688"
-    payload_streams = {"user_id": testing_twitch_id,
+    payload_streams = {"user_id": twitch_id,    # Edit this to test
                        "first": 1,
                        "type": "live"}
     headers = {"Authorization": "Bearer {}".format(token)}
@@ -74,12 +75,10 @@ def get_and_write_twitch_stream_data(user):
     # Else... things that happen when stream is offline.
     # TODO: Add logic to CONFIRM the stream is down before proceeding.
     # Increment failure counter
+    get_stream_failures[user_id] = get_stream_failures.get(user_id, 0) + 1
     stream_failures = get_stream_failures[user_id]
-    if stream_failures <= 2:
-        get_stream_failures[user_id] = get_stream_failures\
-            .get(user_id, 0) + 1
-    # Else if getting data fails 3x, delete the job.
-    else:
+    # When getting live stream fails for a second time, end job to get data.
+    if stream_failures > 1:
         print("Stream is offline!")
         # Reset failure counter.
         get_stream_failures[user_id] = 0

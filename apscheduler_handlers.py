@@ -12,7 +12,7 @@ def start_fetching_twitch_data(user_id):
                       trigger="interval",
                       args=[user_id],
                       replace_existing=True,
-                      minutes=5)
+                      seconds=10)
 
 
 def stop_fetching_twitch_data(user_id):
