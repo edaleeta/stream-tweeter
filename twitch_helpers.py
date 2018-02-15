@@ -4,13 +4,16 @@ import requests
 from model import StreamSession
 from datetime import datetime
 
+
 # Stores user_id and corresponding number of failtures.
 get_stream_failures = {}
 
 
 def get_and_write_twitch_stream_data(user):
     """Get Twitch stream data for user's stream."""
+
     user_id = int(user.user_id)
+
     twitch_id = user.twitch_id
     token = user.twitch_token.access_token
     # For the purposes of testing, will get stream data about some other user.
@@ -75,7 +78,7 @@ def get_and_write_twitch_stream_data(user):
     if stream_failures <= 2:
         get_stream_failures[user_id] = get_stream_failures\
             .get(user_id, 0) + 1
-    # If getting data fails 3x, delete the job.
+    # Else if getting data fails 3x, delete the job.
     else:
         print("Stream is offline!")
         # Reset failure counter.
@@ -83,6 +86,7 @@ def get_and_write_twitch_stream_data(user):
         # Save endtimestamp of stream session.
         StreamSession.end_stream_session(user, datetime.now())
         # TODO: End the job that is sending tweets on an interval.
+        stop_fetching_twitch_data(user_id)
     return None
 
 

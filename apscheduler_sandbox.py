@@ -2,10 +2,10 @@
 
 from model import User, db
 from twitch_helpers import get_and_write_twitch_stream_data
-# from server import scheduler
+from app_globals import scheduler
 
 
-def start_fetching_twitch_data(scheduler, user_id):
+def start_fetching_twitch_data(user_id):
     """Begin fetching data about a user's stream."""
 
     print(user_id)
@@ -17,8 +17,8 @@ def start_fetching_twitch_data(scheduler, user_id):
                       seconds=10)
 
 
-# def stop_fetching_twitch_data(user_id):
-#     scheduler.remove_job(str(user_id))
+def stop_fetching_twitch_data(user_id):
+    scheduler.remove_job(str(user_id))
 
 
 def fetch_twitch_data(user_id):

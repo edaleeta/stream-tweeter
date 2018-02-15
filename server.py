@@ -36,7 +36,7 @@ login_manager.init_app(app)
 login_manager.login_view = "/"
 
 # APScheduler
-scheduler = APScheduler()
+# scheduler = APScheduler()
 
 ###############################################################################
 # Twitch OAuth2 Requirements
@@ -286,7 +286,7 @@ def send_test_tweet():
         # TODO : WORK IN PROGRESS
         # Start fetching twitch data
 
-        start_fetching_twitch_data(scheduler, int(current_user.user_id))
+        start_fetching_twitch_data(int(current_user.user_id))
 
         return populated_tweet_template
     # TODO: Error handler for case when stream is offline.
@@ -460,6 +460,7 @@ def publish_to_twitter(content, access_token,
 
 
 if __name__ == "__main__":
+    from app_globals import scheduler
     # Debug mode enabled for Flask Debug Toolbar
     app.debug = True
     # Don't cache templates.
