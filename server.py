@@ -471,8 +471,8 @@ if __name__ == "__main__":
             'default': SQLAlchemyJobStore(url='postgresql:///yattk_jobstore')
         }
 
-        SCHEDULER_API_ENABLED = True
-    
+        SCHEDULER_API_ENABLED = False
+
     app.config.from_object(Config())
 
     # Connect to db
