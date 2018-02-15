@@ -16,7 +16,11 @@ from jinja2 import StrictUndefined, evalcontextfilter, Markup, escape
 import requests
 import tweepy
 from model import *
-from twitch_helpers import get_twitch_stream_data
+from twitch_helpers import get_and_write_twitch_stream_data
+# FOR APSCHEDULER
+from apscheduler_sandbox import start_fetching_twitch_data
+from flask_apscheduler import APScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 
 app = Flask(__name__)
 
@@ -30,6 +34,9 @@ app.jinja_env.undefined = StrictUndefined
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "/"
+
+# APScheduler
+scheduler = APScheduler()
 
 ###############################################################################
 # Twitch OAuth2 Requirements
@@ -263,7 +270,6 @@ def send_test_tweet():
     template_contents = Template.get_template_from_id(template_id).contents
 
     # Fill in tweet template with data.
-    # TODO: Edit this function to use data from Twitch API
     populated_tweet_template = populate_tweet_template(template_contents,
                                                        current_user)
     if populated_tweet_template:
@@ -276,6 +282,12 @@ def send_test_tweet():
         #                    current_user.user_id)
 
         # Currently sending back the populated tweet for confirmation alert.abs
+
+        # TODO : WORK IN PROGRESS
+        # Start fetching twitch data
+
+        start_fetching_twitch_data(scheduler, int(current_user.user_id))
+
         return populated_tweet_template
     # TODO: Error handler for case when stream is offline.
     return "Stream is offline."
@@ -418,7 +430,7 @@ def populate_tweet_template(contents, user):
 def get_twitch_template_data(user):
     """Creates a dictionary to use for tweet template filler."""
 
-    all_stream_data = get_twitch_stream_data(user)
+    all_stream_data = get_and_write_twitch_stream_data(user)
     if all_stream_data:
         stream_template_data = {"url": all_stream_data["url"],
                                 "game": all_stream_data["game_name"],
@@ -453,11 +465,27 @@ if __name__ == "__main__":
     # Don't cache templates.
     app.jinja_env.auto_reload = app.debug
 
+    # Scheduler config
+    class Config(object):
+        """Configuration for APScheduler."""
+
+        SCHEDULER_JOBSTORES = {
+            'default': SQLAlchemyJobStore(url='postgresql:///yattk_jobstore')
+        }
+
+        SCHEDULER_API_ENABLED = True
+    
+    app.config.from_object(Config())
+
     # Connect to db
     connect_to_db(app)
 
     # Use Debug Toolbar
     DebugToolbarExtension(app)
 
+    # Enable scheduler
+
+    scheduler.init_app(app)
+    scheduler.start()
     # Run the app
     app.run(port=7000, host='0.0.0.0')

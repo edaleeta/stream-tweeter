@@ -4,14 +4,17 @@ import requests
 from model import StreamSession
 from datetime import datetime
 
+# Stores user_id and corresponding number of failtures.
+get_stream_failures = {}
 
-def get_twitch_stream_data(user):
+
+def get_and_write_twitch_stream_data(user):
     """Get Twitch stream data for user's stream."""
-
+    user_id = int(user.user_id)
     twitch_id = user.twitch_id
     token = user.twitch_token.access_token
     # For the purposes of testing, will get stream data about some other user.
-    testing_twitch_id = "70801500"
+    testing_twitch_id = "28036688"
     payload_streams = {"user_id": testing_twitch_id,
                        "first": 1,
                        "type": "live"}
@@ -26,8 +29,10 @@ def get_twitch_stream_data(user):
         all_stream_data = r_streams.json().get("data")
     else:
         # Otherwise, return None.
+        print("Failed to request from Twitch: {}".format(r_streams.status_code))
         return None
     # If the stream is live..
+    print("Stream data: {}".format(all_stream_data))
     if all_stream_data:
         all_stream_data = all_stream_data[0]
         timestamp = datetime.now()
@@ -56,15 +61,29 @@ def get_twitch_stream_data(user):
                        "game_id": stream_game_id,
                        "game_name": stream_game_title,
                        "url": stream_url}
+        # Save the new data entry and create new session if needed
         StreamSession.save_stream_session(user, stream_data)
+
+        # Reset failture counter to 0
+        get_stream_failures[user_id] = 0
+
         return stream_data
     # Else... things that happen when stream is offline.
+    # TODO: Add logic to CONFIRM the stream is down before proceeding.
+    # Increment failure counter
+    stream_failures = get_stream_failures[user_id]
+    if stream_failures <= 2:
+        get_stream_failures[user_id] = get_stream_failures\
+            .get(user_id, 0) + 1
+    # If getting data fails 3x, delete the job.
     else:
-        # TODO: Add logic to CONFIRM the stream is down before proceeding.
         print("Stream is offline!")
+        # Reset failure counter.
+        get_stream_failures[user_id] = 0
+        # Save endtimestamp of stream session.
         StreamSession.end_stream_session(user, datetime.now())
         # TODO: End the job that is sending tweets on an interval.
-        return None
+    return None
 
 
 def create_stream_url(twitch_id, headers):

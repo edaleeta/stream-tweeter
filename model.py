@@ -28,6 +28,12 @@ class User(db.Model):
     is_authenticated = True
     is_anonymous = False
 
+    @classmethod
+    def get_user_from_id(cls, user_id):
+        """Get the user object for the given id."""
+
+        return cls.query.filter_by(user_id=user_id).one()
+
     @staticmethod
     def get_user_from_email(user_email):
         """Find the user for the given email."""
