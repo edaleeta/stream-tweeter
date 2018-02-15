@@ -17,7 +17,7 @@ from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from model import *
 from twitch_helpers import get_and_write_twitch_stream_data
 # FOR APSCHEDULER
-from apscheduler_handlers import start_fetching_twitch_data
+import apscheduler_handlers as handler
 
 app = Flask(__name__)
 
@@ -280,12 +280,17 @@ def send_test_tweet():
 
         # Currently sending back the populated tweet for confirmation alert.abs
 
-        # TODO : WORK IN PROGRESS
+        # TODO: WORK IN PROGRESS
         # Start fetching twitch data
+        # handler.start_fetching_twitch_data(int(current_user.user_id)) # UNCOMMENT
 
-        start_fetching_twitch_data(int(current_user.user_id))
+        # Start sending tweets
+        # TODO: Update hardcoded interval to a user's choice.
+        tweet_interval = 10
+        handler.start_tweeting(int(current_user.user_id), tweet_interval)
 
         return populated_tweet_template
+
     # TODO: Error handler for case when stream is offline.
     return "Stream is offline."
 

@@ -30,7 +30,7 @@ def start_tweeting(user_id, interval):
     # Interval will be defined in minutes.
     # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.
     # Reassigning interval for testing.
-    interval = 1
+    interval = 10
     job_type = "send_tweets"
     job_id = job_type + str(user_id)
     scheduler.add_job(func=jobs.send_tweets,
@@ -38,7 +38,14 @@ def start_tweeting(user_id, interval):
                       trigger="interval",
                       args=[user_id],
                       replace_existing=True,
-                      minutes=interval)
+                      seconds=interval)
+
+
+def stop_tweeting(user_id):
+    """End the currently running send_tweets job for the user."""
+    user_id = str(user_id)
+    job_type = "send_tweets"
+    stop_job(job_type, user_id)
 
 
 def stop_job(job_type, user_id):
