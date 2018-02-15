@@ -18,7 +18,7 @@ def get_and_write_twitch_stream_data(user):
     print(twitch_id)
     token = user.twitch_token.access_token
     # For the purposes of testing, will get stream data about some other user.
-    testing_twitch_id = "28036688"
+    testing_twitch_id = "28036688"              # Hardcode id to test here
     payload_streams = {"user_id": twitch_id,    # Edit this to test
                        "first": 1,
                        "type": "live"}
@@ -33,7 +33,9 @@ def get_and_write_twitch_stream_data(user):
         all_stream_data = r_streams.json().get("data")
     else:
         # Otherwise, return None.
-        print("Failed to request from Twitch: {}".format(r_streams.status_code))
+        print("Failed to request from Twitch: {}".format(
+            r_streams.status_code
+        ))
         return None
     # If the stream is live..
     print("Stream data: {}".format(all_stream_data))
@@ -73,19 +75,24 @@ def get_and_write_twitch_stream_data(user):
 
         return stream_data
     # Else... things that happen when stream is offline.
-    # TODO: Add logic to CONFIRM the stream is down before proceeding.
+    # TODO: Need to to stop job sending tweets when stream is offline.
+
     # Increment failure counter
     get_stream_failures[user_id] = get_stream_failures.get(user_id, 0) + 1
     stream_failures = get_stream_failures[user_id]
     # When getting live stream fails for a second time, end job to get data.
     if stream_failures > 1:
-        print("Stream is offline!")
+        print("User's {} stream is offline! Ending session.".format(user_id))
         # Reset failure counter.
         get_stream_failures[user_id] = 0
         # Save endtimestamp of stream session.
         StreamSession.end_stream_session(user, datetime.now())
         # TODO: End the job that is sending tweets on an interval.
         stop_fetching_twitch_data(user_id)
+    else:
+        print("User {}'s stream might be offline; trying again.".format(
+            user_id
+        ))
     return None
 
 

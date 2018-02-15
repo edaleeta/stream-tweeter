@@ -6,7 +6,7 @@ import apscheduler_jobs as jobs
 def start_fetching_twitch_data(user_id):
     """Begin fetching data about a user's stream."""
 
-    print(user_id)
+    print("Fetching data for user: {}".format(user_id))
     scheduler.add_job(func=jobs.fetch_twitch_data,
                       id=str(user_id),
                       trigger="interval",
