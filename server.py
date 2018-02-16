@@ -281,7 +281,7 @@ def send_test_tweet():
 
         # TODO: WORK IN PROGRESS
         # Start fetching twitch data
-        # handler.start_fetching_twitch_data(int(current_user.user_id)) # UNCOMMENT
+        handler.start_fetching_twitch_data(int(current_user.user_id)) # UNCOMMENT
 
         # Start sending tweets
         # TODO: Update hardcoded interval to a user's choice.
