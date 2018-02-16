@@ -262,7 +262,8 @@ class StreamSession(db.Model):
                                back_populates="session",
                                uselist=False)
     user = db.relationship("User",
-                           backref="sessions")
+                           backref=backref("sessions",
+                                           order_by="StreamSession.started_at"))
 
     def __repr__(self):
         """Print helpful information."""
@@ -312,10 +313,10 @@ class StreamSession(db.Model):
     def get_user_current_session(cls, user):
         """Get the current open session for a user."""
 
-        most_recent_sesson = cls.query.filter_by(user_id=user.user_id,
-                                                 ended_at=None) \
+        most_recent_session = cls.query.filter_by(user_id=user.user_id,
+                                                  ended_at=None) \
             .order_by(cls.started_at.desc()).first()
-        return most_recent_sesson
+        return most_recent_session
 
 
 class StreamDatum(db.Model):
@@ -381,7 +382,26 @@ class TwitchClip(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        return "<TwitchClip clip_id={}, slug='{}'>"
+        return "<TwitchClip clip_id={}, slug='{}'>".format(self.clip_id,
+                                                           self.slug)
+
+    @classmethod
+    def save_twitch_clip(cls, slug, user_id):
+        user = User.get_user_from_id(user_id)
+
+        # First try to get the current open session.
+        current_session = StreamSession.get_user_current_session(user)
+        # If one doesn't exist, fall back to most recent session.
+        if current_session is None:
+            last_session = user.sessions[-1]
+            stream_id = last_session.stream_id
+        else:
+            stream_id = current_session.stream_id
+        new_clip = TwitchClip(slug=slug, stream_id=stream_id)
+        db.session.add(new_clip)
+        db.session.commit()
+
+        return new_clip
 
 
 class StreamSessionUserFeedback(db.Model):

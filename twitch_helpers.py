@@ -3,7 +3,7 @@
 from datetime import datetime
 import time
 import requests
-from model import StreamSession, User
+from model import StreamSession, TwitchClip, User
 import apscheduler_handlers as ap_handlers
 
 # Stores user_id and corresponding number of failtures.
@@ -74,7 +74,6 @@ def get_and_write_twitch_stream_data(user):
 
         return stream_data
     # Else... things that happen when stream is offline.
-    # TODO: Need to to stop job sending tweets when stream is offline.
 
     # Increment failure counter
     get_stream_failures[user_id] = get_stream_failures.get(user_id, 0) + 1
@@ -135,7 +134,8 @@ def get_twitch_game_data(game_id, headers):
 
 
 def generate_twitch_clip(user_id):
-    """Generate a Twitch Clip from user's channel."""
+    """Generate a Twitch Clip from user's channel.
+       Returns the URL and new clip object on success."""
 
     user = User.get_user_from_id(user_id)
     twitch_id = str(user.twitch_id)
@@ -154,8 +154,13 @@ def generate_twitch_clip(user_id):
         if clip_info:
             # Store the url
             url = clip_info.get("url")
-            import pdb; pdb.set_trace()
             # Save clip to DB
+            new_clip = TwitchClip.save_twitch_clip(clip_slug, user_id)
+            return (new_clip, url)
+
+    # TODO: If this fails, return None.
+    # Add better error handling.
+    return None
 
 
 def get_clip_info(clip_id, headers):

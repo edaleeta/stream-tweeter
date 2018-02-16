@@ -64,23 +64,38 @@ def get_twitch_template_data(user):
 def create_and_publish_to_twitter(template, user_id):
     """Publishes given content to a user's Twitter account."""
     
+    # Set up Twitter requirements
     user = User.get_user_from_id(user_id)
     token = user.twitter_token
     access_token = token.access_token
     access_token_secret = token.access_token_secret
-
-    populated_template = populate_tweet_template(template, user_id)
+    contents = populate_tweet_template(template, user_id)
 
     twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
                                        TWITTER_CONSUMER_SECRET)
     twitter_auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(twitter_auth)
 
+    # Try to generate a Twitch Clip
+    new_clip, clip_url = twitch.generate_twitch_clip(user_id)
+
+    if new_clip:
+        contents += "\n{}".format(clip_url)
+
     try:
         # Send Tweet and catch response
-        response = api.update_status(populated_template)
+        response = api.update_status(contents)
         # Store sent tweet data in db
         SentTweet.store_sent_tweet(response, user_id)
     except tweepy.TweepError as error:
         # TODO: Set up better handler for errors.
         print(error.reason)
+
+
+if __name__ == "__main__":
+    # Interact with db if we run this module directly.
+
+    from server import app
+    from model import connect_to_db
+    connect_to_db(app)
+    print("Connected to DB.")
