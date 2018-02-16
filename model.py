@@ -226,7 +226,7 @@ class SentTweet(db.Model):
             .format(self.tweet_id, self.user_id, (self.message[0:14] + "..."))
 
     @staticmethod
-    def store_sent_tweet(response, user_id):
+    def store_sent_tweet(response, user_id, clip_id=None):
         """Saves a sent tweet in db."""
         tweet_twtr_id = response.id_str
         created_at = response.created_at
@@ -238,7 +238,8 @@ class SentTweet(db.Model):
                                    user_id=user_id,
                                    created_at=created_at,
                                    message=message,
-                                   permalink=permalink)
+                                   permalink=permalink,
+                                   clip_id=clip_id)
         db.session.add(new_sent_tweet)
         db.session.commit()
 

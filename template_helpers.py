@@ -76,17 +76,21 @@ def create_and_publish_to_twitter(template, user_id):
     twitter_auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(twitter_auth)
 
+    # Clip id defaults to None.
+    clip_id = None
     # Try to generate a Twitch Clip
     new_clip, clip_url = twitch.generate_twitch_clip(user_id)
 
+    # If new clip is created, append to tweet and save clip id.
     if new_clip:
         contents += "\n{}".format(clip_url)
+        clip_id = new_clip.clip_id
 
     try:
         # Send Tweet and catch response
         response = api.update_status(contents)
         # Store sent tweet data in db
-        SentTweet.store_sent_tweet(response, user_id)
+        SentTweet.store_sent_tweet(response, user_id, clip_id=clip_id)
     except tweepy.TweepError as error:
         # TODO: Set up better handler for errors.
         print(error.reason)

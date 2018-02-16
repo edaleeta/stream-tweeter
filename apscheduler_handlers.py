@@ -14,7 +14,7 @@ def start_fetching_twitch_data(user_id):
                       trigger="interval",
                       args=[user_id],
                       replace_existing=True,
-                      seconds=10)
+                      seconds=30)
 
 
 def stop_fetching_twitch_data(user_id):
@@ -30,7 +30,7 @@ def start_tweeting(user_id, interval):
     # Interval will be defined in minutes.
     # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.
     # Reassigning interval for testing.
-    interval = 30
+    interval = 60
     job_type = "send_tweets"
     job_id = job_type + str(user_id)
     scheduler.add_job(func=jobs.send_tweets,
