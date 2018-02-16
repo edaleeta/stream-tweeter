@@ -1,7 +1,6 @@
 """Yet Another Twitch Toolkit."""
 
 import os
-import string
 import re
 import flask
 from flask import (Flask, flash, get_template_attribute,
@@ -15,9 +14,9 @@ from jinja2 import StrictUndefined, evalcontextfilter, Markup, escape
 import tweepy
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from model import *
-from twitch_helpers import get_and_write_twitch_stream_data
 # FOR APSCHEDULER
 import apscheduler_handlers as handler
+import template_helpers as temp_help
 
 app = Flask(__name__)
 
@@ -267,8 +266,8 @@ def send_test_tweet():
     template_contents = Template.get_template_from_id(template_id).contents
 
     # Fill in tweet template with data.
-    populated_tweet_template = populate_tweet_template(template_contents,
-                                                       current_user)
+    populated_tweet_template = temp_help.populate_tweet_template(template_contents,
+                                                                 current_user.user_id)
     if populated_tweet_template:
     # Post the tweet to Twitter
     # TODO: UNCOMMENT WHEN DONE TESTING TWITCH API
@@ -415,36 +414,6 @@ def add_basic_templates(this_user):
 
     db.session.bulk_save_objects(temps_to_add)
     db.session.commit()
-
-
-def populate_tweet_template(contents, user):
-    """Inserts data into placeholders."""
-
-    data_for_template = get_twitch_template_data(user)
-    if data_for_template:
-        tweet_template = string.Template(contents)
-        populated_template = tweet_template.safe_substitute(data_for_template)
-        return populated_template
-    # TODO: Error handler for case when stream is offline.
-    return None
-
-
-def get_twitch_template_data(user):
-    """Creates a dictionary to use for tweet template filler."""
-
-    all_stream_data = get_and_write_twitch_stream_data(user)
-    if all_stream_data:
-        stream_template_data = {
-            "url": all_stream_data["url"],
-            "game": all_stream_data["game_name"],
-            "stream_title": all_stream_data["stream_title"],
-            "viewers": all_stream_data["viewer_count"],
-            "timestamp": all_stream_data["timestamp"]
-        }
-
-        return stream_template_data
-    # TODO: Error handler for case when stream is offline.
-    return None
 
 
 def publish_to_twitter(content, access_token,

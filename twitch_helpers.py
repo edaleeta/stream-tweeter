@@ -3,9 +3,7 @@
 from datetime import datetime
 import requests
 from model import StreamSession
-from apscheduler_handlers import (stop_fetching_twitch_data,
-                                  start_tweeting,
-                                  stop_tweeting)
+import apscheduler_handlers as ap_handlers
 
 # Stores user_id and corresponding number of failtures.
 get_stream_failures = {}
@@ -90,7 +88,8 @@ def get_and_write_twitch_stream_data(user):
         # Save endtimestamp of stream session.
         StreamSession.end_stream_session(user, datetime.now())
         # TODO: End the job that is sending tweets on an interval.
-        stop_fetching_twitch_data(user_id)
+        ap_handlers.stop_fetching_twitch_data(user_id)
+        ap_handlers.stop_tweeting(user_id)
     else:
         print("User {}'s stream might be offline; trying again.".format(
             user_id

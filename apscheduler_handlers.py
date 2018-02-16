@@ -30,7 +30,7 @@ def start_tweeting(user_id, interval):
     # Interval will be defined in minutes.
     # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.
     # Reassigning interval for testing.
-    interval = 10
+    interval = 30
     job_type = "send_tweets"
     job_id = job_type + str(user_id)
     scheduler.add_job(func=jobs.send_tweets,
