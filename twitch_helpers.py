@@ -1,8 +1,9 @@
 """Twitch API Helper Functions for Yet Another Twitch Toolkit."""
 
 from datetime import datetime
+import time
 import requests
-from model import StreamSession
+from model import StreamSession, User
 import apscheduler_handlers as ap_handlers
 
 # Stores user_id and corresponding number of failtures.
@@ -13,9 +14,7 @@ def get_and_write_twitch_stream_data(user):
     """Get Twitch stream data for user's stream."""
 
     user_id = int(user.user_id)
-
     twitch_id = str(user.twitch_id)
-    print(twitch_id)
     token = user.twitch_token.access_token
     # For the purposes of testing, will get stream data about some other user.
     testing_twitch_id = "28036688"              # Hardcode id to test here
@@ -133,3 +132,60 @@ def get_twitch_game_data(game_id, headers):
     else:
         return None
     return game_data.get("name", "")
+
+
+def generate_twitch_clip(user_id):
+    """Generate a Twitch Clip from user's channel."""
+
+    user = User.get_user_from_id(user_id)
+    twitch_id = str(user.twitch_id)
+    token = user.twitch_token.access_token
+    payload_clips = {"broadcaster_id": twitch_id}
+    headers = {"Authorization": "Bearer {}".format(token)}
+    r_clips = requests.post("https://api.twitch.tv/helix/clips",
+                            data=payload_clips,
+                            headers=headers)
+    if r_clips.status_code == 202:
+        # Save the clip's slug; used as `id` in Twitch API
+        clip_slug = r_clips.json().get("data")[0].get("id")
+        # Send a request to Get Clips to confirm clip was created.
+
+        clip_info = get_clip_info(clip_slug, headers)
+        if clip_info:
+            # Store the url
+            url = clip_info.get("url")
+            import pdb; pdb.set_trace()
+            # Save clip to DB
+
+
+def get_clip_info(clip_id, headers):
+    """Use given clip id to fetch info from Twitch API."""
+
+    # Note: Twitch recommends giving the API 15 seconds to fetch a newly
+    # created clip. If 15 seconds passes and we receive nothing, we can
+    # assume that no clip was created.
+    failures = 0
+    payload_get_clip = {"id": clip_id}
+    while failures <= 3:
+        r_get_clip = requests.get("https://api.twitch.tv/helix/clips",
+                                  params=payload_get_clip,
+                                  headers=headers)   
+        if r_get_clip.status_code == 200:
+            clip_info = r_get_clip.json().get("data")
+            try:
+                clip_info = clip_info[0]
+                return clip_info
+            except IndexError:
+                failures += 1
+                time.sleep(5)
+    return None
+        
+
+
+if __name__ == "__main__":
+    # Interact with db if we run this module directly.
+
+    from server import app
+    from model import connect_to_db
+    connect_to_db(app)
+    print("Connected to DB.")
