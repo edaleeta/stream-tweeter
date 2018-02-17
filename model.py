@@ -194,9 +194,8 @@ class BaseTemplate(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        return "<Template template_id={}, user_id={}, contents='{}'>" \
+        return "<Template template_id={}, contents='{}'>" \
             .format(self.template_id,
-                    self.user_id,
                     (self.contents[0:14] + "..."))
 
 
@@ -341,8 +340,8 @@ class StreamDatum(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        return "<StreamDatum data_id={}, twitch_id='{}', timestamp={}>" \
-            .format(self.data_id, self.twitch_id, self.timestamp)
+        return "<StreamDatum data_id={}, game_name='{}', timestamp={}>" \
+            .format(self.data_id, self.game_name, self.timestamp)
 
     @classmethod
     def save_stream_data(cls, session, stream_data):
@@ -438,23 +437,38 @@ def sample_data():
 
     # Empty existing data
     BaseTemplate.query.delete()
-    User.query.delete()
     Template.query.delete()
-
-    # Add sample users
-    # TODO: Update this so user creation doesn't fail. :)
-    user_1 = User(email="test@testing.com")
-    user_2 = User(email="eda@leeta.com")
-    db.session.add_all([user_1, user_2])
+    TwitchClip.query.delete()
+    StreamDatum.query.delete()
+    StreamSession.query.delete()
+    SentTweet.query.delete()
+    User.query.delete()
     db.session.commit()
 
-    # Add base templates
-    template_1 = BaseTemplate(contents="I'm live on Twitch!\r\n\
-Join me here: ${url}.")
-    template_2 = BaseTemplate(contents="We're playing ${game}!\r\nJoin me on \
-Twitch: ${url}.")
+    # Execute raw SQL to import data from csv's in respective tables.
+    folder = "yet-another-twitch-toolkit"
+    fill_users = ("COPY users FROM '/Users/edaleeta/src/" +
+                  folder + "/sql/users.csv'")
+    fill_twitch_clips = ("COPY twitch_clips FROM '/Users/edaleeta/src/" +
+                         folder + "/sql/twitch_clips.csv'")
+    fill_templates = ("COPY templates FROM '/Users/edaleeta/src/" +
+                      folder + "/sql/templates.csv'")
+    fill_stream_sessions = ("COPY stream_sessions FROM '/Users/edaleeta/src/" +
+                            folder + "/sql/stream_sessions.csv'")
+    fill_stream_data = ("COPY stream_data FROM '/Users/edaleeta/src/" +
+                        folder + "/sql/stream_data.csv'")
+    fill_sent_tweets = ("COPY sent_tweets FROM '/Users/edaleeta/src/" +
+                        folder + "/sql/sent_tweets.csv'")
+    fill_base_templates = ("COPY base_templates FROM '/Users/edaleeta/src/" +
+                           folder + "/sql/base_templates.csv'")
 
-    db.session.add_all([template_1, template_2])
+    db.session.execute(fill_base_templates)
+    db.session.execute(fill_users)
+    db.session.execute(fill_templates)
+    db.session.execute(fill_stream_sessions)
+    db.session.execute(fill_stream_data)
+    db.session.execute(fill_twitch_clips)
+    db.session.execute(fill_sent_tweets)
     db.session.commit()
 
     # Add Template entry per base template for each initial user.

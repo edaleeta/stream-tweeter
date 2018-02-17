@@ -8,7 +8,7 @@ connect_to_db(server.app, "postgresql:///testdb")
 db.create_all()
 db.session.commit()
 sample_data()
-
+import pdb; pdb.set_trace()
 
 @atexit.register
 def teardown():
