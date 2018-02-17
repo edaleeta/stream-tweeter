@@ -35,11 +35,11 @@ class User(db.Model):
 
         return cls.query.filter_by(user_id=user_id).one()
 
-    @staticmethod
-    def get_user_from_email(user_email):
-        """Find the user for the given email."""
+    @classmethod
+    def get_users_from_email(cls, user_email):
+        """Find the users for the given email."""
 
-        return User.query.filter_by(email=user_email).one()
+        return cls.query.filter_by(email=user_email).all()
 
     @staticmethod
     def get_user_from_twitch_id(twitch_id):
