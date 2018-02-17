@@ -9,6 +9,53 @@ from model import connect_to_db, db, sample_data
 # then rebuild and teardown after every test.
 
 
+class UserModelTestCase(TestCase):
+    """Tests User class methods."""
+
+    def setUp(self):
+        """Before each test..."""
+
+        # Connect to test db
+        connect_to_db(s.app, "postgresql:///testdb", False)
+
+        # Create tables and add sample data
+        db.create_all()
+        db.session.commit()
+        sample_data()
+
+    def tearDown(self):
+        """After every test..."""
+
+        db.session.close()
+        db.drop_all()
+
+    def test_get_user_from_id(self):
+        """Receive a user object or None for given user id."""
+
+        user_id = 4
+        user = m.User.get_user_from_id(user_id)
+        self.assertEqual(user.user_id, user_id)
+
+        user_id = 500
+        user = m.User.get_user_from_id(user_id)
+        self.assertIsNone(user)
+
+    def test_get_users_from_email(self):
+        """Receive a list of user objects with given email."""
+
+        email = "testing@test.com"
+        users = m.User.get_users_from_email(email)
+
+        found_emails = [user.email for user in users]
+
+        for found_email in found_emails:
+            self.assertEqual(email, found_email)
+
+        email_not_exist = "imnotauser@nope.com"
+        users = m.User.get_users_from_email(email_not_exist)
+        self.assertFalse(users)
+
+
 class RegisterUserTestCase(TestCase):
     """Tests logic for user registration."""
 

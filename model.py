@@ -33,7 +33,7 @@ class User(db.Model):
     def get_user_from_id(cls, user_id):
         """Get the user object for the given id."""
 
-        return cls.query.filter_by(user_id=user_id).one()
+        return cls.query.filter_by(user_id=user_id).first()
 
     @classmethod
     def get_users_from_email(cls, user_email):
