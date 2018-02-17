@@ -1,5 +1,6 @@
 """Models and database functions for Yet Another Twitch Toolkit."""
 
+import os
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from sqlalchemy import desc
@@ -446,21 +447,20 @@ def sample_data():
     db.session.commit()
 
     # Execute raw SQL to import data from csv's in respective tables.
-    folder = "yet-another-twitch-toolkit"
-    fill_users = ("COPY users FROM '/Users/edaleeta/src/" +
-                  folder + "/sql/users.csv'")
-    fill_twitch_clips = ("COPY twitch_clips FROM '/Users/edaleeta/src/" +
-                         folder + "/sql/twitch_clips.csv'")
-    fill_templates = ("COPY templates FROM '/Users/edaleeta/src/" +
-                      folder + "/sql/templates.csv'")
-    fill_stream_sessions = ("COPY stream_sessions FROM '/Users/edaleeta/src/" +
-                            folder + "/sql/stream_sessions.csv'")
-    fill_stream_data = ("COPY stream_data FROM '/Users/edaleeta/src/" +
-                        folder + "/sql/stream_data.csv'")
-    fill_sent_tweets = ("COPY sent_tweets FROM '/Users/edaleeta/src/" +
-                        folder + "/sql/sent_tweets.csv'")
-    fill_base_templates = ("COPY base_templates FROM '/Users/edaleeta/src/" +
-                           folder + "/sql/base_templates.csv'")
+    project_path = os.getcwd()
+    fill_users = ("COPY users FROM '" + project_path + "/sql/users.csv'")
+    fill_twitch_clips = ("COPY twitch_clips FROM '" +
+                         project_path + "/sql/twitch_clips.csv'")
+    fill_templates = ("COPY templates FROM '" +
+                      project_path + "/sql/templates.csv'")
+    fill_stream_sessions = ("COPY stream_sessions FROM '" +
+                            project_path + "/sql/stream_sessions.csv'")
+    fill_stream_data = ("COPY stream_data FROM '" +
+                        project_path + "/sql/stream_data.csv'")
+    fill_sent_tweets = ("COPY sent_tweets FROM '" +
+                        project_path + "/sql/sent_tweets.csv'")
+    fill_base_templates = ("COPY base_templates FROM '" +
+                           project_path + "/sql/base_templates.csv'")
 
     db.session.execute(fill_base_templates)
     db.session.execute(fill_users)

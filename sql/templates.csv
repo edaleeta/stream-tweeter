@@ -1,0 +1,3 @@
+10	4	I'm live on Twitch! \r\nJoin me here: ${url}.
+11	4	We're playing ${game}! \r\nJoin me on Twitch: ${url}.
+12	4	Ready to play ${game}?\r\nJump in at ${url}!
