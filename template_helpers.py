@@ -4,13 +4,26 @@ import os
 import string
 import twitch_helpers as twitch
 import tweepy
-from model import User, SentTweet
+from model import db, BaseTemplate, SentTweet, Template, User
 
 ###############################################################################
 # Twitter Oauth Requirements
 ###############################################################################
 TWITTER_CONSUMER_KEY = os.environ["TWITTER_CONSUMER_KEY"]
 TWITTER_CONSUMER_SECRET = os.environ["TWITTER_CONSUMER_SECRET"]
+
+
+def add_basic_templates(user):
+    """Add basic templates for user."""
+
+    base_templates = BaseTemplate.query
+
+    temps_to_add = [(Template(user_id=user.user_id,
+                              contents=base_template.contents))
+                    for base_template in base_templates]
+
+    db.session.bulk_save_objects(temps_to_add)
+    db.session.commit()
 
 
 def populate_tweet_template(contents, user_id):

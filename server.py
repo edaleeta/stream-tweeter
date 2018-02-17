@@ -122,7 +122,7 @@ def process_user_registration():
     db.session.commit()
 
     # Add base templates for user.
-    add_basic_templates(new_user)
+    temp_help.add_basic_templates(new_user)
     flash("Account created successfully.")
     # Login new user
     login_user(new_user)
@@ -389,19 +389,6 @@ def add_template_to_db(user, temp_contents):
 
     new_template = Template(user_id=user.user_id, contents=temp_contents)
     db.session.add(new_template)
-    db.session.commit()
-
-
-def add_basic_templates(this_user):
-    """Add basic templates for current user."""
-
-    base_templates = BaseTemplate.query
-
-    temps_to_add = [(Template(user_id=this_user.user_id,
-                              contents=base_template.contents))
-                    for base_template in base_templates]
-
-    db.session.bulk_save_objects(temps_to_add)
     db.session.commit()
 
 

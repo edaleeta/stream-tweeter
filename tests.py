@@ -2,6 +2,7 @@
 from unittest import TestCase
 import server as s
 import model as m
+import template_helpers as temp_help
 from model import connect_to_db, db, sample_data
 
 # TODO: Update this to insert example data
@@ -38,7 +39,7 @@ class RegisterUserTestCase(TestCase):
         base_template_contents = [template.contents
                                   for template in m.BaseTemplate.query]
 
-        s.add_basic_templates(new_user)
+        temp_help.add_basic_templates(new_user)
 
         # Get the template contents for the newly added user.
         added_template_contents = [template.contents
