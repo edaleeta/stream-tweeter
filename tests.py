@@ -1,6 +1,7 @@
 """Tests for Yet Another Twitch Toolkit."""
 from unittest import TestCase
 import server as s
+import model as m
 from model import connect_to_db, db, sample_data
 
 # TODO: Update this to insert example data
@@ -29,20 +30,24 @@ class RegisterUserTestCase(TestCase):
     def test_add_basic_templates(self):
         """Check if appropriate templates are associated with new user."""
 
-        submitted_email = "basictemplate@test.com"
-        new_user = s.User(email=submitted_email, password="foo")
+        mock_twitch_id = '123456'
+        new_user = m.User(twitch_id=mock_twitch_id)
         db.session.add(new_user)
         db.session.commit()
 
+        base_template_contents = [template.contents
+                                  for template in m.BaseTemplate.query]
+
         s.add_basic_templates(new_user)
 
-        added_template_ids = [template.template_id
-                              for template in s.UserTemplate.query
-                              .filter_by(user_id=new_user.user_id)]
+        # Get the template contents for the newly added user.
+        added_template_contents = [template.contents
+                                   for template in m.Template.query
+                                   .filter_by(user_id=new_user.user_id)]
 
-        self.assertIn(1, added_template_ids)
-        self.assertIn(2, added_template_ids)
-        self.assertNotIn(3, added_template_ids)
+        # Ensure the original base templates are found for the user
+        for content in base_template_contents:
+            self.assertIn(content, added_template_contents)
 
 
 if __name__ == "__main__":
