@@ -392,17 +392,6 @@ def add_template_to_db(user, temp_contents):
     db.session.commit()
 
 
-def is_email_exists(submitted_email):
-    """Check if email is already registered."""
-
-    emails = db.session.query(User.email).all()
-
-    for email in emails:
-        if submitted_email in email:
-            return True
-    return False
-
-
 def add_basic_templates(this_user):
     """Add basic templates for current user."""
 

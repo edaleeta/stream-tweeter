@@ -26,12 +26,6 @@ class RegisterUserTestCase(TestCase):
         db.session.close()
         db.drop_all()
 
-    def test_is_email_exists(self):
-        """Check if dummy emails exist or not in db."""
-
-        assert s.is_email_exists('test@testing.com') is True
-        assert s.is_email_exists('notfound@notfound.com') is False
-
     def test_add_basic_templates(self):
         """Check if appropriate templates are associated with new user."""
 
