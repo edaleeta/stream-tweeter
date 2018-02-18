@@ -3,7 +3,7 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 
 db = SQLAlchemy()
 
@@ -221,8 +221,8 @@ class SentTweet(db.Model):
         return "<SentTweet tweet_id='{}', user_id={}, message='{}'>" \
             .format(self.tweet_id, self.user_id, (self.message[0:14] + "..."))
 
-    @staticmethod
-    def store_sent_tweet(response, user_id, clip_id=None):
+    @classmethod
+    def store_sent_tweet(cls, response, user_id, clip_id=None):
         """Saves a sent tweet in db."""
         tweet_twtr_id = response.id_str
         created_at = response.created_at
@@ -230,14 +230,16 @@ class SentTweet(db.Model):
         user_twtr_id = response.user.id_str
         permalink = "https://twitter.com/{}/status/{}".format(user_twtr_id,
                                                               tweet_twtr_id)
-        new_sent_tweet = SentTweet(tweet_twtr_id=tweet_twtr_id,
-                                   user_id=user_id,
-                                   created_at=created_at,
-                                   message=message,
-                                   permalink=permalink,
-                                   clip_id=clip_id)
+        new_sent_tweet = cls(tweet_twtr_id=tweet_twtr_id,
+                             user_id=user_id,
+                             created_at=created_at,
+                             message=message,
+                             permalink=permalink,
+                             clip_id=clip_id)
+
         db.session.add(new_sent_tweet)
         db.session.commit()
+        return new_sent_tweet
 
 
 class StreamSession(db.Model):
@@ -476,6 +478,112 @@ def sample_data():
             db.session.add(Template(user_id=user.user_id,
                                     contents=base_template.contents))
     db.session.commit()
+
+    # Private functions to set the next values of PKs
+    def set_val_user_id():
+        """Set value for the next user_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(User.user_id)).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('users_user_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+    def set_val_base_templates_id():
+        """Set value for the next template_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(
+            BaseTemplate.template_id
+            )).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('base_templates_template_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+    def set_val_sent_tweet_id():
+        """Set value for the next tweet_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(
+            SentTweet.tweet_id
+            )).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('sent_tweets_tweet_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+    def set_val_stream_data_id():
+        """Set value for the next data_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(
+            StreamDatum.data_id
+            )).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('stream_data_data_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+    def set_val_stream_id():
+        """Set value for the next stream_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(
+            StreamSession.stream_id
+            )).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('stream_sessions_stream_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+    def set_val_template_id():
+        """Set value for the next template_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(
+            Template.template_id
+            )).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('templates_template_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+    def set_val_clip_id():
+        """Set value for the next clip_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(
+            TwitchClip.clip_id
+            )).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('twitch_clips_clip_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+    # Set next values of PKs where seeded data exists.
+    set_val_user_id()
+    set_val_base_templates_id()
+    set_val_sent_tweet_id()
+    set_val_stream_data_id()
+    set_val_stream_id()
+    set_val_template_id()
+    set_val_clip_id()
 
 ###############################################################################
 # HELPER FUNCTIONS

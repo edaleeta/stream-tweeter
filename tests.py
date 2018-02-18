@@ -1,10 +1,12 @@
 """Tests for Yet Another Twitch Toolkit."""
-from unittest import TestCase
+from unittest import TestCase, mock
+import datetime
 import sqlalchemy
 import server as s
 import model as m
-import template_helpers as temp_help
 from model import connect_to_db, db, sample_data
+import template_helpers as temp_help
+
 
 # TODO: Update this to insert example data
 # then rebuild and teardown after every test.
@@ -28,6 +30,7 @@ class UserModelTestCase(TestCase):
         """After every test..."""
 
         db.session.close()
+        db.reflect()
         db.drop_all()
 
     def test_get_user_from_id(self):
@@ -196,6 +199,7 @@ class TemplateModelTestCase(TestCase):
         """After every test..."""
 
         db.session.close()
+        db.reflect()
         db.drop_all()
 
     def test_get_template_from_id(self):
@@ -208,6 +212,60 @@ class TemplateModelTestCase(TestCase):
         # Case 2: Template doesn't exist
         template = m.Template.get_template_from_id(9000)
         self.assertIsNone(template)
+
+
+class SentTweetModelTestCase(TestCase):
+    """Tests SentTweet class methods."""
+
+    def setUp(self):
+        """Before each test..."""
+
+        # Connect to test db
+        connect_to_db(s.app, "postgresql:///testdb", False)
+
+        # Create tables and add sample data
+        db.create_all()
+        db.session.commit()
+        sample_data()
+
+    def tearDown(self):
+        """After every test..."""
+
+        db.session.close()
+        db.reflect()
+        db.drop_all()
+
+    def test_store_sent_tweet(self):
+        """Checks to see if sent tweet was saved correctly."""
+
+        mock_id_str = "12345"
+        mock_created_at = datetime.datetime(2017, 2, 14, 12, 30, 10)
+        mock_text = "I tweeted a thing!"
+        mock_user_id = "987"
+
+        @mock.patch("template_helpers.tweepy.Status")
+        def get_mocked_status(mocked_status):
+            mocked_status.id_str = mock_id_str
+            mocked_status.created_at = mock_created_at
+            mocked_status.text = mock_text
+            mocked_status.user.id_str = mock_user_id
+
+            return mocked_status
+
+        mocked_status = get_mocked_status()
+        user_id = 4
+        clip_id = 9
+
+        saved_tweet = m.SentTweet.store_sent_tweet(mocked_status,
+                                                   user_id,
+                                                   clip_id)
+
+        self.assertEqual(saved_tweet.user_id, user_id)
+        self.assertEqual(saved_tweet.permalink,
+                         "https://twitter.com/{}/status/{}".format(
+                             mock_user_id, mock_id_str
+                         ))
+        self.assertEqual(saved_tweet.clip_id, clip_id)
 
 
 class RegisterUserTestCase(TestCase):
@@ -228,6 +286,7 @@ class RegisterUserTestCase(TestCase):
         """After every test..."""
 
         db.session.close()
+        db.reflect()
         db.drop_all()
 
     def test_add_basic_templates(self):

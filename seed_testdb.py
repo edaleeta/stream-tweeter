@@ -9,9 +9,10 @@ m.db.create_all()
 m.db.session.commit()
 m.sample_data()
 
-
 @atexit.register
 def teardown():
     """Drop all tables in db."""
+
     m.db.session.close()
+    m.db.reflect()
     m.db.drop_all()
