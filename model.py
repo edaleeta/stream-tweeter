@@ -400,6 +400,7 @@ class TwitchClip(db.Model):
             stream_id = last_session.stream_id
         else:
             stream_id = current_session.stream_id
+
         new_clip = TwitchClip(slug=slug, stream_id=stream_id)
         db.session.add(new_clip)
         db.session.commit()

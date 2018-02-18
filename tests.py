@@ -361,6 +361,53 @@ class StreamSessionModelTestCase(TestCase):
         ))
 
 
+class TwitchClipModelTestCase(TestCase):
+    """Tests TwitchClip class methods."""
+
+    def setUp(self):
+        """Before each test..."""
+
+        # Connect to test db
+        connect_to_db(s.app, "postgresql:///testdb", False)
+
+        # Create tables and add sample data
+        db.create_all()
+        db.session.commit()
+        sample_data()
+
+    def tearDown(self):
+        """After every test..."""
+
+        db.session.close()
+        db.reflect()
+        db.drop_all()
+
+    def test_save_twitch_clip(self):
+        """Checks if Twitch clip is saved correctly."""
+
+        user = m.User.query.first()
+        user_id = user.user_id
+        slug = "TotallyAwesomePandas"
+
+        # Case 1: All sessions closed. Associated stream should be most recent.
+        saved_clip = m.TwitchClip.save_twitch_clip(
+            slug, user_id
+        )
+
+        self.assertEqual(saved_clip.stream_id, user.sessions[-1].stream_id)
+
+        # Case 2: Most recent session is open.
+        # Alter the most recent session so it's detected as 'open'
+        last_session = user.sessions[-1]
+        last_session.ended_at = None
+        db.session.commit()
+
+        saved_clip = m.TwitchClip.save_twitch_clip(
+            slug, user_id
+        )
+        self.assertEqual(saved_clip.stream_id, last_session.stream_id)
+
+
 class RegisterUserTestCase(TestCase):
     """Tests logic for user registration."""
 
@@ -403,6 +450,8 @@ class RegisterUserTestCase(TestCase):
         # Ensure the original base templates are found for the user
         for content in base_template_contents:
             self.assertIn(content, added_template_contents)
+
+
 
 
 if __name__ == "__main__":
