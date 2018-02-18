@@ -70,6 +70,46 @@ class UserModelTestCase(TestCase):
         user = m.User.get_user_from_twitch_id(twitch_id)
         self.assertIsNone(user)
 
+    def test_update_twitch_access_token(self):
+        """Checks if Twitch Tokens were updated correctly."""
+
+        # Case 1: User does not have an existing Twitch token in db.
+        current_user = m.User.query.first()
+        access_token = "ThisIsAGreatToken"
+        refresh_token = "RefreshMePlease"
+        expires_in = 6000
+        current_user.update_twitch_access_token(
+            access_token,
+            refresh_token,
+            expires_in
+        )
+
+        token = m.TwitchToken.query.filter_by(
+            user_id=current_user.user_id).one()
+        
+        self.assertEqual(access_token, token.access_token)
+        self.assertEqual(refresh_token, token.refresh_token)
+        self.assertEqual(expires_in, token.expires_in)
+
+        # Case 2: Updating token for the same user.
+
+        new_access_token = "ImANewAccessToken"
+        new_refresh_token = "ImANewRefreshToken"
+        new_expires_in = 9000
+
+        current_user.update_twitch_access_token(
+            new_access_token,
+            new_refresh_token,
+            new_expires_in
+        )
+
+        token = m.TwitchToken.query.filter_by(
+            user_id=current_user.user_id).one()
+
+        self.assertEqual(new_access_token, token.access_token)
+        self.assertEqual(new_refresh_token, token.refresh_token)
+        self.assertEqual(new_expires_in, token.expires_in)
+
 
 class RegisterUserTestCase(TestCase):
     """Tests logic for user registration."""
@@ -112,47 +152,6 @@ class RegisterUserTestCase(TestCase):
         # Ensure the original base templates are found for the user
         for content in base_template_contents:
             self.assertIn(content, added_template_contents)
-
-    def test_update_twitch_access_token(self):
-        """Checks if Twitch Tokens were updated correctly."""
-
-        # Case 1: User does not have an existing Twitch token in db.
-        current_user = m.User.query.first()
-        access_token = "ThisIsAGreatToken"
-        refresh_token = "RefreshMePlease"
-        expires_in = 6000
-        current_user.update_twitch_access_token(
-            access_token,
-            refresh_token,
-            expires_in
-        )
-
-        token = m.TwitchToken.query.filter_by(
-            user_id=current_user.user_id).one()
-        
-        self.assertEqual(access_token, token.access_token)
-        self.assertEqual(refresh_token, token.refresh_token)
-        self.assertEqual(expires_in, token.expires_in)
-
-        # Case 2: Updating token for the same user.
-
-        new_access_token = "ImANewAccessToken"
-        new_refresh_token = "ImANewRefreshToken"
-        new_expires_in = 9000
-
-        current_user.update_twitch_access_token(
-            new_access_token,
-            new_refresh_token,
-            new_expires_in
-        )
-
-        token = m.TwitchToken.query.filter_by(
-            user_id=current_user.user_id).one()
-
-        self.assertEqual(new_access_token, token.access_token)
-        self.assertEqual(new_refresh_token, token.refresh_token)
-        self.assertEqual(new_expires_in, token.expires_in)
-
 
 
 if __name__ == "__main__":
