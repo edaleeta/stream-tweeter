@@ -1,5 +1,6 @@
 """Tests for Yet Another Twitch Toolkit."""
 from unittest import TestCase
+import sqlalchemy
 import server as s
 import model as m
 import template_helpers as temp_help
@@ -86,7 +87,7 @@ class UserModelTestCase(TestCase):
 
         token = m.TwitchToken.query.filter_by(
             user_id=current_user.user_id).one()
-        
+
         self.assertEqual(access_token, token.access_token)
         self.assertEqual(refresh_token, token.refresh_token)
         self.assertEqual(expires_in, token.expires_in)
@@ -109,6 +110,60 @@ class UserModelTestCase(TestCase):
         self.assertEqual(new_access_token, token.access_token)
         self.assertEqual(new_refresh_token, token.refresh_token)
         self.assertEqual(new_expires_in, token.expires_in)
+
+    def test_update_twitter_access_token(self):
+        """Checks if Twitter tokens are updated correctly."""
+
+        user = m.User.query.first()
+        access_token = "ThisIsAGreatToken"
+        token_secret = "ImAGoodSecret"
+
+        # Case 1: User does not have a Twitter token in the db.
+        user.update_twitter_access_token(access_token, token_secret)
+        token = m.TwitterToken.query.filter_by(user_id=user.user_id).one()
+
+        self.assertEqual(access_token, token.access_token)
+        self.assertEqual(token_secret, token.access_token_secret)
+
+        # Case 2: Updating token for the same user.abs
+        new_access_token = "ImANewAccessToken"
+        new_token_secret = "ImANewTokenSecret"
+        user.update_twitter_access_token(new_access_token, new_token_secret)
+        token = m.TwitterToken.query.filter_by(user_id=user.user_id).one()
+
+        self.assertEqual(new_access_token, token.access_token)
+        self.assertEqual(new_token_secret, token.access_token_secret)
+
+    def test_delete_template(self):
+        """Checks if user can delete a template they own and not some other."""
+
+        user = m.User.query.first()
+        # Adding another user.
+        other_user = m.User(twitch_id="0987")
+        m.db.session.add(other_user)
+        m.db.session.commit()
+
+        # Adding a template for the other user.
+        template = m.Template(user_id=other_user.user_id,
+                              contents="Hello!")
+        m.db.session.add(template)
+        m.db.session.commit()
+
+        # Case 1: User deletes their own template.
+        user.delete_template(10)
+        is_template = m.Template.query.get(10)
+
+        self.assertIsNone = is_template
+
+        # Case 2: User tries to delete a template they don't own.
+        self.assertRaises(sqlalchemy.orm.exc.NoResultFound,
+                          user.delete_template,
+                          template.template_id)
+
+        # Case 3: User tries to delete a template that doesn't exist.
+        self.assertRaises(sqlalchemy.orm.exc.NoResultFound,
+                          user.delete_template,
+                          600)
 
 
 class RegisterUserTestCase(TestCase):
