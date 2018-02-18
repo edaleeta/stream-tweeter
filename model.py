@@ -57,10 +57,6 @@ class User(db.Model):
         rep += ">"
         return rep
 
-    def get_id(self):
-        """Return a unicode string; for flask-login."""
-        return str(self.user_id)
-
     def update_twitch_access_token(self,
                                    access_token,
                                    refresh_token,
