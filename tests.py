@@ -497,9 +497,34 @@ class TemplateHelpersTestCase(TestCase):
         twitch_helpers.get_and_write_twitch_stream_data = mock.MagicMock(
             return_value=None)
 
-        template_data = temp_help.get_twitch_template_data(user)
-        self.assertIsNone(template_data)
+        offline_template_data = temp_help.get_twitch_template_data(user)
+        self.assertIsNone(offline_template_data)
 
+        def test_populate_tweet_template(self):
+            """Checks if tweet template is filled correctly."""
+
+            # Case 1: Stream is online, received data.
+            temp_help.get_twitch_template_data = mock.MagicMock(
+                return_value=template_data
+            )
+            template_contents = "${game} ${url} ${stream_title}"
+            filled_template = temp_help.populate_tweet_template(
+                template_contents, user.user_id
+            )
+            self.assertEqual(filled_template, "{} {} {}".format(
+                stream_game_title, stream_url, stream_title
+            ))
+
+            # Case 2: Stream is offline
+            temp_help.get_twitch_template_data = mock.MagicMock(
+                return_value=None
+            )
+            offline_filled_template = temp_help.populate_tweet_template(
+                template_contents, user.user_id
+            )
+            self.assertIsNone(offline_filled_template)
+
+        test_populate_tweet_template(self)
 
 
 if __name__ == "__main__":
