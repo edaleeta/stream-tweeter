@@ -178,6 +178,38 @@ class UserModelTestCase(TestCase):
         self.assertEqual(new_contents, edited_template.contents)
 
 
+class TemplateModelTestCase(TestCase):
+    """Tests Template class methods."""
+
+    def setUp(self):
+        """Before each test..."""
+
+        # Connect to test db
+        connect_to_db(s.app, "postgresql:///testdb", False)
+
+        # Create tables and add sample data
+        db.create_all()
+        db.session.commit()
+        sample_data()
+
+    def tearDown(self):
+        """After every test..."""
+
+        db.session.close()
+        db.drop_all()
+
+    def test_get_template_from_id(self):
+        """Get a template object or None with given template id."""
+
+        # Case 1: Template exists.
+        template = m.Template.get_template_from_id(10)
+        self.assertEqual(10, template.template_id)
+
+        # Case 2: Template doesn't exist
+        template = m.Template.get_template_from_id(9000)
+        self.assertIsNone(template)
+
+
 class RegisterUserTestCase(TestCase):
     """Tests logic for user registration."""
 

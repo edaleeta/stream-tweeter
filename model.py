@@ -173,11 +173,11 @@ class Template(db.Model):
                                            order_by="Template.template_id"),
                            uselist=False)
 
-    @staticmethod
-    def get_template_from_id(template_id):
+    @classmethod
+    def get_template_from_id(cls, template_id):
         """Find the template for the given template_id."""
 
-        return Template.query.filter_by(template_id=template_id).one()
+        return cls.query.filter_by(template_id=template_id).first()
 
 
 class BaseTemplate(db.Model):
