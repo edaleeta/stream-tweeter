@@ -165,6 +165,18 @@ class UserModelTestCase(TestCase):
                           user.delete_template,
                           600)
 
+    def test_edit_template(self):
+        """Checks if a user can update a given template."""
+
+        new_contents = "I love cats."
+        user = m.User.query.first()
+        template_id = m.Template.query.filter_by(
+            user_id=user.user_id).first().template_id
+
+        user.edit_template(template_id, new_contents)
+        edited_template = m.Template.query.get(template_id)
+        self.assertEqual(new_contents, edited_template.contents)
+
 
 class RegisterUserTestCase(TestCase):
     """Tests logic for user registration."""
