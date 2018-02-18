@@ -4,7 +4,8 @@ import datetime
 import sqlalchemy
 import server as s
 import model as m
-from model import connect_to_db, db, sample_data
+from model import connect_to_db, db
+from seed_testdb import sample_data
 import template_helpers as temp_help
 
 
