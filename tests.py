@@ -30,7 +30,7 @@ class UserModelTestCase(TestCase):
         db.drop_all()
 
     def test_get_user_from_id(self):
-        """Receive a user object or None for given user id."""
+        """Receive a User or None for given user id."""
 
         user_id = 4
         user = m.User.get_user_from_id(user_id)
@@ -41,8 +41,9 @@ class UserModelTestCase(TestCase):
         self.assertIsNone(user)
 
     def test_get_users_from_email(self):
-        """Receive a list of user objects with given email."""
+        """Receive a list of Users with given email."""
 
+        # Case 1: Email exists for at least one user.
         email = "testing@test.com"
         users = m.User.get_users_from_email(email)
 
@@ -51,9 +52,23 @@ class UserModelTestCase(TestCase):
         for found_email in found_emails:
             self.assertEqual(email, found_email)
 
+        # Case 2: Email does not exist for any users.
         email_not_exist = "imnotauser@nope.com"
         users = m.User.get_users_from_email(email_not_exist)
         self.assertFalse(users)
+
+    def test_get_users_from_twitch_id(self):
+        """Receive a User from given Twitch id."""
+
+        # Case 1: Twitch id exists for a user.
+        twitch_id = "29389795"
+        user = m.User.get_user_from_twitch_id(twitch_id)
+        self.assertEqual(twitch_id, user.twitch_id)
+
+        # Case 2: Twitch id does not exist for any user.
+        twitch_id = "1234"
+        user = m.User.get_user_from_twitch_id(twitch_id)
+        self.assertIsNone(user)
 
 
 class RegisterUserTestCase(TestCase):

@@ -3,3 +3,7 @@ env
 *-private*
 .vscode
 .pylintrc
+
+# Testing related
+.coverage
+htmlcov/

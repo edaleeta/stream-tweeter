@@ -45,7 +45,7 @@ class User(db.Model):
     def get_user_from_twitch_id(twitch_id):
         """Find the user for the given Twitch ID."""
 
-        return User.query.filter_by(twitch_id=twitch_id).one()
+        return User.query.filter_by(twitch_id=twitch_id).first()
 
     def __repr__(self):
         """Print helpful information."""
