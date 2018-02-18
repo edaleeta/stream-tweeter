@@ -526,6 +526,63 @@ class TemplateHelpersTestCase(TestCase):
 
         test_populate_tweet_template(self)
 
+        def test_create_and_publish_to_twitter(self):
+            """Tests creating and publishing a tweet."""
+
+            template_contents = "${game} ${url} ${stream_title}"
+
+            # Mock populate_tweet_template function
+            temp_help.populate_tweet_template = mock.MagicMock(
+                return_value="Stardew Valley https://twitch.tv/pixxeltesting \
+                Best stream ever!"
+            )
+
+            # Mock Twitter access token
+            user.twitter_token = m.TwitterToken(
+                access_token="myToken",
+                access_token_secret="mySecret"
+            )
+
+            # Mock new clip
+            mock_clip = m.TwitchClip(slug="MyCuteCat",
+                                     stream_id=18,
+                                     clip_id=100)
+
+            m.db.session.add(mock_clip)
+            m.db.session.commit()
+
+            # temp_help.tweepy.API = mock.MagicMock()
+            temp_help.twitch.generate_twitch_clip = mock.MagicMock(
+                return_value=(m.TwitchClip(slug="MyCuteCat",
+                                           stream_id=18,
+                                           clip_id=100),
+                              "https://clipurl")
+            )
+
+            temp_help.tweepy.API.update_status = mock.MagicMock(
+                return_value=mock.MagicMock(
+                    id_str="12345",
+                    created_at=datetime.datetime(2017, 2, 14, 12, 30, 10),
+                    text="I tweeted a thing!",
+                    user=mock.MagicMock(
+                        id_str="987"
+                    )
+                )
+            )
+
+            # Case 1: Twitter update posts successfully.
+            temp_help.create_and_publish_to_twitter(
+                template_contents, user.user_id
+            )
+            saved_tweet = m.SentTweet.query.filter_by(
+                message="I tweeted a thing!",
+                clip_id=100
+            ).first()
+            self.assertTrue(saved_tweet)
+            temp_help.twitch.generate_twitch_clip.assert_called()
+            temp_help.tweepy.API.update_status.assert_called()
+
+        test_create_and_publish_to_twitter(self)
 
 if __name__ == "__main__":
     import unittest

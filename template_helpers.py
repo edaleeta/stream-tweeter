@@ -32,22 +32,22 @@ def populate_tweet_template(contents, user_id):
         user = User.get_user_from_id(user_id)
         print("User ID: {}".format(user_id))
 
-        print("\n\nI'M TRYING TO POPULATE A TWEET\n\n")
+        print("\n\nTrying to populate tweet template with data.\n\n")
 
         data_for_template = get_twitch_template_data(user)
 
-        print("\n\nDATA FOR MY TEMPLATE.\n{}".format(data_for_template))
-
         if data_for_template:
+            print("\n\nData for template.\n{}".format(data_for_template))
             tweet_template = string.Template(contents)
-            populated_template = tweet_template.safe_substitute(data_for_template)
+            populated_template = tweet_template.safe_substitute(
+                data_for_template)
 
-            print("\n\nPOPULATED TEMPLATE IS:\n{}".format(populated_template))
+            print("\n\nPopulated template:\n{}".format(populated_template))
 
             return populated_template
 
         # TODO: Error handler for case when stream is offline.
-        print("\n\nAM I SOMEHOW GETTING HERE!?!?\n\n")  # No.
+        print("\n\nNO DATA RECEIVED. Stream may be offline.\n\n")  # No.
         return None
     except Exception as e:
         print(e)
@@ -75,7 +75,7 @@ def get_twitch_template_data(user):
 
 def create_and_publish_to_twitter(template, user_id):
     """Publishes given content to a user's Twitter account."""
-    
+
     # Set up Twitter requirements
     user = User.get_user_from_id(user_id)
     token = user.twitter_token
