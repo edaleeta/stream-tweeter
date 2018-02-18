@@ -291,6 +291,8 @@ class StreamSession(db.Model):
         # Also add an entry in stream_data to store snapshot.
         StreamDatum.save_stream_data(twitch_session, stream_data)
 
+        return twitch_session
+
     @classmethod
     def end_stream_session(cls, user, timestamp):
         """Update a closed steam session with the time it was found to end."""
@@ -299,8 +301,10 @@ class StreamSession(db.Model):
         if current_session:
             current_session.ended_at = timestamp
             db.session.commit()
+            return current_session
         else:
             print("All sessions ended.")
+            return None
 
     @classmethod
     def get_session_from_twitch_session_id(cls, twitch_session_id):

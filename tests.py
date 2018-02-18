@@ -1,5 +1,6 @@
 """Tests for Yet Another Twitch Toolkit."""
 from unittest import TestCase, mock
+from io import StringIO
 import datetime
 import sqlalchemy
 import server as s
@@ -267,6 +268,97 @@ class SentTweetModelTestCase(TestCase):
                              mock_user_id, mock_id_str
                          ))
         self.assertEqual(saved_tweet.clip_id, clip_id)
+
+
+class StreamSessionModelTestCase(TestCase):
+    """Tests Template class methods."""
+
+    def setUp(self):
+        """Before each test..."""
+
+        # Connect to test db
+        connect_to_db(s.app, "postgresql:///testdb", False)
+
+        # Create tables and add sample data
+        db.create_all()
+        db.session.commit()
+        sample_data()
+
+    def tearDown(self):
+        """After every test..."""
+
+        db.session.close()
+        db.reflect()
+        db.drop_all()
+
+    def test_save_stream_session(self):
+        """Checks to see if stream session and data was saved correctly."""
+
+        timestamp = datetime.datetime(2017, 2, 14, 12, 30, 10)
+        stream_id = "1"
+        streamer_id = "pixxeltesting"
+        stream_title = "Best stream ever!"
+        stream_viewer_count = 100
+        stream_started_at = datetime.datetime(2017, 2, 14, 12, 30, 10)
+        stream_game_id = "1"
+        stream_game_title = "Stardew Valley"
+        stream_url = "https://twitch.tv/pixxeltesting"
+
+        stream_data = {"timestamp": timestamp,
+                       "stream_id": stream_id,
+                       "twitch_id": streamer_id,
+                       "stream_title": stream_title,
+                       "viewer_count": stream_viewer_count,
+                       "started_at": stream_started_at,
+                       "game_id": stream_game_id,
+                       "game_name": stream_game_title,
+                       "url": stream_url}
+
+        user = m.User.query.first()
+
+        # Case 1: Stream session does not exist for user.
+        twitch_session = m.StreamSession.save_stream_session(
+            user=user, stream_data=stream_data
+        )
+        new_data = m.StreamDatum.query.filter_by(
+            stream_id=twitch_session.stream_id
+        ).first()
+        self.assertEqual(twitch_session.twitch_session_id, stream_id)
+        self.assertEqual(new_data.timestamp, twitch_session.started_at)
+
+        # Case 2: Stream session exists for user.
+        repeat_twitch_session = m.StreamSession.save_stream_session(
+            user=user, stream_data=stream_data
+        )
+        num_data = len(m.StreamDatum.query.filter_by(
+            stream_id=twitch_session.stream_id
+        ).all())
+        self.assertEqual(repeat_twitch_session, twitch_session)
+        self.assertEqual(num_data, 2)
+
+    def test_end_stream_session(self):
+        """Checks if an open session is closed."""
+
+        user = m.User.query.first()
+        # Alter the most recent session so it's detected as 'open'
+        last_session = user.sessions[-1]
+        last_session.ended_at = None
+        db.session.commit()
+
+        # Case 1: Open session is found.
+        end_session_time = datetime.datetime(2017, 2, 14, 12, 30, 10)
+
+        ended_session = m.StreamSession.end_stream_session(
+            user=user, timestamp=end_session_time
+        )
+
+        self.assertEqual(last_session.ended_at, end_session_time)
+        self.assertEqual(last_session, ended_session)
+
+        # Case 2: Sessions are closed.
+        self.assertIsNone(m.StreamSession.end_stream_session(
+            user=user, timestamp=end_session_time
+        ))
 
 
 class RegisterUserTestCase(TestCase):
