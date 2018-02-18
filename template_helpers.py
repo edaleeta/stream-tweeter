@@ -2,8 +2,8 @@
 
 import os
 import string
-import twitch_helpers as twitch
 import tweepy
+import twitch_helpers as twitch
 from model import db, BaseTemplate, SentTweet, Template, User
 
 ###############################################################################
@@ -65,12 +65,11 @@ def get_twitch_template_data(user):
             "viewers": all_stream_data["viewer_count"],
             "timestamp": all_stream_data["timestamp"]
         }
-
-        print("I'M GETTING TWITCH TEMPLATE DATA.")
+        print("RETURNING TWITCH TEMPLATE DATA.")
         print(stream_template_data)
-
         return stream_template_data
     # TODO: Error handler for case when stream is offline.
+    print("NO DATA RETURNED FROM TWITCH. STREAM MAY BE OFFLINE.")
     return None
 
 

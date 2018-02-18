@@ -8,10 +8,12 @@ import model as m
 from model import connect_to_db, db
 from seed_testdb import sample_data
 import template_helpers as temp_help
+import twitch_helpers
 
 
-# TODO: Update this to insert example data
-# then rebuild and teardown after every test.
+###############################################################################
+# MODEL TESTS
+###############################################################################
 
 
 class UserModelTestCase(TestCase):
@@ -407,9 +409,13 @@ class TwitchClipModelTestCase(TestCase):
         )
         self.assertEqual(saved_clip.stream_id, last_session.stream_id)
 
+###############################################################################
+# TEMPLATE HELPER TESTS
+###############################################################################
 
-class RegisterUserTestCase(TestCase):
-    """Tests logic for user registration."""
+
+class TemplateHelpersTestCase(TestCase):
+    """Tests for template helpers functions."""
 
     def setUp(self):
         """Before each test..."""
@@ -451,6 +457,48 @@ class RegisterUserTestCase(TestCase):
         for content in base_template_contents:
             self.assertIn(content, added_template_contents)
 
+    def test_get_twitch_template_data(self):
+        """Checks thats twitch data is being transformed correctly."""
+
+        user = m.User.query.first()
+        timestamp = datetime.datetime(2017, 2, 14, 12, 30, 10)
+        stream_id = "1"
+        streamer_id = "pixxeltesting"
+        stream_title = "Best stream ever!"
+        stream_viewer_count = 100
+        stream_started_at = datetime.datetime(2017, 2, 14, 12, 30, 10)
+        stream_game_id = "1"
+        stream_game_title = "Stardew Valley"
+        stream_url = "https://twitch.tv/pixxeltesting"
+
+        # Case 1: Stream is online
+        # Mocking data
+        twitch_helpers.get_and_write_twitch_stream_data = mock.MagicMock(
+            return_value={
+                "timestamp": timestamp,
+                "stream_id": stream_id,
+                "twitch_id": streamer_id,
+                "stream_title": stream_title,
+                "viewer_count": stream_viewer_count,
+                "started_at": stream_started_at,
+                "game_id": stream_game_id,
+                "game_name": stream_game_title,
+                "url": stream_url
+            })
+
+        template_data = temp_help.get_twitch_template_data(user)
+        self.assertEqual(template_data["url"], stream_url)
+        self.assertEqual(template_data["game"], stream_game_title)
+        self.assertEqual(template_data["stream_title"], stream_title)
+        self.assertEqual(template_data["viewers"], stream_viewer_count)
+        self.assertEqual(template_data["timestamp"], timestamp)
+
+        # Case 2: Stream is offline
+        twitch_helpers.get_and_write_twitch_stream_data = mock.MagicMock(
+            return_value=None)
+
+        template_data = temp_help.get_twitch_template_data(user)
+        self.assertIsNone(template_data)
 
 
 

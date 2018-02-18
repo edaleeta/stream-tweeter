@@ -1,6 +1,9 @@
 [run]
 source=.
-omit=env/*
+omit=
+  env/*
+  *_sandbox*
+  seed_*
 
 [report]
 exclude_lines =
