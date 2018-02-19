@@ -41,11 +41,15 @@ class User(db.Model):
 
         return cls.query.filter_by(email=user_email).all()
 
-    @staticmethod
-    def get_user_from_twitch_id(twitch_id):
+    @classmethod
+    def get_user_from_twitch_id(cls, twitch_id):
         """Find the user for the given Twitch ID."""
 
-        return User.query.filter_by(twitch_id=twitch_id).first()
+        return cls.query.filter_by(twitch_id=twitch_id).first()
+
+    def get_id(self):
+        """Return a unicode string; for flask-login."""
+        return str(self.user_id)
 
     def __repr__(self):
         """Print helpful information."""

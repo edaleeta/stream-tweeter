@@ -4,6 +4,7 @@ omit=
   env/*
   *_sandbox*
   seed_*
+  *tests*
 
 [report]
 exclude_lines =
