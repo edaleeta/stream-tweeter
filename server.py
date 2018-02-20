@@ -112,12 +112,25 @@ def get_current_user_json():
 
     print("Current user is: ", current_user)
     if current_user.is_authenticated:
-        return jsonify(userId=current_user.user_id,
-                       email=current_user.email,
-                       twitchDisplayName=current_user.twitch_displayname,
-                       twitchId=current_user.twitch_id)
+        # Add basic user details.
+        user_details = {
+            "userId": current_user.user_id,
+            "email": current_user.email,
+            "twitchDisplayName": current_user.twitch_displayname,
+            "twitchId": current_user.twitch_id
+        }
+
+        # Add status of Twitter auth
+        # TODO: Will also want to check if user's token is still valid.
+        if current_user.twitter_token:
+            user_details["isTwitterAuth"] = True
+        else:
+            user_details["isTwitterAuth"] = False
+
+        return jsonify(user_details)
     else:
-        return ('', 204)
+        return jsonify(None)
+
 
 
 @app.route("/register-twitch")

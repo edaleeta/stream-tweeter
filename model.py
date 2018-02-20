@@ -152,13 +152,8 @@ class TwitterToken(db.Model):
     def __repr__(self):
         """Print helpful information."""
 
-        if self.twitter_token:
-            twitter_token_exists = "True"
-        else:
-            twitter_token_exists = "False"
-
-        return "<AccessToken twitter_exists={}>" \
-            .format(twitter_token_exists)
+        return "<AccessToken user_id={}, access_token={}>" \
+            .format(self.user_id, self.access_token)
 
 
 class Template(db.Model):

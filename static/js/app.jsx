@@ -5,16 +5,33 @@ const navLinks = {
 }
 
 // Parent Component
-class App extends React.Component 
-{
-    componentWillMount(nextProps, nextState){
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {twitchDisplayName: null}
+    }
+
+    componentDidMount(nextProps, nextState){
         fetch("/current-user.json",
         {credentials: 'same-origin'})
-        .then((response)=>
-    console.log(response.json()))
+        .then((response)=> response.json())
+        .then((data) => {
+            let twitchDisplayName = data.twitchDisplayName;
+            let isTwitterAuth = data.isTwitterAuth;
+
+            this.setState({
+                twitchDisplayName: twitchDisplayName,
+                isTwitterAuth: isTwitterAuth});
+        })
     }
     render() {
-        return <NavBar links={navLinks} />
+        return (
+            <div>
+                <NavBar links={navLinks} />
+                <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+                <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth}/>
+            </div>
+        )
     }
 }
 
@@ -31,14 +48,38 @@ class NavBar extends React.Component {
     }
 }
 
-// Username
-class Username extends React.Component {
+// Welcome
+class WelcomeUser extends React.Component {
     render() {
-        return this.props.username
+        return (
+            <h2>Welcome, {this.props.twitchDisplayName}!
+            </h2>
+        )
     }
 }
 
-// Render Parent
+// Connect Twitter Account
+class ConnectTwitter extends React.Component {
+
+    render() {
+        if (this.props.isTwitterAuth) {
+            return (
+                <p>
+                    Your Twitter is account is connected! <br />
+                    Let's make some Tweets!
+                </p>
+            );
+        }
+        return (
+            <p>
+                To get started, please connect your Twitter account:<br />
+                <a href="/auth-twitter">Connect Twitter</a>
+            </p>
+        )
+    }
+}
+
+// Render App
 ReactDOM.render(
     <App />,
     document.getElementById("root")
