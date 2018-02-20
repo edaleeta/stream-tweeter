@@ -113,6 +113,7 @@ def get_current_user_json():
     print("Current user is: ", current_user)
     if current_user.is_authenticated:
         # Add basic user details.
+        print("User is authenticated.")
         user_details = {
             "userId": current_user.user_id,
             "email": current_user.email,
@@ -129,8 +130,8 @@ def get_current_user_json():
 
         return jsonify(user_details)
     else:
-        return jsonify(None)
-
+        print("User is not logged in.")
+        return jsonify(error="Not logged in.")
 
 
 @app.route("/register-twitch")
@@ -474,4 +475,4 @@ if __name__ == "__main__":
     scheduler.init_app(app)
     scheduler.start()
     # Run the app
-    app.run(port=7000, host='0.0.0.0')
+    app.run(port=7000, threaded=True, host='0.0.0.0')

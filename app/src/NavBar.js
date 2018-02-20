@@ -1,3 +1,5 @@
+import React, { Component } from 'react';
+
 const navLinks = {
     home: "/index-react",
     login: "/login",
@@ -5,7 +7,7 @@ const navLinks = {
 }
 
 // Navigation 
-export class NavBar extends React.Component {
+export class NavBar extends Component {
     render() {
         return (
             <ul>
