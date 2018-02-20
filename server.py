@@ -99,6 +99,27 @@ def show_index():
     return render_template("index.html")
 
 
+@app.route("/index-react")
+def show_index_react():
+    "Show homepage using React."
+
+    return render_template("index-react.html")
+
+
+@app.route("/current-user.json")
+def get_current_user_json():
+    "Return jsonified info about current user."
+
+    print("Current user is: ", current_user)
+    if current_user.is_authenticated:
+        return jsonify(userId=current_user.user_id,
+                       email=current_user.email,
+                       twitchDisplayName=current_user.twitch_displayname,
+                       twitchId=current_user.twitch_id)
+    else:
+        return ('', 204)
+
+
 @app.route("/register-twitch")
 def process_user_registration():
     """Process user creation from Twitch user info."""
