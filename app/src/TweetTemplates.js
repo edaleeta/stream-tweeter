@@ -7,47 +7,28 @@ export class TweetTemplates extends Component {
     
     constructor(props) {
         super(props);
-        this.state = {templates: ""};
+        this.state = {
+            isUpdated: false
+        };
+        this.onClickUpdateTweetTemplatesCurrent = this.onClickUpdateTweetTemplatesCurrent.bind(this);
     }
 
-    componentDidMount() {
-        fetch("/api/current-user-templates.json",
-        {credentials: 'same-origin'})
-        .then((response)=> response.json())
-        .then((data) => {
-            this.setState({
-                templates: data
-            });
-        })        
-    }
-
-    updateTweetTemplateList() {
+    onClickUpdateTweetTemplatesCurrent() {
         this.setState({
-            // TODO: Continue here.
+            isUpdated: true
         })
     }
 
     render() {
-        if (this.props.isTwitterAuth && this.state.templates) {
+        if (this.props.isTwitterAuth) {
             
             return (
                 <div>
                     <h3>Your Tweet Templates</h3>
-                    <TweetTemplatesCurrent templates={this.state.templates} />
-                    <TweetTemplateCreateNew />
+                    <TweetTemplatesCurrent isUpdated={this.state.isUpdated}/>
+                    <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
                 </div>
-            );
-
-            // return (
-                // <div>
-                //     Tweet templates will live here!
-                //     <p>
-                //         {this.state.templates.map((template) => (
-                //             <p>ID: {template.templateId}; Content: {template.contents}</p>
-                //         ))}
-                //     </p>
-                // </div>
-            // );
+            ); 
         } else {
             return <div></div>
         }

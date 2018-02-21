@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
-import { TweetTemplatesCurrent } from './TweetTemplatesCurrent'; 
 export class TweetTemplateCreateNew extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contents: null
+            contents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!"
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
@@ -28,17 +27,17 @@ export class TweetTemplateCreateNew extends Component {
         }).then(res => res.json())
         .catch(error => console.error('Error:', error))
         .then(response => {
-            if (response.ok) {
-            console.log('Success:', response);
-            } else {
-                console.log("Error:", response)
-            }
+                console.log('Success:', response);
+                // Tells Tweet Templates that we saved a new Template!
+                this.props.onClick();
+                // Clear contents of textbox after submitting.
+                this.setState({
+                    contents: ""
+                });
         })
     }
 
     handleOnChange(e) {
-        // Note: We only want to set the state after someone types in the text field.
-        // This is to prevent someone from submitting the defaultValue to db.
         this.setState({
             contents: e.target.value
         });
@@ -49,7 +48,7 @@ export class TweetTemplateCreateNew extends Component {
             <form>
                 <FormGroup>
                     <ControlLabel>Create a new Tweet Template: </ControlLabel>
-                    <FormControl onChange={this.handleOnChange} componentClass="textarea" defaultValue={"Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!"}>
+                    <FormControl onChange={this.handleOnChange} componentClass="textarea" value={this.state.contents}>
                     </FormControl>
                     <Button type="submit" onClick={this.handleClick}>Save Tweet Template</Button>
                 </FormGroup>
