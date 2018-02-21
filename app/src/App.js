@@ -2,27 +2,35 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { NavBar } from './NavBar'
+import { WelcomeUser } from './WelcomeUser'
 
 class App extends Component {
   constructor(props) {
-      super(props);
-      this.state = {twitchDisplayName: null}
+    super(props);
+    this.state = {
+      userId: null,
+      twitchDisplayName: null,
+    }
   }
 
-  componentDidMount(nextProps, nextState){
+  componentWillMount(nextProps, nextState){
       fetch("/api/current-user.json",
       {credentials: 'same-origin'})
       .then((response)=> response.json())
       .then((data) => {
+          let userId = data.userId;
           let twitchDisplayName = data.twitchDisplayName;
           let isTwitterAuth = data.isTwitterAuth;
 
           this.setState({
+              userId: userId,
               twitchDisplayName: twitchDisplayName,
-              isTwitterAuth: isTwitterAuth});
+              isTwitterAuth: isTwitterAuth,
+              fetched: true});
       })
   }
   render() {
+    if (this.state.fetched) {
       return (
           <div>
               <NavBar />
@@ -30,38 +38,9 @@ class App extends Component {
               <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth}/>
           </div>
       )
-  }
-}
-
-// Welcome
-class WelcomeUser extends Component {
-
-  login() {
-    fetch("/login/twitch",
-    {credentials: 'same-origin'})
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    })
-  }
-
-  render() {
-    if (this.props.twitchDisplayName) {
-      return (
-        <h2>
-          Welcome, {this.props.twitchDisplayName}!
-        </h2>
-      );
     } else {
-      return (
-        <h2>
-          {/* Welcome! <span onClick={this.login}>Log in with Twitch</span> to get started! */}
-          Welcome! <a href="http://localhost:7000/login/twitch">Log in with Twitch</a> to get started!
-          {/* Welcome! <a href="http://localhost:7000/static-page">Log in with Twitch</a> to get started! */}
-        </h2>
-      )
+      return <div></div>
     }
-
   }
 }
 
@@ -80,7 +59,7 @@ class ConnectTwitter extends Component {
       return (
           <p>
               To get started, please connect your Twitter account:<br />
-              <a href="/auth-twitter">Connect Twitter</a>
+              <a href="http://localhost:7000/auth-twitter">Connect Twitter</a>
           </p>
       )
   }

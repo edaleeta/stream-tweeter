@@ -16,6 +16,9 @@
   "proxy": {
     "/api": {
       "target": "http://localhost:7000/"
+    },
+    "/login": {
+      "target": "http://localhost:7000/"
     }
   }
 }
