@@ -10,7 +10,7 @@ class App extends Component {
   }
 
   componentDidMount(nextProps, nextState){
-      fetch("/current-user.json",
+      fetch("/api/current-user.json",
       {credentials: 'same-origin'})
       .then((response)=> response.json())
       .then((data) => {
@@ -35,11 +35,33 @@ class App extends Component {
 
 // Welcome
 class WelcomeUser extends Component {
+
+  login() {
+    fetch("/login/twitch",
+    {credentials: 'same-origin'})
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+    })
+  }
+
   render() {
+    if (this.props.twitchDisplayName) {
       return (
-          <h2>Welcome, {this.props.twitchDisplayName}!
-          </h2>
+        <h2>
+          Welcome, {this.props.twitchDisplayName}!
+        </h2>
+      );
+    } else {
+      return (
+        <h2>
+          {/* Welcome! <span onClick={this.login}>Log in with Twitch</span> to get started! */}
+          Welcome! <a href="http://localhost:7000/login/twitch">Log in with Twitch</a> to get started!
+          {/* Welcome! <a href="http://localhost:7000/static-page">Log in with Twitch</a> to get started! */}
+        </h2>
       )
+    }
+
   }
 }
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 const navLinks = {
-    home: "/index-react",
-    login: "/login",
-    logout: "/logout"
+    home: "/",
+    login: "http://localhost:7000/login/twitch",
+    logout: "http://localhost:7000/logout"
 }
 
 // Navigation 

@@ -106,7 +106,7 @@ def show_index_react():
     return render_template("index-react.html")
 
 
-@app.route("/current-user.json")
+@app.route("/api/current-user.json")
 def get_current_user_json():
     "Return jsonified info about current user."
 
@@ -184,20 +184,32 @@ def show_login():
     return render_template("login.html")
 
 
+@app.route("/static-page")
+def show_static_page():
+    """Just a simple static page for testing."""
+    return flask.make_response(render_template("static.html"))
+
+
 @app.route("/login/twitch")
 def login_with_twitch():
     """Logs in user with Twitch account."""
     callback_uri = url_for("authorize_twitch", _external=True)
+    print("\n\nAt /login/twitch\n\n")
+    print("\nNext URL is: {}".format(request.referrer))
+    session["referrer_url"] = request.referrer
     return (twitch.authorize(callback=callback_uri,
                              next=request.args.get("next") or
                              request.referrer or None))
 
 
 @app.route("/login/twitch/authorized")
-def authorize_twitch():
+@twitch.authorized_handler
+def authorize_twitch(resp):
     """Get access token from Twitch user after auth."""
+    print("\n\nAt /login/twitch/authorized\n\n")
+    print("\nNext URL is: {}".format(request.args.get("next")))
+
     next_url = request.args.get('next') or url_for('show_index')
-    resp = twitch.authorized_response()
 
     # Redirect with message if user does not authorize Twitch account.
     if resp is None:
@@ -234,18 +246,20 @@ def authorize_twitch():
                 expires_in
             )
             flask.next = request.args.get('next')
-            return redirect(flask.next or url_for('show_index'))
+            return redirect(session["referrer_url"] or flask.next or url_for('show_index'))
 
 
 @app.route("/logout")
 def logout_user_cleanup():
     """Logs out user."""
 
+    print("\n\nGot to logout from: {}".format(request.referrer))
+
     logout_user()
     session.clear()
 
     flash("You were logged out!")
-    return redirect("/")
+    return redirect(request.referrer)
 
 
 @app.route("/add-tweet-template", methods=["POST"])

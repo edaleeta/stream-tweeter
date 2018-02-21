@@ -443,6 +443,7 @@ def connect_to_db(app, db_uri="postgresql:///yattk", show_sql=True):
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = show_sql
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     db.app = app
     db.init_app(app)
 
