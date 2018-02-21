@@ -126,11 +126,14 @@ def get_current_user_json():
 def get_current_user_templates():
     """Return jsonified info about current user's templates."""
 
-    templates = {}
+    templates = []
 
     for template in current_user.templates:
-        templates[template.template_id] = template.contents
+        template_obj = {"templateId": template.template_id,
+                        "contents": template.contents}
+        templates.append(template_obj)
 
+    # return jsonify(templates)
     return jsonify(templates)
 
 

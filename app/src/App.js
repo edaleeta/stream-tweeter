@@ -14,7 +14,7 @@ class App extends Component {
     }
   }
 
-  componentWillMount(nextProps, nextState){
+  componentDidMount(nextProps, nextState) {
       fetch("/api/current-user.json",
       {credentials: 'same-origin'})
       .then((response)=> response.json())
