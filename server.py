@@ -304,6 +304,31 @@ def add_user_created_template():
     return tweet_template_list(current_user)
 
 
+# Copy of my original route for React frontend.
+@app.route("/api/add-tweet-template", methods=["POST"])
+def add_user_created_template_react():
+    """Adds template the current user created to DB."""
+
+    print("\n\nTRYING TO SAVE NEW TWEET TEMPLATE.\n\n")
+    import pdb; pdb.set_trace()
+    # TODO: Handle trimming of whitespace and validation post trim in JS
+    template_contents = request.get_json().get("contents", "").strip()
+
+    print("Submitted contents: {}".format(template_contents))
+
+    if template_contents:
+        # TODO: Need to add messaging that plays nicely with AJAX.
+        # flash("You entered something!")
+        add_template_to_db(current_user, template_contents)
+    else:
+        # flash("You didn't enter anything.")
+        return redirect("/")
+
+    tweet_template_list = get_template_attribute("macros.html",
+                                                 "tweet_template_list")
+    return tweet_template_list(current_user)
+
+
 @app.route("/delete-tweet-template", methods=["POST"])
 def delete_template_for_user():
     """Deletes a specific template owned by user."""

@@ -14,5 +14,5 @@ export class TweetTemplateDeleteButton extends Component {
 }
 
 TweetTemplateDeleteButton.propTypes = {
-    templateId: PropTypes.string.isRequired
+    templateId: PropTypes.number.isRequired
 }
