@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'react-bootstrap';
 
 export class TweetTemplateDeleteButton extends Component {
 
     render() {
         return (
-            <button className="del-tweet-button" value={this.props.templateId}>
+            <Button bsStyle="danger" className="del-tweet-button" value={this.props.templateId}>
                 Delete Template
-            </button>
+            </Button>
         )
     }
 }

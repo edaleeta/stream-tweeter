@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ButtonToolbar } from 'react-bootstrap';
 import { TweetTemplateText } from './TweetTemplateText';
 import { TweetTemplateDeleteButton } from './TweetTemplateDeleteButton';
 import { TweetTemplateEditButton } from './TweetTemplateEditButton';
@@ -10,8 +11,10 @@ export class TweetTemplateContainer extends Component {
         return (
             <div>
                 <TweetTemplateText contents={this.props.template.contents} />
-                <TweetTemplateDeleteButton templateId={this.props.template.templateId} />
-                <TweetTemplateEditButton templateId={this.props.template.templateId} />
+                <ButtonToolbar>
+                    <TweetTemplateDeleteButton templateId={this.props.template.templateId} />
+                    <TweetTemplateEditButton templateId={this.props.template.templateId} />
+                </ButtonToolbar>
             </div>
         )
     }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
+import { PageHeader } from 'react-bootstrap';
 import './App.css';
 import { NavBar } from './NavBar'
 import { WelcomeUser } from './WelcomeUser'
@@ -34,11 +35,12 @@ class App extends Component {
     if (this.state.fetched && this.state.userId) {
       // When the initial data has been fetched, and we receive the logged in user...
       return (
-          <div>
-              <NavBar />
-              <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
-              <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
-              <TweetTemplates isTwitterAuth={this.state.isTwitterAuth} />
+        <div>
+            <PageHeader>Stream Tweeter <small>A Social media automation tool for Twitch streamers.</small></PageHeader>
+            <NavBar />
+            <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+            <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
+            <TweetTemplates isTwitterAuth={this.state.isTwitterAuth} />
           </div>
       );
     } else if (this.state.fetched) {
