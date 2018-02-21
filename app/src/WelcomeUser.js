@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export class WelcomeUser extends Component {
     
@@ -20,3 +21,7 @@ export class WelcomeUser extends Component {
       }
     }
   }
+
+WelcomeUser.propTypes = {
+  twitchDisplayName: PropTypes.string
+}
