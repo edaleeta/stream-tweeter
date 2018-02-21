@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { TweetTemplateText } from './TweetTemplateText';
 
 export class TweetTemplateContainer extends Component {
 
     render() {
-        return <p>{this.props.template.contents.split('\r\n').map((text, key) => {
-            return (
-                <span key={key}>{text}<br /></span>
-            )
-        })}</p>
+        return (
+            <div>
+                <TweetTemplateText contents={this.props.template.contents} />
+            </div>
+        )
     }
 }
 
