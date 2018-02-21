@@ -89,21 +89,9 @@ def nl2br(eval_ctx, value):
         result = Markup(result)
     return result
 
-
-@app.route("/")
-def show_index():
-    "Show homepage."
-    if current_user:
-        return render_template("add-tweet-template.html")
-
-    return render_template("index.html")
-
-
-@app.route("/index-react")
-def show_index_react():
-    "Show homepage using React."
-
-    return render_template("index-react.html")
+###############################################################################
+# API ROUTES
+###############################################################################
 
 
 @app.route("/api/current-user.json")
@@ -132,6 +120,39 @@ def get_current_user_json():
     else:
         print("User is not logged in.")
         return jsonify(error="Not logged in.")
+
+
+@app.route("/api/current-user-templates.json")
+def get_current_user_templates():
+    """Return jsonified info about current user's templates."""
+
+    templates = {}
+
+    for template in current_user.templates:
+        templates[template.template_id] = template.contents
+
+    return jsonify(templates)
+
+
+###############################################################################
+# PAGE ROUTES
+###############################################################################
+
+
+@app.route("/")
+def show_index():
+    "Show homepage."
+    if current_user:
+        return render_template("add-tweet-template.html")
+
+    return render_template("index.html")
+
+
+@app.route("/index-react")
+def show_index_react():
+    "Show homepage using React."
+
+    return render_template("index-react.html")
 
 
 @app.route("/register-twitch")
