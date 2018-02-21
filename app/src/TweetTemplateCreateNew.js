@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
-
+import { TweetTemplatesCurrent } from './TweetTemplatesCurrent'; 
 export class TweetTemplateCreateNew extends Component {
     constructor(props) {
         super(props);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TweetTemplateContainer } from './TweetTemplateContainer'
+import { TweetTemplatesCurrent } from './TweetTemplatesCurrent'
 import { TweetTemplateCreateNew } from './TweetTemplateCreateNew'
 
 export class TweetTemplates extends Component {
@@ -21,15 +21,19 @@ export class TweetTemplates extends Component {
         })        
     }
 
+    updateTweetTemplateList() {
+        this.setState({
+            // TODO: Continue here.
+        })
+    }
+
     render() {
         if (this.props.isTwitterAuth && this.state.templates) {
             
             return (
                 <div>
                     <h3>Your Tweet Templates</h3>
-                    {this.state.templates.map((template, key) => (
-                        <TweetTemplateContainer template={template} key={key} />
-                    ))}
+                    <TweetTemplatesCurrent templates={this.state.templates} />
                     <TweetTemplateCreateNew />
                 </div>
             );
