@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TweetTemplateContainer } from './TweetTemplateContainer'
+import { TweetTemplateCreateNew } from './TweetTemplateCreateNew'
 
 export class TweetTemplates extends Component {
     
@@ -29,6 +30,7 @@ export class TweetTemplates extends Component {
                     {this.state.templates.map((template, key) => (
                         <TweetTemplateContainer template={template} key={key} />
                     ))}
+                    <TweetTemplateCreateNew />
                 </div>
             );
 
