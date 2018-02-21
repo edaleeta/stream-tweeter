@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { NavBar } from './NavBar'
 import { WelcomeUser } from './WelcomeUser'
+import { TweetTemplates } from './TweetTemplates'
 
 class App extends Component {
   constructor(props) {
@@ -30,15 +31,27 @@ class App extends Component {
       })
   }
   render() {
-    if (this.state.fetched) {
+    if (this.state.fetched && this.state.userId) {
+      // When the initial data has been fetched, and we receive the logged in user...
       return (
           <div>
               <NavBar />
               <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
-              <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth}/>
+              <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
+              <TweetTemplates isTwitterAuth={this.state.isTwitterAuth} />
           </div>
-      )
+      );
+    } else if (this.state.fetched) {
+      // If we don't have a logged in user, show this...
+      return (
+        <div>
+        <NavBar />
+        <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+        {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
+        </div>
+      );
     } else {
+      // If our fetch hasn't completed, do not render anything.
       return <div></div>
     }
   }
