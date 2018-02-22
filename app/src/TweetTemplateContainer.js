@@ -12,8 +12,8 @@ export class TweetTemplateContainer extends Component {
             <div>
                 <TweetTemplateText contents={this.props.template.contents} />
                 <ButtonToolbar>
-                    <TweetTemplateDeleteButton templateId={this.props.template.templateId} />
-                    <TweetTemplateEditButton templateId={this.props.template.templateId} />
+                    <TweetTemplateDeleteButton onClick={this.props.onClick} templateId={this.props.template.templateId} />
+                    <TweetTemplateEditButton onClick={this.props.onClick} templateId={this.props.template.templateId} />
                 </ButtonToolbar>
             </div>
         )
@@ -21,5 +21,6 @@ export class TweetTemplateContainer extends Component {
 }
 
 TweetTemplateContainer.propTypes = {
-    template: PropTypes.object.isRequired
+    template: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired
 }

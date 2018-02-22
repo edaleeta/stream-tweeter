@@ -7,7 +7,7 @@ export class TweetTemplateCreateNew extends Component {
             contents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!"
         };
         this.handleClick = this.handleClick.bind(this);
-        this.handleOnChange = this.handleOnChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     handleClick(e) {
@@ -37,7 +37,7 @@ export class TweetTemplateCreateNew extends Component {
         })
     }
 
-    handleOnChange(e) {
+    handleChange(e) {
         this.setState({
             contents: e.target.value
         });
@@ -48,7 +48,7 @@ export class TweetTemplateCreateNew extends Component {
             <form>
                 <FormGroup>
                     <ControlLabel>Create a new Tweet Template: </ControlLabel>
-                    <FormControl onChange={this.handleOnChange} componentClass="textarea" value={this.state.contents}>
+                    <FormControl onChange={this.handleChange} componentClass="textarea" value={this.state.contents}>
                     </FormControl>
                     <Button type="submit" onClick={this.handleClick}>Save Tweet Template</Button>
                 </FormGroup>
