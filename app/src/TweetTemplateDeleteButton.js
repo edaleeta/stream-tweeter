@@ -11,11 +11,36 @@ export class TweetTemplateDeleteButton extends Component {
 
     handleClick(e) {
         console.log(e.target.value);
-        // Trigger reload of current template list
-        // Note: We'll want to prevent TweetTemplateCurrent from rerendering if no tweet was deleted.
-
-        
         this.props.onClick();
+
+        let url = "/api/delete-tweet-template";
+        let payload = JSON.stringify({"templateId": this.props.templateId});
+
+        fetch(url, {
+            credentials: 'same-origin',
+            method: 'POST',
+            body: payload, 
+            headers: new Headers({
+            'Content-Type': 'application/json'
+            })
+        })
+        .then(res => {
+            console.log(res)
+            res.json();
+        })
+        .catch(error => console.error('Error:', error))
+        .then(response => {
+                console.log('Success:', response);
+                // Tells Tweet Templates that we deleted a Template!
+                this.props.onClick();
+        })        
+
+
+        // // Trigger reload of current template list
+        // // Note: We'll want to prevent TweetTemplateCurrent from rerendering if no tweet was deleted.
+        
+
+
     }
 
     render() {

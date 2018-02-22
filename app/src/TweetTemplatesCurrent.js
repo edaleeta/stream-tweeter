@@ -5,47 +5,49 @@ import { TweetTemplateContainer } from './TweetTemplateContainer'
 export class TweetTemplatesCurrent extends Component {
     constructor(props) {
         super(props);
+        
         this.state = {
             templates: "",
             isUpdated: props.isUpdated
         }
-        this.onClickUpdateTweetTemplatesCurrent = this.onClickUpdateTweetTemplatesCurrent.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         fetch("/api/current-user-templates.json",
         {credentials: 'same-origin'})
         .then((response)=> response.json())
         .then((data) => {
+            console.log("TweetTemplatesCurrent mounted!");
             this.setState({
                 templates: data
             });
         })        
     }
 
-    componentWillUpdate() {
+    componentWillReceiveProps() {
         fetch("/api/current-user-templates.json",
         {credentials: 'same-origin'})
         .then((response)=> response.json())
         .then((data) => {
+            console.log("TweetTemplatesCurrent is receiving props!");
             this.setState({
                 templates: data
             });
         })        
     }
 
-
-    onClickUpdateTweetTemplatesCurrent() {
-        this.setState({
-            isUpdated: true
-        })
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.templates === this.state.templates) {
+            return false;
+        }
+        return true;
     }
 
 
     render() {
         if (this.state.templates) {
             return (this.state.templates.map((template, key) => (
-                <TweetTemplateContainer template={template} key={key} onClick={this.onClickUpdateTweetTemplatesCurrent} />
+                <TweetTemplateContainer template={template} key={key} onClick={this.props.onClick} />
             )))
         } else {
             return <div></div>
