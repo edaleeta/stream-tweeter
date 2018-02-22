@@ -25,7 +25,7 @@ export class TweetTemplates extends Component {
             
             return (
                 <div>
-                    <StartTweetingButton />
+                    <StartTweetingButton userId={this.props.userId} />
                     <h3>Your Tweet Templates</h3>
                     <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
                     <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
@@ -38,5 +38,6 @@ export class TweetTemplates extends Component {
 }
 
 TweetTemplates.propTypes = {
-    isTwitterAuth: PropTypes.bool.isRequired
+    isTwitterAuth: PropTypes.bool.isRequired,
+    userId: PropTypes.number.isRequired
 }

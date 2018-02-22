@@ -17,6 +17,7 @@ from model import *
 # FOR APSCHEDULER
 import apscheduler_handlers as handler
 import template_helpers as temp_help
+import twitch_helpers
 
 app = Flask(__name__)
 
@@ -206,18 +207,21 @@ def edit_template_for_user_react():
 def start_tweets_react():
     """Starts sending tweets; used for testing."""
 
-    # Starts job to fetch twitch data.
-    handler.start_fetching_twitch_data(int(current_user.user_id))
+    if twitch_helpers.is_twitch_online:
+        # Starts job to fetch twitch data.
+        handler.start_fetching_twitch_data(int(current_user.user_id))
 
-    # TODO: Update hardcoded interval to a user's choice.
-    tweet_interval = 10
-    # Start sending tweets
-    handler.start_tweeting(int(current_user.user_id), tweet_interval)
+        # TODO: Update hardcoded interval to a user's choice.
+        tweet_interval = 10
+        # Start sending tweets
+        handler.start_tweeting(int(current_user.user_id), tweet_interval)
 
-    return # Error or success
+        return jsonify(success=True)
 
-    # TODO: Error handler for case when stream is offline.
-    return "Stream is offline."
+    error_message = "User's stream is offline. Jobs not started."
+    return (flask.json.dumps({"error": error_message}),
+            503,
+            {'ContentType': 'application/json'})
 
 
 ###############################################################################
