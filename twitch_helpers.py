@@ -10,6 +10,53 @@ import apscheduler_handlers as ap_handlers
 get_stream_failures = {}
 
 
+def is_twitch_online(user):
+    """Check if user's Twitch stream is live."""
+
+    response = get_stream_info(user)
+    try:
+        check_response_status(response.status_code)
+        stream_data = response.json().get("data")
+        # If stream_data has contents, the user is streaming.
+        if stream_data:
+            return True
+        # Otherwise, the stream is offline.
+        return False
+    except Exception as e:
+        print(str(e))
+        return False
+
+
+def check_response_status(status_code):
+    """Handles errors for response status codes."""
+
+    if status_code == 200:
+        print("Response OK.")
+        return True
+    elif status_code == 401:
+        # TODO: Create custom exception
+        # so we can use this to refresh user's token.
+        raise Exception("Access token expired.")
+    else:
+        raise Exception("Reaching Twitch API failed. Status code: {}"
+                        .format(status_code))
+
+
+def get_stream_info(user):
+    """Get user's stream info from Twitch API."""
+
+    twitch_id = str(user.twitch_id)
+    token = user.twitch_token.access_token
+    payload_streams = {"user_id": twitch_id,    # Edit this to test
+                       "first": 1,
+                       "type": "live"}
+    headers = {"Authorization": "Bearer {}".format(token)}
+    r_streams = requests.get("https://api.twitch.tv/helix/streams",
+                             params=payload_streams,
+                             headers=headers)
+    return r_streams
+
+
 def get_and_write_twitch_stream_data(user):
     """Get Twitch stream data for user's stream."""
 
@@ -174,7 +221,7 @@ def get_clip_info(clip_id, headers):
     while failures <= 3:
         r_get_clip = requests.get("https://api.twitch.tv/helix/clips",
                                   params=payload_get_clip,
-                                  headers=headers)   
+                                  headers=headers)
         if r_get_clip.status_code == 200:
             clip_info = r_get_clip.json().get("data")
             try:
@@ -184,7 +231,7 @@ def get_clip_info(clip_id, headers):
                 failures += 1
                 time.sleep(5)
     return None
-        
+
 
 
 if __name__ == "__main__":
@@ -194,3 +241,5 @@ if __name__ == "__main__":
     from model import connect_to_db
     connect_to_db(app)
     print("Connected to DB.")
+    # For testing convinience, let's get a User object.
+    me = User.query.get(4)

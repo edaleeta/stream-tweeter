@@ -40,3 +40,12 @@ def send_tweets(user_id):
 
     except Exception as e:
         print(e)
+
+
+if __name__ == "__main__":
+    # Interact with db if we run this module directly.
+
+    from server import app
+    from model import connect_to_db
+    connect_to_db(app)
+    print("Connected to DB.")

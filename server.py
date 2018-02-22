@@ -202,6 +202,24 @@ def edit_template_for_user_react():
             {'ContentType': 'application/json'})
 
 
+@app.route("/api/start-tweeting", methods=["POST"])
+def start_tweets_react():
+    """Starts sending tweets; used for testing."""
+
+    # Starts job to fetch twitch data.
+    handler.start_fetching_twitch_data(int(current_user.user_id))
+
+    # TODO: Update hardcoded interval to a user's choice.
+    tweet_interval = 10
+    # Start sending tweets
+    handler.start_tweeting(int(current_user.user_id), tweet_interval)
+
+    return # Error or success
+
+    # TODO: Error handler for case when stream is offline.
+    return "Stream is offline."
+
+
 ###############################################################################
 # PAGE ROUTES
 ###############################################################################
