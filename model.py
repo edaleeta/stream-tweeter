@@ -62,6 +62,16 @@ class User(db.Model):
         rep += ">"
         return rep
 
+    def update_tweet_interval(self, tweet_interval):
+        """Updates the tweet interval setting for user."""
+
+        try:
+            self.tweet_interval = int(tweet_interval)
+            db.session.commit()
+        except ValueError:
+            print("Invalid argument. Received: {}"
+                  .format(tweet_interval))
+
     def update_twitch_access_token(self,
                                    access_token,
                                    refresh_token,
