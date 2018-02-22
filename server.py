@@ -143,8 +143,7 @@ def add_user_created_template_react():
     """Adds template the current user created to DB."""
 
     print("\n\nTRYING TO SAVE NEW TWEET TEMPLATE.\n\n")
-    # TODO: Handle trimming of whitespace and validation post trim in JS
-    template_contents = request.get_json().get("contents", "").strip()
+    template_contents = request.get_json().get("contents", "")
 
     print("Submitted contents: {}".format(template_contents))
     if template_contents:

@@ -17,7 +17,9 @@ export class TweetTemplateCreateNew extends Component {
         console.log(this.state.contents);
         console.log(JSON.stringify(this.state));
         let url = "/api/add-tweet-template";
-        let payload = JSON.stringify(this.state);
+        let payload = JSON.stringify({
+            contents: this.state.contents.trim()
+        });
 
         fetch(url, {
                 credentials: 'same-origin',
