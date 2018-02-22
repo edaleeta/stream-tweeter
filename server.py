@@ -206,8 +206,7 @@ def edit_template_for_user_react():
 @app.route("/api/start-tweeting", methods=["POST"])
 def start_tweets_react():
     """Starts sending tweets; used for testing."""
-
-    if twitch_helpers.is_twitch_online:
+    if twitch_helpers.is_twitch_online(current_user):
         # Starts job to fetch twitch data.
         handler.start_fetching_twitch_data(int(current_user.user_id))
 
