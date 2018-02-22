@@ -180,6 +180,25 @@ def delete_template_for_user_react():
             {'ContentType': 'application/json'})
 
 
+# Modified from original route for React frontend.
+@app.route("/api/edit-tweet-template", methods=["POST"])
+def edit_template_for_user_react():
+    """Edits a specific template owned by a user."""
+    temp_to_edit = request.get_json().get("templateId", "")
+    contents = request.get_json().get("contents", "")
+
+    if temp_to_edit and contents:
+        current_user.edit_template(temp_to_edit, contents)
+        return (flask.json.dumps({'success': True}),
+                200,
+                {'ContentType': 'application/json'})
+
+    error_message = "Bad request. Please send templateId and contents."
+    return (flask.json.dumps({"error": error_message}),
+            400,
+            {'ContentType': 'application/json'})
+
+
 ###############################################################################
 # PAGE ROUTES
 ###############################################################################

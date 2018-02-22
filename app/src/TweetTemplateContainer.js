@@ -29,10 +29,20 @@ export class TweetTemplateContainer extends Component {
             <div>
                 <TweetTemplateText contents={this.props.template.contents} />
                 <ButtonToolbar>
-                    <TweetTemplateDeleteButton onClick={this.props.onClick} templateId={this.props.template.templateId} />
-                    <TweetTemplateEditButton onClick={this.handleClickEdit} templateId={this.props.template.templateId} />
+                    <TweetTemplateDeleteButton
+                        onClick={this.props.onClick}
+                        templateId={this.props.template.templateId}
+                    />
+                    <TweetTemplateEditButton
+                        onClick={this.handleClickEdit}
+                        templateId={this.props.template.templateId}
+                    />
                 </ButtonToolbar>
-                <TweetTemplateEditForm onClick={this.props.onClick} hidden={this.state.isEditHidden} contents={this.props.template.contents} />
+                <TweetTemplateEditForm onClick={this.props.onClick}
+                    hidden={this.state.isEditHidden}
+                    templateId={this.props.template.templateId} 
+                    contents={this.props.template.contents}
+                />
             </div>
         )
     }

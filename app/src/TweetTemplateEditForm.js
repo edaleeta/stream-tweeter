@@ -17,7 +17,37 @@ export class TweetTemplateEditForm extends Component {
 
     handleSaveClick(e) {
         e.preventDefault();
-        console.log(this.state.contents);
+        console.log(this.props.templateId);
+        console.log(this.state.contents.trim());
+
+        let url = "/api/edit-tweet-template"
+        let payload = JSON.stringify({
+            templateId: this.props.templateId,
+            contents: this.state.contents.trim()
+        });
+
+        console.log(payload);
+
+        fetch(url, {
+            credentials: 'same-origin',
+            method: 'POST',
+            body: payload, 
+            headers: new Headers({
+            'Content-Type': 'application/json'
+            })
+        })
+        .then(res => res.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => {
+                console.log('Success:', response);
+                // Tells Tweet Templates that we saved a new Template!
+                this.props.onClick();
+                // Clear contents of textbox after submitting.
+                this.setState({
+                    contents: this.state.originalContents
+                });
+    })
+
     }
 
     handleResetClick(e) {
@@ -60,5 +90,6 @@ export class TweetTemplateEditForm extends Component {
 
 TweetTemplateEditForm.propTypes = {
     hidden: PropTypes.bool.isRequired,
-    contents: PropTypes.string.isRequired
+    contents: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired
 }
