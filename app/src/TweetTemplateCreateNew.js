@@ -4,10 +4,12 @@ export class TweetTemplateCreateNew extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            contents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!"
+            contents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!",
+            defaultContents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!"
         };
         this.handleClick = this.handleClick.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleFocus = this.handleFocus.bind(this);
     }
 
     handleClick(e) {
@@ -44,12 +46,20 @@ export class TweetTemplateCreateNew extends Component {
         });
     }
 
+    handleFocus(e) {
+        if (this.state.contents === this.state.defaultContents) {
+            this.setState({
+                contents: ""
+            });
+        }
+    }
+
     render() {
         return (
             <form>
                 <FormGroup>
                     <ControlLabel>Create a new Tweet Template: </ControlLabel>
-                    <FormControl onChange={this.handleChange} componentClass="textarea" value={this.state.contents}>
+                    <FormControl onFocus={this.handleFocus} onChange={this.handleChange} componentClass="textarea" value={this.state.contents}>
                     </FormControl>
                     <Button type="submit" onClick={this.handleClick}>Save Tweet Template</Button>
                 </FormGroup>
