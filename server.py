@@ -83,8 +83,8 @@ _paragraph_re = re.compile(r'(?:\r)?')
 @app.template_filter()
 @evalcontextfilter
 def nl2br(eval_ctx, value):
-    result = u'\n\n'.join(u'%s' % p.replace('\n', '<br>\n') \
-        for p in _paragraph_re.split(escape(value)))
+    result = u'\n\n'.join(u'%s' % p.replace('\n', '<br>\n')
+                          for p in _paragraph_re.split(escape(value)))
     if eval_ctx.autoescape:
         result = Markup(result)
     return result
@@ -147,6 +147,9 @@ def add_user_created_template_react():
 
     print("Submitted contents: {}".format(template_contents))
     if template_contents:
+        template_contents = temp_help.replace_nl_with_carriage(
+            template_contents
+        )
         # TODO: Need to add messaging that plays nicely with AJAX.
         # flash("You entered something!")
         add_template_to_db(current_user, template_contents)
@@ -187,6 +190,7 @@ def edit_template_for_user_react():
     contents = request.get_json().get("contents", "")
 
     if temp_to_edit and contents:
+        contents = temp_help.replace_nl_with_carriage(contents)
         current_user.edit_template(temp_to_edit, contents)
         return (flask.json.dumps({'success': True}),
                 200,

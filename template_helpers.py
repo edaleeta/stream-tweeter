@@ -26,6 +26,15 @@ def add_basic_templates(user):
     db.session.commit()
 
 
+def replace_nl_with_carriage(content):
+    """Turns new lines into carriage return + new line."""
+
+    split_content = content.split("\n")
+    joined_content = "\r\n".join(split_content)
+
+    return joined_content
+
+
 def populate_tweet_template(contents, user_id):
     """Inserts data into placeholders."""
     try:
