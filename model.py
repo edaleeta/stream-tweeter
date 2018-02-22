@@ -24,6 +24,7 @@ class User(db.Model):
     twitch_username = db.Column(db.Text)
     twitch_id = db.Column(db.Text, unique=True)
     twitter_id = db.Column(db.Text)
+    tweet_interval = db.Column(db.Integer)
 
     is_active = True
     is_authenticated = True

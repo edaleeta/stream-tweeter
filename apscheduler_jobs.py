@@ -28,12 +28,6 @@ def send_tweets(user_id):
             random_template = random.choice(templates)
             print("\n\nRandom template is: {}\n\n".format(random_template))
 
-            # We're getting None back here.
-            # Let's just call the function to publish to Twitter and
-            # populate contents there?
-            # populated_template = populate_tweet_template(
-            #     random_template, user_id
-            # )
             template_helpers.create_and_publish_to_twitter(random_template,
                                                            user_id)
             print("TWEET TWEETED.")
