@@ -224,6 +224,29 @@ def start_tweets_react():
             {'ContentType': 'application/json'})
 
 
+@app.route("/api/update-user-settings", methods=["POST"])
+def update_user_settings_react():
+    """Updates settings for a user."""
+    new_tweet_interval = request.get_json().get("tweet_interval")
+
+    if not new_tweet_interval or new_tweet_interval < 30:
+        error_message = "Tweet interval cannot be less than 30."
+        print(error_message)
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    if not isinstance(new_tweet_interval, (int, float)):
+        error_message = "Tweet interval must be a number."
+        print(error_message)
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    current_user.update_tweet_interval(new_tweet_interval)
+    return (jsonify(success="Tweet interval updated."))
+
+
 ###############################################################################
 # PAGE ROUTES
 ###############################################################################
