@@ -39,15 +39,14 @@ export class TweetTemplateEditForm extends Component {
         .then(res => res.json())
         .catch(error => console.error('Error:', error))
         .then(response => {
-                console.log('Success:', response);
-                // Tells Tweet Templates that we saved a new Template!
-                this.props.onClick();
-                // Clear contents of textbox after submitting.
-                this.setState({
-                    contents: this.state.originalContents
-                });
-    })
-
+            console.log('Success:', response);
+            // Tells Tweet Templates that we saved a new Template!
+            this.props.onClick();
+            // Clear contents of textbox after submitting.
+            this.setState({
+                contents: this.state.originalContents
+            });
+        })
     }
 
     handleResetClick(e) {
@@ -66,7 +65,6 @@ export class TweetTemplateEditForm extends Component {
         if (this.props.hidden) {
             return(
                 <div>
-                    I'm a hidden form...:)
                 </div>
             )
         }

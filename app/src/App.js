@@ -40,7 +40,7 @@ class App extends Component {
             <NavBar />
             <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
             <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
-            <TweetTemplates isTwitterAuth={this.state.isTwitterAuth} />
+            <TweetTemplates userId={this.state.userId} isTwitterAuth={this.state.isTwitterAuth} />
           </div>
       );
     } else if (this.state.fetched) {
