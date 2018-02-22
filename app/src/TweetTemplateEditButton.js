@@ -6,7 +6,7 @@ export class TweetTemplateEditButton extends Component {
 
     render() {
         return (
-            <Button className="del-edit-button" value={this.props.templateId}>
+            <Button className="del-edit-button" value={this.props.templateId} onClick={this.props.onClick}>
                 Edit Template
             </Button>
         )

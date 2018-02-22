@@ -47,6 +47,7 @@ export class TweetTemplateCreateNew extends Component {
     }
 
     handleFocus(e) {
+        // Clear default text when user clicks into textarea.
         if (this.state.contents === this.state.defaultContents) {
             this.setState({
                 contents: ""
@@ -63,7 +64,6 @@ export class TweetTemplateCreateNew extends Component {
                     </FormControl>
                     <Button type="submit" onClick={this.handleClick}>Save Tweet Template</Button>
                 </FormGroup>
-
             </form>
         )
     }

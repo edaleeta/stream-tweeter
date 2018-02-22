@@ -58,5 +58,6 @@ export class TweetTemplatesCurrent extends Component {
 }
 
 TweetTemplatesCurrent.propTypes = {
+    onClick: PropTypes.func.isRequired,
     isUpdated: PropTypes.bool.isRequired,
 }
