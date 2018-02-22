@@ -36,7 +36,7 @@ class App extends Component {
       // When the initial data has been fetched, and we receive the logged in user...
       return (
         <div>
-            <PageHeader>Stream Tweeter <small>A Social media automation tool for Twitch streamers.</small></PageHeader>
+            <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
             <NavBar />
             <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
             <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
