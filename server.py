@@ -218,6 +218,7 @@ def start_tweets_react():
         return jsonify(success=True)
 
     error_message = "User's stream is offline. Jobs not started."
+    print(error_message)
     return (flask.json.dumps({"error": error_message}),
             503,
             {'ContentType': 'application/json'})
