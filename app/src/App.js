@@ -5,6 +5,7 @@ import './App.css';
 import { NavBar } from './NavBar'
 import { WelcomeUser } from './WelcomeUser'
 import { TweetTemplates } from './TweetTemplates'
+import { TweetOptions } from './TwitterOptions'
 
 class App extends Component {
   constructor(props) {
@@ -40,7 +41,8 @@ class App extends Component {
             <NavBar />
             <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
             <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
-            <TweetTemplates userId={this.state.userId} isTwitterAuth={this.state.isTwitterAuth} />
+            <TweetOptions isTwitterAuth={this.state.isTwitterAuth} userId={this.state.userId} />
+            <TweetTemplates isTwitterAuth={this.state.isTwitterAuth} userId={this.state.userId} />
           </div>
       );
     } else if (this.state.fetched) {
