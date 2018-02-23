@@ -19,7 +19,7 @@ export class TweetOptions extends Component {
                     <h2>Twitter Options</h2>
                     Twitter Options will go here!
                     <TweetOptionsInterval userId={this.props.userId} />
-                    <TweetOptionsRevoke userId={this.props.userId} />
+                    <TweetOptionsRevoke userId={this.props.userId} onClick={this.props.onClick} />
                 </div>
             ); 
         } else {
@@ -30,5 +30,6 @@ export class TweetOptions extends Component {
 
 TweetOptions.propTypes = {
     isTwitterAuth: PropTypes.bool.isRequired,
-    userId: PropTypes.number.isRequired
+    userId: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired
 }

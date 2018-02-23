@@ -109,7 +109,7 @@ class User(db.Model):
 
         # TODO: Test
         # What happens if I try to delete when it doesn't exist?
-        self.twitter_token.delete()
+        db.session.delete(self.twitter_token)
         db.session.commit()
 
     def delete_template(self, template_id):

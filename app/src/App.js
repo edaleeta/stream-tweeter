@@ -13,7 +13,8 @@ class App extends Component {
     this.state = {
       userId: null,
       twitchDisplayName: null,
-    }
+    };
+    this.onClickTwitterAccessRevoked = this.onClickTwitterAccessRevoked.bind(this);
   }
 
   componentDidMount(nextProps, nextState) {
@@ -32,6 +33,13 @@ class App extends Component {
               fetched: true});
       })
   }
+
+  onClickTwitterAccessRevoked() {
+    this.setState({
+      isTwitterAuth: false
+    })
+  }
+
   render() {
     if (this.state.fetched && this.state.userId) {
       // When the initial data has been fetched, and we receive the logged in user...
@@ -41,7 +49,7 @@ class App extends Component {
             <NavBar />
             <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
             <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
-            <TweetOptions isTwitterAuth={this.state.isTwitterAuth} userId={this.state.userId} />
+            <TweetOptions isTwitterAuth={this.state.isTwitterAuth} userId={this.state.userId} onClick={this.onClickTwitterAccessRevoked} />
             <TweetTemplates isTwitterAuth={this.state.isTwitterAuth} userId={this.state.userId} />
           </div>
       );
