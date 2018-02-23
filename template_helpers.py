@@ -106,7 +106,7 @@ def create_and_publish_to_twitter(template, user_id):
     if new_clip:
         contents += "\n{}".format(clip_url)
         clip_id = new_clip.clip_id
-
+    print("\n\nABOUT TO SEND A TWEET!\n\n")
     try:
         # Send Tweet and catch response
         response = api.update_status(contents)
@@ -115,6 +115,7 @@ def create_and_publish_to_twitter(template, user_id):
     except tweepy.TweepError as error:
         # TODO: Set up better handler for errors.
         print(error.reason)
+    print("IF I CAN SEE THIS, MY HELPER FUNCTION WORKED.")
 
 
 if __name__ == "__main__":

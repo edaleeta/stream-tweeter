@@ -210,8 +210,7 @@ def start_tweets_react():
         # Starts job to fetch twitch data.
         handler.start_fetching_twitch_data(int(current_user.user_id))
 
-        # TODO: Update hardcoded interval to a user's choice.
-        tweet_interval = 10
+        tweet_interval = current_user.tweet_interval or 30
         # Start sending tweets
         handler.start_tweeting(int(current_user.user_id), tweet_interval)
 
@@ -385,7 +384,8 @@ def authorize_twitch(resp):
                 expires_in
             )
             flask.next = request.args.get('next')
-            return redirect(session["referrer_url"] or flask.next or url_for('show_index'))
+            return (redirect(session["referrer_url"] or
+                    flask.next or url_for('show_index')))
 
 
 @app.route("/logout")
@@ -473,7 +473,7 @@ def send_test_tweet():
 
         # Start sending tweets
         # TODO: Update hardcoded interval to a user's choice.
-        tweet_interval = 10
+        tweet_interval = current_user.tweet_interval
         handler.start_tweeting(int(current_user.user_id), tweet_interval)
 
         return populated_tweet_template
