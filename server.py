@@ -107,7 +107,8 @@ def get_current_user_json():
             "userId": current_user.user_id,
             "email": current_user.email,
             "twitchDisplayName": current_user.twitch_displayname,
-            "twitchId": current_user.twitch_id
+            "twitchId": current_user.twitch_id,
+            "tweetInterval": current_user.tweet_interval or 30
         }
 
         # Add status of Twitter auth
