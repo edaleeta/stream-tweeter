@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TweetOptionsInterval } from './TweetOptionsInterval'
+import { TweetOptionsRevoke } from './TweetOptionsRevoke'
 
 export class TweetOptions extends Component {
     
@@ -18,6 +19,7 @@ export class TweetOptions extends Component {
                     <h2>Twitter Options</h2>
                     Twitter Options will go here!
                     <TweetOptionsInterval userId={this.props.userId} />
+                    <TweetOptionsRevoke userId={this.props.userId} />
                 </div>
             ); 
         } else {

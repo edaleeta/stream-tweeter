@@ -65,6 +65,7 @@ class User(db.Model):
     def update_tweet_interval(self, tweet_interval):
         """Updates the tweet interval setting for user."""
 
+        # TODO: Test
         self.tweet_interval = int(tweet_interval)
         db.session.commit()
 
@@ -101,6 +102,14 @@ class User(db.Model):
                                      access_token=access_token,
                                      access_token_secret=access_token_secret)
             db.session.add(new_token)
+        db.session.commit()
+
+    def remove_twitter_access_token(self):
+        """Removes the Twitter access token and info for user."""
+
+        # TODO: Test
+        # What happens if I try to delete when it doesn't exist?
+        self.twitter_token.delete()
         db.session.commit()
 
     def delete_template(self, template_id):
