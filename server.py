@@ -510,11 +510,14 @@ def authorize_twitter():
     try:
         redirect_url = twitter_oauth.get_authorization_url()
         session["twitter_request_token"] = twitter_oauth.request_token
+        # Store referrer url in session so we can redirect
+        # back to React frontend after auth flow.
+        session["referrer_url"] = request.referrer
         return redirect(redirect_url)
     except tweepy.TweepError:
         # TODO: Set up a handler for auth errors.
-        flash("Authorization failed.")
-        return redirect("/")
+        print("Twitter authorization failed.")
+        return redirect(session["referrer_url"] or "/")
 
 
 @app.route("/auth-twitter/authorized")
@@ -540,10 +543,11 @@ def get_twitter_token():
         current_user.update_twitter_access_token(access_token,
                                                  access_token_secret)
         flash("Twitter account connected.")
-    except tweepy.TweepError:
-        flash("Authorization failed.")
+    except tweepy.TweepError as e:
+        print("Twitter authorization failed.")
+        print(e.reason)
 
-    return redirect("/")
+    return redirect(session["referrer_url"] or "/")
 
 ###############################################################################
 # TEST ROUTES
