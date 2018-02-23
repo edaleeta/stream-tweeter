@@ -13,6 +13,7 @@ class App extends Component {
     this.state = {
       userId: null,
       twitchDisplayName: null,
+      tweetInterval: null
     };
     this.onClickTwitterAccessRevoked = this.onClickTwitterAccessRevoked.bind(this);
   }
@@ -25,11 +26,13 @@ class App extends Component {
           let userId = data.userId;
           let twitchDisplayName = data.twitchDisplayName;
           let isTwitterAuth = data.isTwitterAuth;
+          let tweetInterval = data.tweetInterval;
 
           this.setState({
               userId: userId,
               twitchDisplayName: twitchDisplayName,
               isTwitterAuth: isTwitterAuth,
+              tweetInterval: data.tweetInterval,
               fetched: true});
       })
   }
@@ -49,7 +52,11 @@ class App extends Component {
             <NavBar />
             <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
             <ConnectTwitter isTwitterAuth={this.state.isTwitterAuth} />
-            <TweetOptions isTwitterAuth={this.state.isTwitterAuth} userId={this.state.userId} onClick={this.onClickTwitterAccessRevoked} />
+            <TweetOptions
+              isTwitterAuth={this.state.isTwitterAuth}
+              userId={this.state.userId}
+              tweetInterval={this.state.tweetInterval}
+              onClick={this.onClickTwitterAccessRevoked}/>
             <TweetTemplates isTwitterAuth={this.state.isTwitterAuth} userId={this.state.userId} />
           </div>
       );
