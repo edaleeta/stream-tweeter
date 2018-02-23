@@ -24,7 +24,8 @@ export class TweetOptions extends Component {
           <TweetOptionsRevoke
             userId={this.props.userId}
             tweetInterval={this.props.tweetInterval}
-            onClick={this.props.onClick} />
+            onClick={this.props.onClick}
+          />
         </div>
       ); 
     } else {
