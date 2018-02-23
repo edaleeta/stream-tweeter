@@ -57,6 +57,7 @@ class App extends Component {
       // If we don't have a logged in user, show this...
       return (
         <div>
+        <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
         <NavBar />
         <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
         {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
@@ -84,7 +85,7 @@ class ConnectTwitter extends Component {
       return (
           <p>
               To get started, please connect your Twitter account:<br />
-              <a href="http://localhost:7000/auth-twitter">Connect Twitter</a>
+              <a href="/auth-twitter">Connect Twitter</a>
           </p>
       )
   }

@@ -339,12 +339,6 @@ def show_login():
     return render_template("login.html")
 
 
-@app.route("/static-page")
-def show_static_page():
-    """Just a simple static page for testing."""
-    return flask.make_response(render_template("static.html"))
-
-
 @app.route("/login/twitch")
 def login_with_twitch():
     """Logs in user with Twitch account."""
@@ -506,13 +500,14 @@ def authorize_twitter():
     twitter_oauth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
                                         TWITTER_CONSUMER_SECRET,
                                         TWITTER_REDIRECT_URL)
-
+    print("\n\nGot to auth twitter route.")
     try:
         redirect_url = twitter_oauth.get_authorization_url()
         session["twitter_request_token"] = twitter_oauth.request_token
         # Store referrer url in session so we can redirect
         # back to React frontend after auth flow.
         session["referrer_url"] = request.referrer
+        print("\n\nTrying to auth twitter.")
         return redirect(redirect_url)
     except tweepy.TweepError as e:
         print("Twitter authorization failed.")

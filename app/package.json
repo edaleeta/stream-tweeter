@@ -20,6 +20,9 @@
     },
     "/login": {
       "target": "http://localhost:7000/"
+    },
+    "/auth-twitter": {
+      "target": "http://localhost:7000"
     }
   }
 }
