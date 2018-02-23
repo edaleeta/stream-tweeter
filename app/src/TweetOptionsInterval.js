@@ -64,7 +64,6 @@ export class TweetOptionsInterval extends Component {
     render() {
         return (
             <div>
-                We'll change the tweeting interval here.
                 <form>
                     <FormGroup controlId="tweetSettingsForm" validationState={this.getValidationState()} bsSize="lg">
                     <ControlLabel>Tweet Interval in Minutes</ControlLabel>
@@ -73,8 +72,8 @@ export class TweetOptionsInterval extends Component {
                         value={this.state.value}
                         onChange={this.handleChange}
                     />
-                    <FormControl.Feedback />
-                    <HelpBlock>Don't spam your friends! Value be greater than 30 minutes.</HelpBlock>
+                    <FormControl.Feedback/>
+                    <HelpBlock style={ this.getValidationState() === null ? {display: "none"} : {display: "block"} }>Don't spam your friends! Value must be greater than 30 minutes.</HelpBlock>
                     <Button type="submit" onClick={this.handleClick} value={this.state.value} >Tweet Every {this.state.value} minutes!</Button>
                     </FormGroup>
                 </form>

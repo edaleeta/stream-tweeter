@@ -17,7 +17,6 @@ export class TweetOptions extends Component {
             return (
                 <div>
                     <h2>Twitter Options</h2>
-                    Twitter Options will go here!
                     <TweetOptionsInterval userId={this.props.userId} />
                     <TweetOptionsRevoke userId={this.props.userId} onClick={this.props.onClick} />
                 </div>
