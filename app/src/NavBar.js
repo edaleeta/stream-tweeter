@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 const navLinks = {
   home: "/",
   login: "/login/twitch",
-  logout: "http://localhost:7000/logout"
+  logout: "/logout"
 }
 
 // Navigation 
