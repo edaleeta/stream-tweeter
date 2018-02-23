@@ -226,7 +226,7 @@ def start_tweets_react():
 @app.route("/api/update-user-settings", methods=["POST"])
 def update_user_settings_react():
     """Updates settings for a user."""
-    new_tweet_interval = request.get_json().get("tweet_interval")
+    new_tweet_interval = request.get_json().get("tweetInterval")
 
     try:
         new_tweet_interval = int(new_tweet_interval)
@@ -249,6 +249,23 @@ def update_user_settings_react():
         current_user.tweet_interval
     ))
     return jsonify(success="Tweet interval updated.")
+
+
+@app.route("/api/revoke-twitter", methods=["POST"])
+def revoke_twitter_access_react():
+    """Removes the Twitter token info for a user."""
+
+    user_id = request.get_json().get("userId")
+
+    if not current_user.user_id == int(user_id):
+        error_message = "Twitter Token not revoked."
+        print(error_message)
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    current_user.remove_twitter_access_token()
+    return jsonify(success="Twitter Token removed.")
 
 
 ###############################################################################

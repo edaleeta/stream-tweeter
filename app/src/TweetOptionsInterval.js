@@ -32,7 +32,7 @@ export class TweetOptionsInterval extends Component {
         let url = "/api/update-user-settings";
         let payload = JSON.stringify({
             userId: this.props.userId,
-            tweet_interval: this.state.value
+            tweetInterval: this.state.value
         });
 
         console.log(payload);
