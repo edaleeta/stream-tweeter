@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 import { PageHeader } from 'react-bootstrap';
+import { Switch, Route } from 'react-router-dom';
 import './App.css';
 import { NavBar } from './NavBar'
 import { WelcomeUser } from './WelcomeUser'
@@ -50,12 +51,23 @@ class App extends Component {
       <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
       <NavBar />
       <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
-      <Home
-        isTwitterAuth={this.state.isTwitterAuth}
-        userId={this.state.userId}
-        tweetInterval={this.state.tweetInterval}
-        onClick={this.onClickTwitterAccessRevoked} 
-      />
+      <Switch>
+        <Route 
+          exact path="/"
+          render={
+            (props) => {
+              return (
+                <Home {...props}
+                isTwitterAuth={this.state.isTwitterAuth}
+                userId={this.state.userId}
+                tweetInterval={this.state.tweetInterval}
+                onClick={this.onClickTwitterAccessRevoked}
+                />
+              );
+            }
+          }
+        />
+      </Switch>
     </div>
       );
   } else if (this.state.fetched) {
