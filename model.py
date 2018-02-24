@@ -275,9 +275,13 @@ class StreamSession(db.Model):
     feedback = db.relationship("StreamSessionUserFeedback",
                                back_populates="session",
                                uselist=False)
-    user = db.relationship("User",
-                           backref=backref("sessions",
-                                           order_by="StreamSession.started_at"))
+    user = db.relationship(
+        "User",
+        backref=backref(
+            "sessions",
+            order_by="StreamSession.started_at.desc()"
+        )
+    )
 
     def __repr__(self):
         """Print helpful information."""

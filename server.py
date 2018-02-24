@@ -269,6 +269,19 @@ def revoke_twitter_access_react():
     return jsonify(success="Twitter Token removed.")
 
 
+@app.route("/api/stream-sessions")
+def get_stream_sessions_for_user_react():
+    """Retrives stream session data for user."""
+
+    # Hardcoding current_user for cURL
+    current_user = User.query.get(4)
+    started_at = request.args.get("startedAt")
+
+    if not started_at:
+        print(current_user.sessions)
+        return jsonify(success="Check server in terminal.")
+
+
 ###############################################################################
 # PAGE ROUTES
 ###############################################################################
