@@ -20,7 +20,6 @@ export class TweetTemplateContainer extends Component {
   // Passed to EditButton to toggle Edit Form.
   handleClickEdit() {
     let isEditHidden = this.state.isEditHidden ? false : true
-    console.log("Changing isEditHidden to ", isEditHidden);
     this.setState({
       isEditHidden: isEditHidden
     })
@@ -47,6 +46,7 @@ export class TweetTemplateContainer extends Component {
           <TweetTemplateEditButton
             onClick={this.handleClickEdit}
             templateId={this.props.template.templateId}
+            isEditHidden={this.state.isEditHidden}
           />
         </ButtonToolbar>
         <TweetTemplateEditForm

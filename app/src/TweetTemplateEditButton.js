@@ -5,18 +5,21 @@ import { Button } from 'react-bootstrap';
 export class TweetTemplateEditButton extends Component {
 
   render() {
+
+    let buttonText = this.props.isEditHidden ? "Edit Template" : "Cancel";
+
     return (
       <Button
-        className="del-edit-button"
         value={this.props.templateId}
         onClick={this.props.onClick}
       >
-        Edit Template
+        {buttonText}
       </Button>
     )
   }
 }
 
 TweetTemplateEditButton.propTypes = {
-  templateId: PropTypes.number.isRequired
+  templateId: PropTypes.number.isRequired,
+  isEditHidden: PropTypes.bool.isRequired
 }
