@@ -4,7 +4,7 @@ import { ConnectTwitter } from './ConnectTwitter'
 import { TweetTemplates } from './TweetTemplates'
 import { TweetOptions } from './TwitterOptions'
 
-export class Main extends Component {
+export class Home extends Component {
 
   render() {
     return (
@@ -25,7 +25,7 @@ export class Main extends Component {
   }
 }
 
-Main.propTypes = {
+Home.propTypes = {
   isTwitterAuth: PropTypes.bool.isRequired,
   userId: PropTypes.number.isRequired,
   tweetInterval: PropTypes.number.isRequired,

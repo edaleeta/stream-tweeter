@@ -4,7 +4,7 @@ import { PageHeader } from 'react-bootstrap';
 import './App.css';
 import { NavBar } from './NavBar'
 import { WelcomeUser } from './WelcomeUser'
-import { Main } from './Main'
+import { Home } from './Home'
 
 class App extends Component {
   constructor(props) {
@@ -50,7 +50,7 @@ class App extends Component {
       <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
       <NavBar />
       <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
-      <Main
+      <Home
         isTwitterAuth={this.state.isTwitterAuth}
         userId={this.state.userId}
         tweetInterval={this.state.tweetInterval}
