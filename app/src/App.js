@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import { PageHeader } from 'react-bootstrap';
 import { Switch, Route } from 'react-router-dom';
 import './App.css';
-import { NavBar } from './NavBar'
-import { WelcomeUser } from './WelcomeUser'
-import { Home } from './Home'
+import { NavBar } from './NavBar';
+import { WelcomeUser } from './WelcomeUser';
+import { Home } from './Home';
+import { Log } from './Log';
 
 class App extends Component {
   constructor(props) {
@@ -58,12 +59,24 @@ class App extends Component {
             (props) => {
               return (
                 <Home {...props}
-                isTwitterAuth={this.state.isTwitterAuth}
-                userId={this.state.userId}
-                tweetInterval={this.state.tweetInterval}
-                onClick={this.onClickTwitterAccessRevoked}
+                  isTwitterAuth={this.state.isTwitterAuth}
+                  userId={this.state.userId}
+                  tweetInterval={this.state.tweetInterval}
+                  onClick={this.onClickTwitterAccessRevoked}
                 />
               );
+            }
+          }
+        />
+        <Route
+          exact path="/log"
+          render={
+            (props) => {
+              return (
+                <Log {...props}
+                  userId={this.state.userId}
+                />
+              )
             }
           }
         />
