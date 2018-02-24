@@ -381,6 +381,10 @@ class StreamDatum(db.Model):
         db.session.add(new_data)
         db.session.commit()
 
+# Adds index to stream_sessions table; will be filtering by started_at for
+# API calls
+db.Index('ix_user_started', StreamSession.user_id, StreamSession.started_at)
+
 
 class TwitchClip(db.Model):
     """Clips auto-generated for Tweets."""
