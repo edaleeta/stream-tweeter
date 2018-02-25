@@ -8,6 +8,7 @@ export class SentTweetsContainer extends Component {
     return (
       this.props.tweets.map((tweet, key)=> (
         <SentTweet
+          key={key}
           clipId={tweet.clipId}
           createdAt={tweet.createdAt}
           message={tweet.message}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { convertTimeStamp } from './services/log'
+import AutoLinker from 'autolinker';
 
 export class SentTweet extends Component {
 
