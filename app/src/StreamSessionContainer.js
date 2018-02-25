@@ -35,23 +35,25 @@ export class StreamSessionContainer extends Component {
   }
 
   render() {
+    let tweetsContainer = <div></div>
     if (this.state.tweets) {
-      return (
-        <div>
-          <h4>{this.props.stream.streamId}</h4>
-          Started: {this.convertTimeStamp(this.props.stream.startedAt)} <br />
-          Started Timestamp: {this.props.stream.startedAt} <br />
-          Ended: {this.convertTimeStamp(this.props.stream.endedAt)} <br />
-          Ended Timestamp: {this.props.stream.endedAt} <br />
-          {this.props.stream.twitchSessionId} <br />
-          <SentTweetsContainer tweets={this.state.tweets} />
-        </div>
-      )
-    } else {
-      return <div></div>
+      tweetsContainer = <SentTweetsContainer tweets={this.state.tweets} />;
     }
+
+    return (
+      <div>
+        <h4>{this.props.stream.streamId}</h4>
+        Started: {this.convertTimeStamp(this.props.stream.startedAt)} <br />
+        Started Timestamp: {this.props.stream.startedAt} <br />
+        Ended: {this.convertTimeStamp(this.props.stream.endedAt)} <br />
+        Ended Timestamp: {this.props.stream.endedAt} <br />
+        {this.props.stream.twitchSessionId} <br />
+        {tweetsContainer}
+      </div>
+    )
   }
 }
+
 
 StreamSessionContainer.propTypes = {
   stream: PropTypes.object.isRequired,
