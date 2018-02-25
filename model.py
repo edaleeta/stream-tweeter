@@ -228,7 +228,11 @@ class SentTweet(db.Model):
     clip_id = db.Column(db.Integer, db.ForeignKey("twitch_clips.clip_id"))
 
     user = db.relationship("User",
-                           backref="sent_tweets")
+                           backref=backref(
+                               "sent_tweets",
+                               order_by="SentTweet.created_at.desc()",
+                               lazy="dynamic"))
+
     clip = db.relationship("TwitchClip", back_populates="tweet", uselist=False)
 
     def __repr__(self):
@@ -236,7 +240,7 @@ class SentTweet(db.Model):
 
         return "<SentTweet tweet_id='{}', user_id={}, message='{}'>" \
             .format(self.tweet_id, self.user_id, (self.message[0:14] + "..."))
-    
+
     @property
     def serialize(self):
         """Return serializable format of object."""
