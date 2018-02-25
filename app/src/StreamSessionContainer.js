@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import { convertTimeStamp } from './services/log'
 import { SentTweetsContainer } from './SentTweetsContainer';
 
 export class StreamSessionContainer extends Component {
@@ -10,7 +10,6 @@ export class StreamSessionContainer extends Component {
     this.state = {
       tweets: ""
     }
-    this.convertTimeStamp = this.convertTimeStamp.bind(this);
   }
 
   componentWillMount() {
@@ -29,11 +28,6 @@ export class StreamSessionContainer extends Component {
     })        
   }
 
-  convertTimeStamp(timestamp) {
-    let date = moment.unix(timestamp);
-    return date.format("dddd, MMMM Do YYYY, h:mm:ss a");
-  }
-
   render() {
     let tweetsContainer = <div></div>
     if (this.state.tweets) {
@@ -43,9 +37,9 @@ export class StreamSessionContainer extends Component {
     return (
       <div>
         <h4>{this.props.stream.streamId}</h4>
-        Started: {this.convertTimeStamp(this.props.stream.startedAt)} <br />
+        Started: {convertTimeStamp(this.props.stream.startedAt)} <br />
         Started Timestamp: {this.props.stream.startedAt} <br />
-        Ended: {this.convertTimeStamp(this.props.stream.endedAt)} <br />
+        Ended: {convertTimeStamp(this.props.stream.endedAt)} <br />
         Ended Timestamp: {this.props.stream.endedAt} <br />
         {this.props.stream.twitchSessionId} <br />
         {tweetsContainer}
