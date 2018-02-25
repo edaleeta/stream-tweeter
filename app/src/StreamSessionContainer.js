@@ -4,6 +4,7 @@ import { ListGroupItem } from 'react-bootstrap';
 import { convertTimeStampToDateTime } from './services/log'
 import { SentTweetsContainer } from './SentTweetsContainer';
 import { StreamSessionChart } from './StreamSessionChart';
+import { StreamSessionChartDynamic } from './StreamSessionChartDynamic';
 
 export class StreamSessionContainer extends Component {
 
@@ -42,6 +43,7 @@ export class StreamSessionContainer extends Component {
         <ListGroupItem>
           <h4>Stream Started: {convertTimeStampToDateTime(this.props.stream.startedAt)}</h4>
           <StreamSessionChart />
+          <StreamSessionChartDynamic />
         </ListGroupItem>
         <ListGroupItem>
           {tweetsContainer}
