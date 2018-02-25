@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { StreamSessionContainer } from './StreamSessionContainer'
 
 export class StreamSessions extends Component {
   
@@ -30,7 +31,7 @@ export class StreamSessions extends Component {
     if (this.state.streams) {
       return (
         this.state.streams.map((stream, key) => (
-          <div key={key}>{stream.startedAt} {stream.endedAt} {stream.twitchSessionId} {stream.userId}</div>
+          <StreamSessionContainer key={key} stream={stream} />
         ))
       ); 
     } else {
