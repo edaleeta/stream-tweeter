@@ -404,6 +404,19 @@ class StreamDatum(db.Model):
         return "<StreamDatum data_id={}, game_name='{}', timestamp={}>" \
             .format(self.data_id, self.game_name, self.timestamp)
 
+    @property
+    def serialize(self):
+        """Return serializable format of object."""
+
+        serialized = {
+            "timestamp": dump_datetime(self.timestamp),
+            "viewers": self.viewer_count,
+            "gameName": self.game_name,
+            "streamTitle": self.stream_title
+        }
+
+        return serialized
+
     @classmethod
     def save_stream_data(cls, session, stream_data):
         """Saves stream data for user."""
