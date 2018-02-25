@@ -18,8 +18,6 @@ export class StreamSessions extends Component {
     .then((response)=> response.json())
     .then((data) => {
       console.log("StreamSessions mounted!");
-      console.log(data.streams);
-      console.log(data.next);
       this.setState({
         streams: data.streams,
         nextPage: data.next

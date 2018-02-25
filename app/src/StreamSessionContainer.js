@@ -9,9 +9,24 @@ export class StreamSessionContainer extends Component {
     this.convertTimeStamp = this.convertTimeStamp.bind(this);
   }
 
+  componentWillMount() {
+    let url = `/api/sent-tweets?startedAt=${this.props.stream.startedAt}
+      &endedAt=${this.props.stream.endedAt}`;
+    
+    fetch(url,{
+      credentials: 'same-origin'
+    })
+    .then((response)=> response.json())
+    .then((data) => {
+      console.log("StreamSessionContainer mounted!");
+      this.setState({
+        tweets: data.tweets
+      });
+    })        
+  }
+
   convertTimeStamp(timestamp) {
     let date = moment.unix(timestamp);
-    console.log(date.toString());
     return date.format("dddd, MMMM Do YYYY, h:mm:ss a");
   }
 
