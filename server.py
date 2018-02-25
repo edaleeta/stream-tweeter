@@ -304,7 +304,6 @@ def get_stream_sessions_for_user_react():
     payload = {}
 
     if not ts:
-        print(current_user.sessions[:limit])
         started_at = current_user.sessions[limit-1].started_at
         ts = int(started_at.timestamp())
         payload["next"] = f"/api/stream-sessions?ts={ts}&limit={limit}"
@@ -313,10 +312,12 @@ def get_stream_sessions_for_user_react():
         return jsonify(payload)
     else:
         # Alter payload when timestamp is given.
-        print(ts)
         started_at = datetime.datetime.fromtimestamp(ts)
-        print(started_at)
-        return jsonify(success="Check server terminal.")
+        streams = [stream.serialize for stream in current_user.sessions.filter(StreamSession.started_at < started_at)[:limit]]
+        next_ts = streams[-1]["startedAt"]
+        payload["next"] = f"/api/stream-sessions?ts={next_ts}&limit={limit}"
+        payload["streams"] = streams
+        return jsonify(payload)
 
 
 ###############################################################################
