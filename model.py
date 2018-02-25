@@ -4,6 +4,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from sqlalchemy import desc, func
+from datetime import timezone
 
 db = SQLAlchemy()
 
@@ -477,7 +478,7 @@ def dump_datetime(datetime):
     """Deserialize datetime object into int timestamp."""
     if datetime is None:
         return None
-    return int(datetime.timestamp())
+    return int(datetime.replace(tzinfo=timezone.utc).timestamp())
 
 
 def connect_to_db(app, db_uri="postgresql:///yattk", show_sql=True):
