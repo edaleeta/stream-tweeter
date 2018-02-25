@@ -271,6 +271,27 @@ def revoke_twitter_access_react():
     return jsonify(success="Twitter Token removed.")
 
 
+@app.route("/api/streams/data/<int:stream_id>")
+def get_stream_session_data_react(stream_id):
+    """Retrives data points for a given stream session. """
+
+    # Hardcoding current user for testing.
+    current_user = User.query.get(4)
+
+    # Restrict access to logged in users.
+    if not current_user.is_authenticated:
+        error_message = "You must be logged in to access."
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    ts = request.args.get("ts")
+
+    print(f"Received request! stream_id: {stream_id}")
+
+    return(jsonify(success="Check server terminal."))
+
+
 @app.route("/api/streams")
 def get_stream_sessions_for_user_react():
     """Retrives stream session data for user."""

@@ -43,3 +43,11 @@ def create_senttweets_payload(user, started, ended):
     payload["tweets"] = tweets
 
     return(payload)
+
+
+def create_streamdata_payload(stream_id):
+    """Returns data points for given stream id."""
+
+    payload = {}
+
+    
