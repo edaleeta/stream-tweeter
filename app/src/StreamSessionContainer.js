@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ListGroupItem } from 'react-bootstrap';
 import { convertTimeStamp } from './services/log'
 import { SentTweetsContainer } from './SentTweetsContainer';
 
@@ -36,10 +37,14 @@ export class StreamSessionContainer extends Component {
     }
 
     return (
-      <div>
-        <h4>Stream Started: {convertTimeStamp(this.props.stream.startedAt)}</h4>
-        {tweetsContainer}
-      </div>
+      <ListGroupItem>
+        <ListGroupItem>
+          <h4>Stream Started: {convertTimeStamp(this.props.stream.startedAt)}</h4>
+        </ListGroupItem>
+        <ListGroupItem>
+          {tweetsContainer}
+        </ListGroupItem>
+      </ListGroupItem>
     )
   }
 }

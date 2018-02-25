@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StreamSessionContainer } from './StreamSessionContainer'
+import { ListGroup } from 'react-bootstrap';
+import { StreamSessionContainer } from './StreamSessionContainer';
 
 export class StreamSessions extends Component {
   
@@ -29,7 +30,9 @@ export class StreamSessions extends Component {
     if (this.state.streams) {
       return (
         this.state.streams.map((stream, key) => (
-          <StreamSessionContainer key={key} stream={stream} />
+          <ListGroup>
+            <StreamSessionContainer key={key} stream={stream} />
+          </ListGroup>
         ))
       ); 
     } else {

@@ -8,7 +8,7 @@ export class Log extends Component {
   render() {
     return (
       <Grid fluid={true}>
-        <h3>Your Stream History</h3>
+        <h3>Your Stream Tweeter History</h3>
         <StreamSessions userId={this.props.userId} />
       </Grid>
     )
