@@ -131,7 +131,7 @@ def get_and_write_twitch_stream_data(user):
         # Reset failure counter.
         get_stream_failures[user_id] = 0
         # Save endtimestamp of stream session.
-        StreamSession.end_stream_session(user, datetime.now())
+        StreamSession.end_stream_session(user, datetime.utcnow())
         # TODO: End the job that is sending tweets on an interval.
         ap_handlers.stop_fetching_twitch_data(user_id)
         ap_handlers.stop_tweeting(user_id)
