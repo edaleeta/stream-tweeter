@@ -279,7 +279,8 @@ class StreamSession(db.Model):
         "User",
         backref=backref(
             "sessions",
-            order_by="StreamSession.started_at.desc()"
+            order_by="StreamSession.started_at.desc()",
+            lazy="dynamic"
         )
     )
 
@@ -290,6 +291,20 @@ class StreamSession(db.Model):
  started={}>".format(self.stream_id,
                      self.twitch_session_id,
                      self.started_at)
+
+    @property
+    def serialize(self):
+        """Return serializable format of object."""
+
+        serialized = {
+            "streamId": self.stream_id,
+            "userId": self.user_id,
+            "twitchSessionId": self.twitch_session_id,
+            "startedAt": dump_datetime(self.started_at),
+            "endedAt": dump_datetime(self.ended_at),
+        }
+
+        return serialized
 
     @classmethod
     def save_stream_session(cls, user, stream_data):
@@ -458,6 +473,11 @@ class StreamSessionUserFeedback(db.Model):
 ###############################################################################
 # HELPER FUNCTIONS
 ###############################################################################
+def dump_datetime(datetime):
+    """Deserialize datetime object into int timestamp."""
+    if datetime is None:
+        return None
+    return int(datetime.timestamp())
 
 
 def connect_to_db(app, db_uri="postgresql:///yattk", show_sql=True):

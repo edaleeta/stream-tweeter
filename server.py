@@ -2,6 +2,7 @@
 
 import os
 import re
+import datetime
 import flask
 from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
@@ -275,11 +276,47 @@ def get_stream_sessions_for_user_react():
 
     # Hardcoding current_user for cURL
     current_user = User.query.get(4)
-    started_at = request.args.get("startedAt")
+    ts = request.args.get("ts")
+    print("Timestamp: ".format(ts))
 
-    if not started_at:
-        print(current_user.sessions)
-        return jsonify(success="Check server in terminal.")
+    try:
+        # Default limit to 5 when not given
+        limit = int(request.args.get("limit", 5))
+        if ts:
+            ts = int(ts)
+    except ValueError:
+        error_message = "Bad request. Parameters must be numbers."
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    # Sets a maximum limit of 5
+    if limit > 5:
+        limit = 5
+
+    # Restrict access to logged in users.
+    if not current_user.is_authenticated:
+        error_message = "You must be logged in to access."
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    payload = {}
+
+    if not ts:
+        print(current_user.sessions[:limit])
+        started_at = current_user.sessions[limit-1].started_at
+        ts = int(started_at.timestamp())
+        payload["next"] = f"/api/stream-sessions?ts={ts}&limit={limit}"
+        payload["streams"] = [stream.serialize for stream in current_user.sessions[:limit]]
+
+        return jsonify(payload)
+    else:
+        # Alter payload when timestamp is given.
+        print(ts)
+        started_at = datetime.datetime.fromtimestamp(ts)
+        print(started_at)
+        return jsonify(success="Check server terminal.")
 
 
 ###############################################################################
