@@ -36,7 +36,7 @@ export class StreamSessionContainer extends Component {
 
     return (
       <div>
-        <h4>{this.props.stream.streamId}</h4>
+        <h4>Stream: {this.props.stream.streamId}</h4>
         Started: {convertTimeStamp(this.props.stream.startedAt)} <br />
         Started Timestamp: {this.props.stream.startedAt} <br />
         Ended: {convertTimeStamp(this.props.stream.endedAt)} <br />
