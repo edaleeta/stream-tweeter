@@ -24,7 +24,7 @@ def create_streams_payload(user, dt=None, limit=5):
 
     # Add data to payload.
     payload["streams"] = streams
-    payload["next"] = f"/api/stream-sessions?ts={next_ts}&limit={limit}"
+    payload["next"] = f"/api/streams?ts={next_ts}&limit={limit}"
 
     return(payload)
 

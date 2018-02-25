@@ -271,7 +271,7 @@ def revoke_twitter_access_react():
     return jsonify(success="Twitter Token removed.")
 
 
-@app.route("/api/stream-sessions")
+@app.route("/api/streams")
 def get_stream_sessions_for_user_react():
     """Retrives stream session data for user."""
 

@@ -14,7 +14,7 @@ export class StreamSessions extends Component {
   }
 
   componentWillMount() {
-    fetch("/api/stream-sessions",
+    fetch("/api/streams",
     {credentials: 'same-origin'})
     .then((response)=> response.json())
     .then((data) => {
