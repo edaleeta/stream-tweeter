@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { convertTimeStamp } from './services/log'
 
 export class SentTweet extends Component {
 
   render() {
     return (
-      <p>A tweet will live here soon.</p>
+      <div>
+        <h4>Tweet {this.props.tweetTwtrId}</h4>
+        <span>Created: </span><span>{convertTimeStamp(this.props.createdAt)}</span>
+        <br />
+        <span>Message: </span><span>{this.props.message}</span>
+        <br />
+        <a href={this.props.permalink} target="_blank">View on Twitter</a>
+        
+      </div>
     )
   }
 }
