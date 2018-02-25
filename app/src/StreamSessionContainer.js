@@ -20,7 +20,9 @@ export class StreamSessionContainer extends Component {
       <div>
         <h4>{this.props.stream.streamId}</h4>
         Started: {this.convertTimeStamp(this.props.stream.startedAt)} <br />
+        Started Timestamp: {this.props.stream.startedAt} <br />
         Ended: {this.convertTimeStamp(this.props.stream.endedAt)} <br />
+        Ended Timestamp: {this.props.stream.endedAt} <br />
         {this.props.stream.twitchSessionId} <br />
       </div>
     )

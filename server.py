@@ -275,9 +275,14 @@ def revoke_twitter_access_react():
 def get_stream_sessions_for_user_react():
     """Retrives stream session data for user."""
 
+    # Restrict access to logged in users.
+    if not current_user.is_authenticated:
+        error_message = "You must be logged in to access."
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
     started_at = None
-    # Hardcoding current_user for cURL
-    current_user = User.query.get(4)
     ts = request.args.get("ts")
 
     try:
@@ -285,7 +290,7 @@ def get_stream_sessions_for_user_react():
         limit = int(request.args.get("limit", 5))
         if ts:
             ts = int(ts)
-            started_at = datetime.datetime.fromtimestamp(ts)
+            started_at = datetime.datetime.utcfromtimestamp(ts)
     except ValueError:
         error_message = "Bad request."
         return (flask.json.dumps({"error": error_message}),
@@ -296,6 +301,16 @@ def get_stream_sessions_for_user_react():
     if limit > 5:
         limit = 5
 
+    return(jsonify(api_helpers.create_streams_payload(
+                   user=current_user,
+                   dt=started_at,
+                   limit=limit)))
+
+
+@app.route("/api/sent-tweets")
+def get_sent_tweets_for_user_react():
+    """Retrieves sent tweet data for user."""
+
     # Restrict access to logged in users.
     if not current_user.is_authenticated:
         error_message = "You must be logged in to access."
@@ -303,12 +318,34 @@ def get_stream_sessions_for_user_react():
                 400,
                 {'ContentType': 'application/json'})
 
-    return(jsonify(api_helpers.create_streams_payload(
+    started_at_ts = request.args.get("startedAt")  # Timestamp
+    ended_at_ts = request.args.get("endedAt")      # Timestamp
+
+    try:
+        started_at_ts = int(started_at_ts)
+        ended_at_ts = int(ended_at_ts)
+
+        started_at = datetime.datetime.utcfromtimestamp(started_at_ts)
+        ended_at = datetime.datetime.utcfromtimestamp(ended_at_ts)
+    except ValueError:
+        error_message = "Bad request."
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    tweets = current_user.sent_tweets.filter(SentTweet.created_at.between(
+                  started_at, ended_at)).all()
+
+    print(f"STARTED AT: {started_at}")
+    print(f"ENDED AT: {ended_at}")
+
+    print(f"\nFOUND TWEETS: {tweets}")
+
+    return(jsonify(api_helpers.create_senttweets_payload(
                    user=current_user,
-                   dt=started_at,
-                   limit=limit)))
-
-
+                   started=started_at,
+                   ended=ended_at)))
+ 
 ###############################################################################
 # PAGE ROUTES
 ###############################################################################
