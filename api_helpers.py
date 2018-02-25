@@ -1,6 +1,6 @@
 """API Helpers for Stream Tweeter."""
 
-from model import StreamSession
+from model import StreamSession, SentTweet
 
 
 def create_streams_payload(user, dt=None, limit=5):
@@ -26,5 +26,20 @@ def create_streams_payload(user, dt=None, limit=5):
     payload["streams"] = streams
     payload["next"] = f"/api/stream-sessions?ts={next_ts}&limit={limit}"
 
-    print(payload)
+    return(payload)
+
+
+def create_senttweets_payload(user, started, ended):
+    """Creates payload for returning tweets created between given times."""
+
+    payload = {}
+
+    tweets = [tweet.serialize
+              for tweet
+              in user.sent_tweets.filter(SentTweet.created_at.between(
+                  started, ended
+              ))]
+
+    payload["tweets"] = tweets
+
     return(payload)
