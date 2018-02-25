@@ -19,6 +19,7 @@ from model import *
 import apscheduler_handlers as handler
 import template_helpers as temp_help
 import twitch_helpers
+import api_helpers
 
 app = Flask(__name__)
 
@@ -274,18 +275,19 @@ def revoke_twitter_access_react():
 def get_stream_sessions_for_user_react():
     """Retrives stream session data for user."""
 
+    started_at = None
     # Hardcoding current_user for cURL
     current_user = User.query.get(4)
     ts = request.args.get("ts")
-    print("Timestamp: ".format(ts))
 
     try:
         # Default limit to 5 when not given
         limit = int(request.args.get("limit", 5))
         if ts:
             ts = int(ts)
+            started_at = datetime.datetime.fromtimestamp(ts)
     except ValueError:
-        error_message = "Bad request. Parameters must be numbers."
+        error_message = "Bad request."
         return (flask.json.dumps({"error": error_message}),
                 400,
                 {'ContentType': 'application/json'})
@@ -301,23 +303,10 @@ def get_stream_sessions_for_user_react():
                 400,
                 {'ContentType': 'application/json'})
 
-    payload = {}
-
-    if not ts:
-        started_at = current_user.sessions[limit-1].started_at
-        ts = int(started_at.timestamp())
-        payload["next"] = f"/api/stream-sessions?ts={ts}&limit={limit}"
-        payload["streams"] = [stream.serialize for stream in current_user.sessions[:limit]]
-
-        return jsonify(payload)
-    else:
-        # Alter payload when timestamp is given.
-        started_at = datetime.datetime.fromtimestamp(ts)
-        streams = [stream.serialize for stream in current_user.sessions.filter(StreamSession.started_at < started_at)[:limit]]
-        next_ts = streams[-1]["startedAt"]
-        payload["next"] = f"/api/stream-sessions?ts={next_ts}&limit={limit}"
-        payload["streams"] = streams
-        return jsonify(payload)
+    return(jsonify(api_helpers.create_streams_payload(
+                   user=current_user,
+                   dt=started_at,
+                   limit=limit)))
 
 
 ###############################################################################
