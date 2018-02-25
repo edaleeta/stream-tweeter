@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ListGroupItem, Button } from 'react-bootstrap';
 import { convertTimeStamp } from './services/log'
 import Autolinker from 'autolinker';
 
@@ -13,15 +14,19 @@ export class SentTweet extends Component {
     console.log(messageHTML);
 
     return (
-      <div>
-        <h4>Tweet {this.props.tweetTwtrId}</h4>
-        <span>Created: </span><span>{convertTimeStamp(this.props.createdAt)}</span>
-        <br />
+      <ListGroupItem
+        header={"Tweet Created: " + convertTimeStamp(this.props.createdAt)}
+        target="_blank"
+      >
         <span>Message: </span><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
-        <br />
-        <a href={this.props.permalink} target="_blank">View on Twitter</a>
-        
-      </div>
+        <br /><br />
+        <Button 
+          href={this.props.permalink}
+          target="_blank"
+        >
+          View on Twitter
+        </Button>       
+      </ListGroupItem>
     )
   }
 }
