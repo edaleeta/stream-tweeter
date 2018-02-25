@@ -236,6 +236,22 @@ class SentTweet(db.Model):
 
         return "<SentTweet tweet_id='{}', user_id={}, message='{}'>" \
             .format(self.tweet_id, self.user_id, (self.message[0:14] + "..."))
+    
+    @property
+    def serialize(self):
+        """Return serializable format of object."""
+
+        serialized = {
+            "tweetId": self.tweet_id,
+            "tweetTwtrId": self.tweet_twtr_id,
+            "userId": self.user_id,
+            "createdAt": dump_datetime(self.created_at),
+            "message": self.message,
+            "permalink": self.permalink,
+            "clipId": self.clip_id
+        }
+
+        return serialized
 
     @classmethod
     def store_sent_tweet(cls, response, user_id, clip_id=None):
