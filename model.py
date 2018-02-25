@@ -230,7 +230,7 @@ class SentTweet(db.Model):
     user = db.relationship("User",
                            backref=backref(
                                "sent_tweets",
-                               order_by="SentTweet.created_at.desc()",
+                               order_by="SentTweet.created_at",
                                lazy="dynamic"))
 
     clip = db.relationship("TwitchClip", back_populates="tweet", uselist=False)
