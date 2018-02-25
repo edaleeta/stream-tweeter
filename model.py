@@ -393,7 +393,10 @@ class StreamDatum(db.Model):
     viewer_count = db.Column(db.Integer, nullable=False)
 
     session = db.relationship("StreamSession",
-                              backref="data")
+                              backref=backref(
+                                  "data",
+                                  order_by="StreamDatum.timestamp",
+                                  lazy="dynamic"))
 
     def __repr__(self):
         """Print helpful information."""
