@@ -87,7 +87,7 @@ def get_and_write_twitch_stream_data(user):
     print("Stream data: {}".format(all_stream_data))
     if all_stream_data:
         all_stream_data = all_stream_data[0]
-        timestamp = datetime.now()
+        timestamp = datetime.utcnow()
         stream_id = all_stream_data.get("id")
         streamer_id = all_stream_data.get("user_id")
         stream_title = all_stream_data.get("title")
