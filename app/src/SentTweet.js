@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ListGroupItem, Button } from 'react-bootstrap';
-import { convertTimeStamp } from './services/log'
+import { convertTimeStampToDateTime } from './services/log'
 import Autolinker from 'autolinker';
 
 export class SentTweet extends Component {
@@ -15,7 +15,7 @@ export class SentTweet extends Component {
 
     return (
       <ListGroupItem
-        header={"Tweet Created: " + convertTimeStamp(this.props.createdAt)}
+        header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
         target="_blank"
       >
         <span>Message: </span><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
