@@ -23,7 +23,6 @@ export class ClipContainer extends Component {
     })
     .then((response)=> response.json())
     .then((data) => {
-      console.log(data.clips[0].slug);
       this.setState({
         clipSlug: data.clips[0].slug
       });
