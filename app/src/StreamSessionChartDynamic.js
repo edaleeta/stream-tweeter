@@ -20,6 +20,8 @@ export class StreamSessionChartDynamic extends Component {
   // }
 
   render() {
+
+    console.log(this.props.streamData);
     return (
       <LineChart width={730} height={250} data={this.props.streamData}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
@@ -27,14 +29,14 @@ export class StreamSessionChartDynamic extends Component {
         <XAxis type="number"
           scale="time"
           domain={['dataMin', 'dataMax']}
-          dataKey="timestamp"
+          dataKey="key"
           tickFormatter={convertTimeStampToTime}
           
         />
         <YAxis />
         <Tooltip labelFormatter={convertTimeStampToTime} />
         <Legend />
-        <Line type="monotone" dataKey="viewers" stroke="#8884d8" strokeWidth={2} />
+        <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
       </LineChart>
     )
   }

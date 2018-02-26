@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StreamSessionChartDynamic } from './StreamSessionChartDynamic';
 import moment from 'moment';
-import { roundTimeToMinute } from '../src/services/log'
+import { nest } from 'd3-collection';
+import { max } from 'd3-array';
+import { roundTimeToMinute } from '../src/services/log';
 
 export class StreamSessionChartContainer extends Component { 
 
@@ -25,7 +27,7 @@ export class StreamSessionChartContainer extends Component {
     })
     .then((response)=> response.json())
     .then((data) => {
-      // Rounds timestamps down to the minute for charts
+      // Rounds timestamps down to the minute for charts.
       let roundedData = new Array();
 
       data.data.forEach(dataPoint => {
@@ -36,8 +38,20 @@ export class StreamSessionChartContainer extends Component {
         roundedData.push(roundedDataPoint); 
       });
 
+      // Once rounded, take the max value if more than one data point exists.
+      let dataByTimestamp = nest()
+        .key((d)=> d.timestamp)
+        .rollup((v)=> {
+          return max(v, (d)=> d.viewers);
+        })
+        .entries(roundedData);
+
+      dataByTimestamp.forEach(dataPoint => {
+        dataPoint.key = parseInt(dataPoint.key);
+      })
+
       this.setState({
-        streamData: roundedData,
+        streamData: dataByTimestamp,
         fetched: true
       });
     })        
