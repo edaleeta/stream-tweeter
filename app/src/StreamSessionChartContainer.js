@@ -25,10 +25,19 @@ export class StreamSessionChartContainer extends Component {
     })
     .then((response)=> response.json())
     .then((data) => {
-      console.log(data.data[0].timestamp);
-      console.log(roundTimeToMinute(data.data[0].timestamp));
+      // Rounds timestamps down to the minute for charts
+      let roundedData = new Array();
+
+      data.data.forEach(dataPoint => {
+        let roundedDataPoint = {}
+
+        roundedDataPoint.timestamp = roundTimeToMinute(dataPoint.timestamp);
+        roundedDataPoint.viewers = dataPoint.viewers;
+        roundedData.push(roundedDataPoint); 
+      });
+
       this.setState({
-        streamData: data.data,
+        streamData: roundedData,
         fetched: true
       });
     })        
