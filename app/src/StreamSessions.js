@@ -30,7 +30,7 @@ export class StreamSessions extends Component {
     if (this.state.streams) {
       return (
         this.state.streams.map((stream, key) => (
-          <ListGroup>
+          <ListGroup key={key}>
             <StreamSessionContainer key={key} stream={stream} />
           </ListGroup>
         ))

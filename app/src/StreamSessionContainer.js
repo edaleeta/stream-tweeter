@@ -24,7 +24,6 @@ export class StreamSessionContainer extends Component {
     })
     .then((response)=> response.json())
     .then((data) => {
-      console.log("StreamSessionContainer mounted!");
       this.setState({
         tweets: data.tweets
       });
@@ -44,7 +43,7 @@ export class StreamSessionContainer extends Component {
         <ListGroupItem>
           <h4>Stream Started: {convertTimeStampToDateTime(this.props.stream.startedAt)}</h4>
           <StreamSessionChart />
-          <StreamSessionChartContainer />
+          <StreamSessionChartContainer streamId={this.props.stream.streamId} />
         </ListGroupItem>
         <ListGroupItem>
           {tweetsContainer}

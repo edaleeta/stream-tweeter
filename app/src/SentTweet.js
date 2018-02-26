@@ -11,7 +11,6 @@ export class SentTweet extends Component {
       newWindow : true,
       truncate  : 30
     });
-    console.log(messageHTML);
 
     return (
       <ListGroupItem
