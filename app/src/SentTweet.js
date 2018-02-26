@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ListGroupItem, Button, Col, Row } from 'react-bootstrap';
+import { ListGroupItem, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
 import { convertTimeStampToDateTime } from './services/log'
 import Autolinker from 'autolinker';
 import { ClipContainer } from './ClipContainer'
@@ -49,23 +49,29 @@ export class SentTweet extends Component {
     return (
       <Row>
         <Col xs={12} md={4}>
-          <ListGroupItem
-          header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
-          target="_blank"
-          >
-            <span>Message: </span><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
-            <br /><br />
-            <Button 
-              href={this.props.permalink}
+          <Row>
+            <ListGroupItem
+              header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
               target="_blank"
             >
-              View on Twitter
-            </Button>
-            <Button
-              onClick={this.handleClickToggleClip}>
-                {clipButtonText}
-            </Button>
-          </ListGroupItem>
+              <span>Message: </span><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
+              <br /><br />
+            </ListGroupItem>
+          </Row>
+          <Row>
+            <ButtonToolbar>
+              <Button 
+                href={this.props.permalink}
+                target="_blank"
+              >
+                View on Twitter
+              </Button>
+              <Button
+                onClick={this.handleClickToggleClip}>
+                  {clipButtonText}
+              </Button>
+            </ButtonToolbar>
+          </Row>
         </Col>
         <Col xs={12} md={8}>
           <ClipContainer
