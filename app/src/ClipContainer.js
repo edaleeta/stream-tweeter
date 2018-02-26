@@ -15,6 +15,19 @@ export class ClipContainer extends Component {
 
   componentWillMount() {
     // Fetch to get clip info.
+
+    let url = `/api/clips/${this.props.clipId}`;
+    
+    fetch(url,{
+      credentials: 'same-origin'
+    })
+    .then((response)=> response.json())
+    .then((data) => {
+      console.log(data.clips[0].slug);
+      this.setState({
+        clipSlug: data.clips[0].slug
+      });
+    });
   }
 
   handleOnLoadEmbed() {
