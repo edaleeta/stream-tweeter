@@ -33,7 +33,6 @@ export class SentTweet extends Component {
 
   handleOnLoadEmbed() {
     // Hide some spinner element when clip embed loads...
-    console.log("Clip loaded!")
     this.setState({
       clipLoaderShown: false
     })
