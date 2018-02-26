@@ -17,7 +17,6 @@ export class StreamSessionChartContainer extends Component {
 
   componentWillMount() {
     // Fetch data here
-    console.log(this.props.streamId)
 
     let url = `/api/streams/data/${this.props.streamId}`;
 
@@ -67,6 +66,6 @@ export class StreamSessionChartContainer extends Component {
 }
 
 
-// StreamSessionChartContainer.propTypes = {
-//   stream: PropTypes.object.isRequired,
-// }
+StreamSessionChartContainer.propTypes = {
+  streamId: PropTypes.number.isRequired,
+}
