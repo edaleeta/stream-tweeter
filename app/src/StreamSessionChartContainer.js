@@ -37,7 +37,6 @@ export class StreamSessionChartContainer extends Component {
         roundedDataPoint.viewers = dataPoint.viewers;
         roundedData.push(roundedDataPoint); 
       });
-
       // Once rounded, take the max value if more than one data point exists.
       let dataByTimestamp = nest()
         .key((d)=> d.timestamp)
@@ -54,7 +53,7 @@ export class StreamSessionChartContainer extends Component {
         streamData: dataByTimestamp,
         fetched: true
       });
-    })        
+    });
   }
 
   render() {

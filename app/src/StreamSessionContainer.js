@@ -42,8 +42,8 @@ export class StreamSessionContainer extends Component {
       <ListGroupItem>
         <ListGroupItem>
           <h4>Stream Started: {convertTimeStampToDateTime(this.props.stream.startedAt)}</h4>
-          <StreamSessionChart />
           <StreamSessionChartContainer streamId={this.props.stream.streamId} />
+          {/* <StreamSessionChart /> */}
         </ListGroupItem>
         <ListGroupItem>
           {tweetsContainer}
