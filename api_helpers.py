@@ -45,9 +45,24 @@ def create_senttweets_payload(user, started, ended):
     return(payload)
 
 
-def create_streamdata_payload(stream_id):
-    """Returns data points for given stream id."""
+def create_streamdata_payload(user, stream_id):
+    """Returns data points for given stream id if found for user."""
 
     payload = {}
 
+    stream_session = StreamSession.query.filter_by(
+        user_id=user.user_id,
+        stream_id=stream_id
+    ).first()
+
+    if not stream_session:
+        return payload
+
+    data_points = [data_point.serialize
+                   for data_point
+                   in stream_session.data]
     
+    payload["data"] = data_points
+    return payload
+
+

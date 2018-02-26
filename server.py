@@ -285,11 +285,16 @@ def get_stream_session_data_react(stream_id):
                 400,
                 {'ContentType': 'application/json'})
 
-    ts = request.args.get("ts")
-
     print(f"Received request! stream_id: {stream_id}")
 
-    return(jsonify(success="Check server terminal."))
+    payload = api_helpers.create_streamdata_payload(current_user, stream_id)
+    if not payload:
+        error_message = "No data exists."
+        return (flask.json.dumps({"error": error_message}),
+                404,
+                {'ContentType': 'application/json'})
+
+    return(jsonify(payload))
 
 
 @app.route("/api/streams")
