@@ -271,33 +271,6 @@ def revoke_twitter_access_react():
     return jsonify(success="Twitter Token removed.")
 
 
-@app.route("/api/streams/data/<int:stream_id>")
-def get_stream_session_data_react(stream_id):
-    """Retrives data points for a given stream session. """
-
-    # Hardcoding current user for testing.
-    # TODO: REMOVE WHEN DONE.
-    current_user = User.query.get(4)
-
-    # Restrict access to logged in users.
-    if not current_user.is_authenticated:
-        error_message = "You must be logged in to access."
-        return (flask.json.dumps({"error": error_message}),
-                400,
-                {'ContentType': 'application/json'})
-
-    print(f"Received request! stream_id: {stream_id}")
-
-    payload = api_helpers.create_streamdata_payload(current_user, stream_id)
-    if not payload:
-        error_message = "No data exists."
-        return (flask.json.dumps({"error": error_message}),
-                404,
-                {'ContentType': 'application/json'})
-
-    return(jsonify(payload))
-
-
 @app.route("/api/streams")
 def get_stream_sessions_for_user_react():
     """Retrives stream session data for user."""
@@ -332,6 +305,42 @@ def get_stream_sessions_for_user_react():
                    user=current_user,
                    dt=started_at,
                    limit=limit)))
+
+
+@app.route("/api/streams/data/<int:stream_id>")
+def get_stream_session_data_react(stream_id):
+    """Retrives data points for a given stream session. """
+
+    # Restrict access to logged in users.
+    if not current_user.is_authenticated:
+        error_message = "You must be logged in to access."
+        return (flask.json.dumps({"error": error_message}),
+                400,
+                {'ContentType': 'application/json'})
+
+    payload = api_helpers.create_streamdata_payload(current_user, stream_id)
+    if not payload:
+        error_message = "No data exists."
+        return (flask.json.dumps({"error": error_message}),
+                404,
+                {'ContentType': 'application/json'})
+
+    return(jsonify(payload))
+
+
+@app.route("/api/clips/<int:clip_id>")
+def get_clip_data_react(clip_id):
+    """Retrieves clip data for a given clip id."""
+
+    payload = api_helpers.create_clips_payload(clip_id)
+
+    if not payload:
+        error_message = "No data exists."
+        return (flask.json.dumps({"error": error_message}),
+                404,
+                {'ContentType': 'application/json'})
+
+    return(jsonify(payload))
 
 
 @app.route("/api/sent-tweets")

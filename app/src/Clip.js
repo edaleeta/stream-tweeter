@@ -18,7 +18,8 @@ export class Clip extends Component {
         allowFullScreen={false}
         preload="none"
         className="center-block"
-        onLoad={this.props.onLoad} >
+        onLoad={this.props.onLoad}
+      >
       </iframe>
     );
     return this.props.hidden ? <div></div> : clip
