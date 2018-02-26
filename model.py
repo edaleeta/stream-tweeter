@@ -465,6 +465,7 @@ class TwitchClip(db.Model):
 
     @classmethod
     def save_twitch_clip(cls, slug, user_id):
+        """Saves Clip to db using a given slug and user id."""
         user = User.get_user_from_id(user_id)
 
         # First try to get the current open session.
