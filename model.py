@@ -243,7 +243,7 @@ class SentTweet(db.Model):
 
     @property
     def serialize(self):
-        """Return serializable format of object."""
+        """Return serializable format of sent tweet."""
 
         serialized = {
             "tweetId": self.tweet_id,
@@ -315,7 +315,7 @@ class StreamSession(db.Model):
 
     @property
     def serialize(self):
-        """Return serializable format of object."""
+        """Return serializable format of stream session."""
 
         serialized = {
             "streamId": self.stream_id,
@@ -406,7 +406,7 @@ class StreamDatum(db.Model):
 
     @property
     def serialize(self):
-        """Return serializable format of object."""
+        """Return serializable format of stream data point."""
 
         serialized = {
             "timestamp": dump_datetime(self.timestamp),
