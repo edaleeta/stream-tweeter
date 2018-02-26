@@ -58,6 +58,7 @@ export class ClipContainer extends Component {
           message={spinnerElement}
           foregroundStyle={loaderForegroundConfig}
           backgroundStyle={loaderBackgroundConfig}
+          hideContentOnLoad={true}
         >
           <Clip
             clipSlug={this.state.clipSlug}
