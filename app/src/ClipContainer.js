@@ -10,10 +10,16 @@ export class ClipContainer extends Component {
     this.state = {
       clipSlug: null,
     };
+    this.handleOnLoadEmbed = this.handleOnLoadEmbed.bind(this);
   }
 
   componentWillMount() {
     // Fetch to get clip info.
+  }
+
+  handleOnLoadEmbed() {
+    // Hide some spinner element when clip embed loads...
+    console.log("Clip loaded!")
   }
 
   render() {
@@ -22,6 +28,7 @@ export class ClipContainer extends Component {
         <Clip
           clipSlug={this.state.clipSlug}
           hidden={this.props.clipHidden}
+          onLoad={this.handleOnLoadEmbed}
         />
       </div>
     )

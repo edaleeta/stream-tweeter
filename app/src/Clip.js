@@ -17,7 +17,8 @@ export class Clip extends Component {
         scrolling="no"
         allowFullScreen={false}
         preload="none"
-        className="center-block">
+        className="center-block"
+        onLoad={this.props.onLoad} >
       </iframe>
     );
     return this.props.hidden ? <div></div> : clip
@@ -26,5 +27,6 @@ export class Clip extends Component {
 
 Clip.propTypes = {
   clipSlug: PropTypes.string,
-  hidden: PropTypes.bool.isRequired
+  hidden: PropTypes.bool.isRequired,
+  onLoad: PropTypes.func.isRequired
 }
