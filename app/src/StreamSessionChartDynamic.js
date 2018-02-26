@@ -34,6 +34,6 @@ export class StreamSessionChartDynamic extends Component {
 }
 
 
-// StreamSessionChartDynamic.propTypes = {
-//   stream: PropTypes.object.isRequired,
-// }
+StreamSessionChartDynamic.propTypes = {
+  streamData: PropTypes.array.isRequired,
+}

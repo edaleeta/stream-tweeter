@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import { convertTimeStampToTime } from './services/log'
 
@@ -33,8 +32,3 @@ export class StreamSessionChart extends Component {
     )
   }
 }
-
-
-// StreamSessionChart.propTypes = {
-//   stream: PropTypes.object.isRequired,
-// }
