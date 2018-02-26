@@ -463,6 +463,17 @@ class TwitchClip(db.Model):
         return "<TwitchClip clip_id={}, slug='{}'>".format(self.clip_id,
                                                            self.slug)
 
+    @property
+    def serialize(self):
+        """Return serializable format of clip."""
+
+        serialized = {
+            "clipId": self.clip_id,
+            "slug": self.slug,
+            "streamId": self.stream_id,
+        }
+        return serialized
+
     @classmethod
     def save_twitch_clip(cls, slug, user_id):
         """Saves Clip to db using a given slug and user id."""
