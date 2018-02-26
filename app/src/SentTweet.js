@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { ListGroupItem, Button } from 'react-bootstrap';
 import { convertTimeStampToDateTime } from './services/log'
 import Autolinker from 'autolinker';
+import { ClipContainer } from './ClipContainer'
 
 export class SentTweet extends Component {
 
@@ -24,7 +25,8 @@ export class SentTweet extends Component {
           target="_blank"
         >
           View on Twitter
-        </Button>       
+        </Button>
+        <ClipContainer clipId={this.props.clipId} />
       </ListGroupItem>
     )
   }
