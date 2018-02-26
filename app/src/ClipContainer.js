@@ -2,20 +2,27 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import  Loader  from 'react-loader-advanced';
 import FontAwesomeIcon from '@fortawesome/react-fontawesome';
-import faSpinner from '@fortawesome/fontawesome-free-solid/faSpinner';
+import faCog from '@fortawesome/fontawesome-free-solid/faCog';
 import { Clip } from './Clip';
 
 const spinnerElement = (
-  <FontAwesomeIcon
-    icon={faSpinner}
-    transform="grow-50"
-    spin />
+  <div>
+    <h4>Loading from Twitch...</h4>
+    <FontAwesomeIcon
+      icon={faCog}
+      transform="grow-50 down-50"
+      spin />
+  </div>
 )
 
 const loaderForegroundConfig = {
-  color: "black"
+  color: "black",
+  fontWeight: "bold"
 }
 
+const loaderBackgroundConfig = {
+  backgroundColor: "rgba(255, 255, 255, 1)"
+}
 
 export class ClipContainer extends Component {
 
@@ -50,6 +57,7 @@ export class ClipContainer extends Component {
           show={this.props.clipLoaderShown}
           message={spinnerElement}
           foregroundStyle={loaderForegroundConfig}
+          backgroundStyle={loaderBackgroundConfig}
         >
           <Clip
             clipSlug={this.state.clipSlug}
