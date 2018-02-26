@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import  Loader  from 'react-loader-advanced';
+
 import { Clip } from './Clip'
 
 export class ClipContainer extends Component {
@@ -8,6 +10,7 @@ export class ClipContainer extends Component {
     super(props);
     this.state = {
       clipSlug: null,
+      clipLoaderShown: this.props.clipHidden
     };
     this.handleOnLoadEmbed = this.handleOnLoadEmbed.bind(this);
   }
@@ -31,16 +34,23 @@ export class ClipContainer extends Component {
   handleOnLoadEmbed() {
     // Hide some spinner element when clip embed loads...
     console.log("Clip loaded!")
+    this.setState({
+      clipLoaderShown: false
+    })
   }
 
   render() {
     return (
       <div> 
-        <Clip
-          clipSlug={this.state.clipSlug}
-          hidden={this.props.clipHidden}
-          onLoad={this.handleOnLoadEmbed}
-        />
+        <Loader show={this.state.clipLoaderShown} message="Loading...">
+          <Clip
+            clipSlug={this.state.clipSlug}
+            hidden={this.props.clipHidden}
+            onLoad={this.handleOnLoadEmbed}
+            loaded={this.state.loaded}
+          />
+        </Loader>
+
       </div>
     )
   }
