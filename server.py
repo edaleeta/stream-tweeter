@@ -332,7 +332,7 @@ def get_stream_session_data_react(stream_id):
 def get_clip_data_react(clip_id):
     """Retrieves clip data for a given clip id."""
 
-    payload = api_helpers.create_clips_payload(clip_id)
+    payload = api_helpers.create_clip_payload(clip_id)
 
     if not payload:
         error_message = "No data exists."

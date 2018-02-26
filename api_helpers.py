@@ -1,7 +1,6 @@
 """API Helpers for Stream Tweeter."""
 
-from model import StreamSession, SentTweet
-
+from model import StreamSession, SentTweet, TwitchClip
 
 def create_streams_payload(user, dt=None, limit=5):
     """Creates payload for returning stream session info."""
@@ -66,3 +65,14 @@ def create_streamdata_payload(user, stream_id):
     return payload
 
 
+def create_clip_payload(clip_id=None):
+    """Returns clip data for given clip id."""
+
+    payload = {}
+    clip = TwitchClip.query.get(clip_id)
+
+    if not clip:
+        return {}
+
+    payload["clips"] = [clip.serialize]  # May generalize this to work for 1+
+    return payload
