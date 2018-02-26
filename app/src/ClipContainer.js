@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
 import { Clip } from './Clip'
 
 export class ClipContainer extends Component {

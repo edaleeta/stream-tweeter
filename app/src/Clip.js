@@ -11,6 +11,7 @@ export class Clip extends Component {
     const clip = (
       <iframe
         src={"https://clips.twitch.tv/embed?clip="+this.props.clipSlug+"&autoplay=false"}
+        title={this.props.clipSlug}
         height={300}
         width={550}
         frameborder={0}
