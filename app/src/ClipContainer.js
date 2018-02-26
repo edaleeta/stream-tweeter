@@ -1,8 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import  Loader  from 'react-loader-advanced';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faSpinner from '@fortawesome/fontawesome-free-solid/faSpinner';
+import { Clip } from './Clip';
 
-import { Clip } from './Clip'
+const spinnerElement = (
+  <FontAwesomeIcon
+    icon={faSpinner}
+    transform="grow-50"
+    spin />
+)
+
+const loaderForegroundConfig = {
+  color: "black"
+}
+
 
 export class ClipContainer extends Component {
 
@@ -10,9 +23,8 @@ export class ClipContainer extends Component {
     super(props);
     this.state = {
       clipSlug: null,
-      clipLoaderShown: this.props.clipHidden
+      clipLoaderShown: this.props.clipLoaderShown
     };
-    this.handleOnLoadEmbed = this.handleOnLoadEmbed.bind(this);
   }
 
   componentWillMount() {
@@ -31,22 +43,18 @@ export class ClipContainer extends Component {
     });
   }
 
-  handleOnLoadEmbed() {
-    // Hide some spinner element when clip embed loads...
-    console.log("Clip loaded!")
-    this.setState({
-      clipLoaderShown: false
-    })
-  }
-
   render() {
     return (
       <div> 
-        <Loader show={this.state.clipLoaderShown} message="Loading...">
+        <Loader
+          show={this.props.clipLoaderShown}
+          message={spinnerElement}
+          foregroundStyle={loaderForegroundConfig}
+        >
           <Clip
             clipSlug={this.state.clipSlug}
             hidden={this.props.clipHidden}
-            onLoad={this.handleOnLoadEmbed}
+            onLoad={this.props.onLoadEmbed}
             loaded={this.state.loaded}
           />
         </Loader>
@@ -58,5 +66,7 @@ export class ClipContainer extends Component {
 
 ClipContainer.propTypes = {
   clipId: PropTypes.number,
-  clipHidden: PropTypes.bool.isRequired
+  clipHidden: PropTypes.bool.isRequired,
+  clipLoaderShown: PropTypes.bool.isRequired,
+  onLoadEmbed: PropTypes.func.isRequired
 }

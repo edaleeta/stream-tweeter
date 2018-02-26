@@ -10,15 +10,33 @@ export class SentTweet extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      clipHidden: true
+      clipHidden: true,
+      clipLoaderShown: false
     }
     this.handleClickToggleClip = this.handleClickToggleClip.bind(this);
+    this.handleOnLoadEmbed = this.handleOnLoadEmbed.bind(this);
   }
 
   handleClickToggleClip(e) {
     this.setState({
-      clipHidden: this.state.clipHidden ? false : true
+      clipHidden: this.state.clipHidden ? false : true,
+      clipLoaderShown: true,
     });
+
+    // If the clip is shown, hide the loader when hiding the clip. 
+    if (!this.state.clipHidden) {
+      this.setState({
+        clipLoaderShown: false
+      });
+    }
+  }
+
+  handleOnLoadEmbed() {
+    // Hide some spinner element when clip embed loads...
+    console.log("Clip loaded!")
+    this.setState({
+      clipLoaderShown: false
+    })
   }
 
   render() {
@@ -51,8 +69,11 @@ export class SentTweet extends Component {
           </ListGroupItem>
         </Col>
         <Col xs={12} md={8}>
-          <ClipContainer clipId={this.props.clipId}
+          <ClipContainer
+            clipId={this.props.clipId}
             clipHidden={this.state.clipHidden}
+            clipLoaderShown={this.state.clipLoaderShown}
+            onLoadEmbed={this.handleOnLoadEmbed}
           />
         </Col>
       </Row>
