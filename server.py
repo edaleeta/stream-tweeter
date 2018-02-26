@@ -276,6 +276,7 @@ def get_stream_session_data_react(stream_id):
     """Retrives data points for a given stream session. """
 
     # Hardcoding current user for testing.
+    # TODO: REMOVE WHEN DONE.
     current_user = User.query.get(4)
 
     # Restrict access to logged in users.
