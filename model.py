@@ -288,8 +288,7 @@ class StreamSession(db.Model):
                         db.ForeignKey("users.user_id"),
                         nullable=False)
     twitch_session_id = db.Column(db.String(16),
-                                  nullable=False,
-                                  unique=True)
+                                  nullable=False)
     started_at = db.Column(db.DateTime, nullable=False)
     ended_at = db.Column(db.DateTime)
 
@@ -331,9 +330,15 @@ class StreamSession(db.Model):
     def save_stream_session(cls, user, stream_data):
         """Adds a new stream session linked to user."""
 
+        print("\nATTEMPTING TO SAVE NEW TWITCH SESSION.")
+
         t_session_id = stream_data["stream_id"]
         twitch_session = cls.get_session_from_twitch_session_id(t_session_id)
-        if not twitch_session:
+        # If a stream session is open and matches the current Twitch
+        # stream ID, continue to use that session.
+        # Otherwise, if the matched session has ended, create a new session.
+        if (not twitch_session) or (twitch_session and twitch_session.ended_at):
+            print("\nSAVING NEW TWITCH SESSION.")
             user_id = user.user_id
             started_at = stream_data["started_at"]
             new_session = StreamSession(user_id=user_id,
@@ -365,7 +370,8 @@ class StreamSession(db.Model):
     def get_session_from_twitch_session_id(cls, twitch_session_id):
         """Gets the corresponding Twitch Session based on Twitch Session id."""
 
-        return cls.query.filter_by(twitch_session_id=twitch_session_id).first()
+        return cls.query.filter_by(twitch_session_id=twitch_session_id) \
+            .order_by(cls.stream_id.desc()).first()
 
     @classmethod
     def get_user_current_session(cls, user):
@@ -373,7 +379,7 @@ class StreamSession(db.Model):
 
         most_recent_session = cls.query.filter_by(user_id=user.user_id,
                                                   ended_at=None) \
-            .order_by(cls.started_at.desc()).first()
+            .order_by(cls.stream_id.desc()).first()
         return most_recent_session
 
 

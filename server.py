@@ -358,6 +358,9 @@ def get_sent_tweets_for_user_react():
     started_at_ts = request.args.get("startedAt")  # Timestamp
     ended_at_ts = request.args.get("endedAt")      # Timestamp
 
+    if ended_at_ts == "null":
+        ended_at_ts = datetime.datetime.utcnow().timestamp()
+
     try:
         started_at_ts = int(started_at_ts)
         ended_at_ts = int(ended_at_ts)

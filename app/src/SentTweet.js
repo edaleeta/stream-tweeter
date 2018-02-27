@@ -45,6 +45,26 @@ export class SentTweet extends Component {
     });
 
     let clipButtonText = this.state.clipHidden ? "View Clip" : "Hide Clip"
+    let clipContainer, viewClipButton;
+    if (this.props.clipId) {
+      clipContainer = (
+        <ClipContainer
+          clipId={this.props.clipId}
+          clipHidden={this.state.clipHidden}
+          clipLoaderShown={this.state.clipLoaderShown}
+          onLoadEmbed={this.handleOnLoadEmbed}
+        />
+      )
+      viewClipButton = (
+        <Button
+          onClick={this.handleClickToggleClip}>
+            {clipButtonText}
+        </Button>
+      )
+    } else {
+      clipContainer = <div></div>
+      viewClipButton = <span></span>
+    }
 
     return (
       <Row>
@@ -66,20 +86,12 @@ export class SentTweet extends Component {
               >
                 View on Twitter
               </Button>
-              <Button
-                onClick={this.handleClickToggleClip}>
-                  {clipButtonText}
-              </Button>
+              {viewClipButton}
             </ButtonToolbar>
           </Row>
         </Col>
         <Col xs={12} md={8}>
-          <ClipContainer
-            clipId={this.props.clipId}
-            clipHidden={this.state.clipHidden}
-            clipLoaderShown={this.state.clipLoaderShown}
-            onLoadEmbed={this.handleOnLoadEmbed}
-          />
+          {clipContainer}
         </Col>
       </Row>
     )

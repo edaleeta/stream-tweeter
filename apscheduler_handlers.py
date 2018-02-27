@@ -42,9 +42,7 @@ def start_tweeting(user_id, interval):
 
     user = model.User.get_user_from_id(user_id)
     templates = [template.contents for template in user.templates]
-    print("\n\nAVAILABLE TEMPLATES: {}\n\n".format(templates))
     random_template = random.choice(templates)
-    print("\n\nRandom template is: {}\n\n".format(random_template))
 
     tweet_copy = template_helpers.populate_tweet_template(
         random_template, user_id
