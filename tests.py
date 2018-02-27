@@ -86,6 +86,15 @@ class UserModelTestCase(TestCase):
         user = m.User.get_user_from_twitch_id(twitch_id)
         self.assertIsNone(user)
 
+    def test_update_tweet_interval(self):
+        """Checks if tweet interval setting is updated correctly."""
+
+        user = m.User.query.get(4)
+        new_interval = 45
+        user.update_tweet_interval(new_interval)
+
+        self.assertEqual(user.tweet_interval, new_interval)
+
     def test_update_twitch_access_token(self):
         """Checks if Twitch Tokens were updated correctly."""
 
