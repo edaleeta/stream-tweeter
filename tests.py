@@ -473,7 +473,7 @@ class TemplateHelpersTestCase(TestCase):
 
         # Case 1: Stream is online
         # Mocking data
-        twitch_helpers.get_and_write_twitch_stream_data = mock.MagicMock(
+        twitch_helpers.serialize_twitch_stream_data = mock.MagicMock(
             return_value={
                 "timestamp": timestamp,
                 "stream_id": stream_id,
@@ -494,7 +494,7 @@ class TemplateHelpersTestCase(TestCase):
         self.assertEqual(template_data["timestamp"], timestamp)
 
         # Case 2: Stream is offline
-        twitch_helpers.get_and_write_twitch_stream_data = mock.MagicMock(
+        twitch_helpers.serialize_twitch_stream_data = mock.MagicMock(
             return_value=None)
 
         offline_template_data = temp_help.get_twitch_template_data(user)
@@ -571,7 +571,7 @@ class TemplateHelpersTestCase(TestCase):
             )
 
             # Case 1: Twitter update posts successfully.
-            temp_help.create_and_publish_to_twitter(
+            temp_help.publish_to_twitter(
                 template_contents, user.user_id
             )
             saved_tweet = m.SentTweet.query.filter_by(

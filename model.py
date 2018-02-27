@@ -368,8 +368,8 @@ class StreamSession(db.Model):
     @classmethod
     def end_all_user_sessions_now(cls, user):
         """Ends all currently open sessions for the user."""
-        for stream_session in cls.query.filter(user_id=user.user_id,
-                                               ended_at=None):
+        for stream_session in cls.query.filter_by(user_id=user.user_id,
+                                                  ended_at=None):
             stream_session.ended_at = datetime.datetime.utcnow()
             db.session.commit()
 

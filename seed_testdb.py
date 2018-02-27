@@ -36,6 +36,8 @@ def sample_data():
                         project_path + "/sql/sent_tweets.csv'")
     fill_base_templates = ("COPY base_templates FROM '" +
                            project_path + "/sql/base_templates.csv'")
+    fill_twitch_tokens = ("COPY twitch_tokens FROM '" +
+                          project_path + "/sql/twitch_tokens.csv'")
 
     db.session.execute(fill_base_templates)
     db.session.execute(fill_users)
@@ -44,6 +46,7 @@ def sample_data():
     db.session.execute(fill_stream_data)
     db.session.execute(fill_twitch_clips)
     db.session.execute(fill_sent_tweets)
+    db.session.execute(fill_twitch_tokens)
     db.session.commit()
 
     # Add Template entry per base template for each initial user.
@@ -153,6 +156,20 @@ def sample_data():
         db.session.execute(query, {'new_id': max_id + 1})
         db.session.commit()
 
+    def set_val_twitch_token_id():
+        """Set value for the next Twitch token_id after seeding database."""
+
+        # Get the max id in the database
+        result = db.session.query(func.max(
+            TwitchToken.token_id
+            )).one()
+        max_id = int(result[0])
+
+        # Set the value for the next id to be max_id + 1
+        query = "SELECT setval('twitch_tokens_token_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
     # Set next values of PKs where seeded data exists.
     set_val_user_id()
     set_val_base_templates_id()
@@ -161,6 +178,7 @@ def sample_data():
     set_val_stream_id()
     set_val_template_id()
     set_val_clip_id()
+    set_val_twitch_token_id()
 
 ###############################################################################
 # SEED DIRECTLY FOR INTERACTIVE MODE
