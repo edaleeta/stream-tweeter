@@ -214,7 +214,7 @@ def generate_twitch_clip(user_id):
 
     # TODO: If this fails, return None.
     # Add better error handling.
-    return None
+    return None, None
 
 
 def get_clip_info(clip_id, user):

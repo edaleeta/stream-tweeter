@@ -103,13 +103,13 @@ def publish_to_twitter(contents, user_id):
     # Clip id defaults to None.
     clip_id = None
     # Try to generate a Twitch Clip
-    # new_clip, clip_url = twitch.generate_twitch_clip(user_id)
+    new_clip, clip_url = twitch.generate_twitch_clip(user_id)
 
-    # # If new clip is created, append to tweet and save clip id.
-    # if new_clip:
-    #     contents += "\n{}".format(clip_url)
-    #     clip_id = new_clip.clip_id
-    # print("\n\nABOUT TO SEND A TWEET!\n\n")
+    # If new clip is created, append to tweet and save clip id.
+    if new_clip:
+        contents += "\n{}".format(clip_url)
+        clip_id = new_clip.clip_id
+    print("\n\nABOUT TO SEND A TWEET!\n\n")
     try:
         # Send Tweet and catch response
         response = api.update_status(contents)
