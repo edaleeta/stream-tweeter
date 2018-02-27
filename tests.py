@@ -95,6 +95,28 @@ class UserModelTestCase(TestCase):
 
         self.assertEqual(user.tweet_interval, new_interval)
 
+    def test_remove_twitter_access_token(self):
+        """Test: Remove twitter access token for user."""
+
+        user = m.User.query.get(4)
+
+        # Case 1: User does not have a Twitter access token.
+        user.remove_twitter_access_token()
+        self.assertIsNone(user.twitter_token)
+
+        # Case 2: User has a Twitter access token.
+        # Add twitter token.
+        new_token = m.TwitterToken(user_id=user.user_id,
+                                 access_token="mytoken",
+                                 access_token_secret="mysecret")
+        db.session.add(new_token)
+        db.session.commit()
+        self.assertEqual(user.twitter_token.access_token, "mytoken")
+
+        # Remove twitter token and test.
+        user.remove_twitter_access_token()
+        self.assertIsNone(user.twitter_token)        
+
     def test_update_twitch_access_token(self):
         """Checks if Twitch Tokens were updated correctly."""
 
@@ -378,6 +400,26 @@ class StreamSessionModelTestCase(TestCase):
         self.assertIsNone(m.StreamSession.end_stream_session(
             user=user, timestamp=end_session_time
         ))
+    
+    def test_end_all_user_sessions_now(self):
+        """Checks that all user's sessions are ended."""
+        user = m.User.query.first()
+        # Alter the most recent session so it's detected as 'open'
+        last_session = user.sessions[-1]
+        last_session.ended_at = None
+        db.session.commit()
+
+        # Confirm a session is open.
+        open_sessions = m.StreamSession.query.filter_by(user_id=user.user_id,
+                                                        ended_at=None).all()
+        self.assertTrue(open_sessions)
+        
+        # Case 1: Open sessions are found.
+        m.StreamSession.end_all_user_sessions_now(user)
+
+        open_sessions = m.StreamSession.query.filter_by(user_id=user.user_id,
+                                                        ended_at=None).all()
+        self.assertFalse(open_sessions)
 
 
 class TwitchClipModelTestCase(TestCase):

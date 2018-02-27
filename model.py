@@ -109,10 +109,9 @@ class User(db.Model):
     def remove_twitter_access_token(self):
         """Removes the Twitter access token and info for user."""
 
-        # TODO: Test
-        # What happens if I try to delete when it doesn't exist?
-        db.session.delete(self.twitter_token)
-        db.session.commit()
+        if self.twitter_token:
+            db.session.delete(self.twitter_token)
+            db.session.commit()
 
     def delete_template(self, template_id):
         """Allows a user to delete an owned template."""
