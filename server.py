@@ -211,12 +211,12 @@ def start_tweets_react():
     """Starts sending tweets; used for testing."""
     if twitch_helpers.is_twitch_online(current_user):
         # Starts job to fetch twitch data.
-        handler.start_fetching_twitch_data(int(current_user.user_id))
+        # TODO: UNCOMMENT AFTER TESTING TWITTER HELPERS.
+        # handler.start_fetching_twitch_data(current_user.user_id)
 
         tweet_interval = current_user.tweet_interval or 30
         # Start sending tweets
-        # TODO: UNCOMMENT AFTER TESTING TWITCH HELPERS.
-        # handler.start_tweeting(int(current_user.user_id), tweet_interval)
+        handler.start_tweeting(current_user.user_id, tweet_interval)
 
         return jsonify(success=True)
 

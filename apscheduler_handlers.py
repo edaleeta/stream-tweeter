@@ -41,13 +41,13 @@ def start_tweeting(user_id, interval):
     """Start tweeting for the given user on the specified interval."""
 
     user = model.User.get_user_from_id(user_id)
-    templates = [template.contents for template in user.templates]
-    print("\n\nAVAILABLE TEMPLATES: {}\n\n".format(templates))
-    random_template = random.choice(templates)
-    print("\n\nRandom template is: {}\n\n".format(random_template))
-    template_helpers.create_and_publish_to_twitter(random_template,
-                                                   user_id)
-    print("TWEET TWEETED.")
+    # templates = [template.contents for template in user.templates]
+    # print("\n\nAVAILABLE TEMPLATES: {}\n\n".format(templates))
+    # random_template = random.choice(templates)
+    # print("\n\nRandom template is: {}\n\n".format(random_template))
+    # template_helpers.create_and_publish_to_twitter(random_template,
+    #                                                user_id)
+    # print("TWEET TWEETED.")
 
     # Interval will be defined in minutes.
     # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.

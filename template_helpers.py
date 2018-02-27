@@ -45,19 +45,20 @@ def populate_tweet_template(contents, user_id):
 
         data_for_template = get_twitch_template_data(user)
 
-        if data_for_template:
-            print("\n\nData for template.\n{}".format(data_for_template))
-            tweet_template = string.Template(contents)
-            populated_template = tweet_template.safe_substitute(
-                data_for_template)
+        if not data_for_template:
+            print("\n\nNO DATA RECEIVED. Stream may be offline.\n\n")
+            return None
 
-            print("\n\nPopulated template:\n{}".format(populated_template))
+        print("\n\nData for template.\n{}".format(data_for_template))
+        tweet_template = string.Template(contents)
+        populated_template = tweet_template.safe_substitute(
+            data_for_template)
 
-            return populated_template
+        print("\n\nPopulated template:\n{}".format(populated_template))
 
-        # TODO: Error handler for case when stream is offline.
-        print("\n\nNO DATA RECEIVED. Stream may be offline.\n\n")  # No.
-        return None
+        return populated_template
+
+        
     except Exception as e:
         print(e)
 
@@ -65,7 +66,7 @@ def populate_tweet_template(contents, user_id):
 def get_twitch_template_data(user):
     """Creates a dictionary to use for tweet template filler."""
 
-    all_stream_data = twitch.get_and_write_twitch_stream_data(user)
+    all_stream_data = twitch.serialize_twitch_stream_data(user)
     if all_stream_data:
         stream_template_data = {
             "url": all_stream_data["url"],
@@ -77,7 +78,6 @@ def get_twitch_template_data(user):
         print("RETURNING TWITCH TEMPLATE DATA.")
         print(stream_template_data)
         return stream_template_data
-    # TODO: Error handler for case when stream is offline.
     print("NO DATA RETURNED FROM TWITCH. STREAM MAY BE OFFLINE.")
     return None
 
@@ -90,7 +90,11 @@ def create_and_publish_to_twitter(template, user_id):
     token = user.twitter_token
     access_token = token.access_token
     access_token_secret = token.access_token_secret
+
+    # Use data from Twitch to populate template.
     contents = populate_tweet_template(template, user_id)
+    if not contents:
+        return
 
     twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
                                        TWITTER_CONSUMER_SECRET)

@@ -30,8 +30,11 @@ def send_tweets(user_id):
             random_template = random.choice(templates)
             print("\n\nRandom template is: {}\n\n".format(random_template))
 
-            template_helpers.create_and_publish_to_twitter(random_template,
-                                                           user_id)
+            print(template_helpers.populate_tweet_template(random_template, user_id))
+
+            # TODO: UNCOMMENT AFTER TESTING.
+            # template_helpers.create_and_publish_to_twitter(random_template,
+            #                                                user_id)
             print("TWEET TWEETED.")
 
     except Exception as e:
