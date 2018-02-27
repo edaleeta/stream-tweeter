@@ -1,4 +1,4 @@
-"""Twitch API Helper Functions for Yet Another Twitch Toolkit."""
+"""Twitch API Helper Functions for Stream Tweeter."""
 
 from datetime import datetime
 import time
@@ -10,12 +10,19 @@ import apscheduler_handlers as ap_handlers
 get_stream_failures = {}
 
 
+def create_header(user):
+    """Creates a header for Twitch API calls."""
+    token = user.twitch_token.access_token
+    header = {"Authorization": "Bearer {}".format(token)}
+    return header
+
+
 def is_twitch_online(user):
     """Check if user's Twitch stream is live."""
 
     response = get_stream_info(user)
     try:
-        check_response_status(response.status_code)
+        check_response_status(response)
         stream_data = response.json().get("data")
         # If stream_data has contents, the user is streaming.
         if stream_data:
@@ -27,8 +34,10 @@ def is_twitch_online(user):
         return False
 
 
-def check_response_status(status_code):
+def check_response_status(response):
     """Handles errors for response status codes."""
+
+    status_code = response.status_code
 
     if status_code == 200:
         print("Response OK.")
@@ -46,44 +55,79 @@ def get_stream_info(user):
     """Get user's stream info from Twitch API."""
 
     twitch_id = str(user.twitch_id)
-    token = user.twitch_token.access_token
     payload_streams = {"user_id": twitch_id,    # Edit this to test
                        "first": 1,
                        "type": "live"}
-    headers = {"Authorization": "Bearer {}".format(token)}
-    r_streams = requests.get("https://api.twitch.tv/helix/streams",
-                             params=payload_streams,
-                             headers=headers)
-    return r_streams
+
+    response = requests.get("https://api.twitch.tv/helix/streams",
+                            params=payload_streams,
+                            headers=create_header(user))
+    return response
+
+
+def get_twitch_stream_data(user):
+    """Get Twitch stream data for user's stream."""
+
+    response = get_stream_info(user)
+
+    try:
+        check_response_status(response)
+        all_stream_data = response.json().get("data")
+    except Exception as e:
+        print(str(e))
+        return None
+
+    # If the stream is offline, data will be an empty array.
+    if not all_stream_data:
+        # We want to increment failure counter.
+        # Define a seperate function to handle that.
+        return None
+
+    # If the stream is live...
+    # print("Stream data: {}".format(all_stream_data))
+    all_stream_data = all_stream_data[0]
+    timestamp = datetime.utcnow()
+    stream_id = all_stream_data.get("id")
+    streamer_id = all_stream_data.get("user_id")
+    stream_title = all_stream_data.get("title")
+    stream_viewer_count = all_stream_data.get("viewer_count")
+    stream_started_at = all_stream_data.get("started_at")
+    stream_game_id = all_stream_data.get("game_id")
+
+    # Helper function to get game info
+    stream_game_title = get_twitch_game_data(stream_game_id, user)
+    # Helper function to construct stream url
+    stream_url = create_stream_url(streamer_id, user)
+    # Convert started_at str to datetime
+    datetime_format = "%Y-%m-%dT%H:%M:%SZ"
+    stream_started_at = datetime.strptime(stream_started_at,
+                                          datetime_format)
+
+    stream_data = {"timestamp": timestamp,
+                   "stream_id": stream_id,
+                   "twitch_id": streamer_id,
+                   "stream_title": stream_title,
+                   "viewer_count": stream_viewer_count,
+                   "started_at": stream_started_at,
+                   "game_id": stream_game_id,
+                   "game_name": stream_game_title,
+                   "url": stream_url}
+    return stream_data
 
 
 def get_and_write_twitch_stream_data(user):
     """Get Twitch stream data for user's stream."""
+    user_id = user.user_id
+    response = get_stream_info(user)
 
-    user_id = int(user.user_id)
-    twitch_id = str(user.twitch_id)
-    token = user.twitch_token.access_token
-    # For the purposes of testing, will get stream data about some other user.
-    testing_twitch_id = "28036688"              # Hardcode id to test here
-    payload_streams = {"user_id": twitch_id,    # Edit this to test
-                       "first": 1,
-                       "type": "live"}
-    headers = {"Authorization": "Bearer {}".format(token)}
-    r_streams = requests.get("https://api.twitch.tv/helix/streams",
-                             params=payload_streams,
-                             headers=headers)
-    # If OK response received, save stream data.
-    # Note: 401 response when a new token must be fetched.
-    # TODO: Add handler for reauthorization
-    if r_streams.status_code == 200:
-        all_stream_data = r_streams.json().get("data")
-    else:
-        # Otherwise, return None.
-        print("Failed to request from Twitch: {}".format(
-            r_streams.status_code
-        ))
+    try:
+        check_response_status(response)
+        all_stream_data = response.json().get("data")
+    except Exception as e:
+        print(str(e))
         return None
-    # If the stream is live..
+
+    # If the stream is live...
     print("Stream data: {}".format(all_stream_data))
     if all_stream_data:
         all_stream_data = all_stream_data[0]
@@ -142,7 +186,7 @@ def get_and_write_twitch_stream_data(user):
     return None
 
 
-def create_stream_url(twitch_id, headers):
+def create_stream_url(twitch_id, user):
     """Construct a URL to Twitch stream for given twitch id.
     Purposefully pulls current Twitch user data in case stored username
     is out of date."""
@@ -152,7 +196,7 @@ def create_stream_url(twitch_id, headers):
     payload = {"id": twitch_id}
     r_users = requests.get("https://api.twitch.tv/helix/users",
                            params=payload,
-                           headers=headers)
+                           headers=create_header(user))
 
     # If OK response received, store Twitch username.
     if r_users.status_code == 200:
@@ -164,13 +208,13 @@ def create_stream_url(twitch_id, headers):
     return url
 
 
-def get_twitch_game_data(game_id, headers):
+def get_twitch_game_data(game_id, user):
     """Sends a request to Twitch API to retrieve game info from given id."""
 
     payload_games = {"id": game_id}
     r_games = requests.get("https://api.twitch.tv/helix/games",
                            params=payload_games,
-                           headers=headers)
+                           headers=create_header(user))
     # If OK response received, save game data.
     if r_games.status_code == 200:
         game_data = r_games.json().get("data")[0]
