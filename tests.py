@@ -494,6 +494,15 @@ class TemplateHelpersTestCase(TestCase):
         db.reflect()
         db.drop_all()
 
+    def test_replace_nl_with_carriage(self):
+        """Check if new lines are replaced with carriage returns."""
+
+        given_string = "Hi,\nI'm a cat.\nMeow!"
+        expected_string = "Hi,\r\nI'm a cat.\r\nMeow!"
+
+        self.assertEqual(temp_help.replace_nl_with_carriage(given_string),
+                         expected_string)
+
     def test_add_basic_templates(self):
         """Check if appropriate templates are associated with new user."""
 
