@@ -133,8 +133,6 @@ def handle_check_stream_failures(user_id):
               Ending session and jobs.".format(user_id))
         # Reset failure counter.
         CHECK_STREAM_FAILURES[user_id] = 0
-        # Save end timestamp of stream session.
-        StreamSession.end_stream_session(user, datetime.utcnow())
 
         ap_handlers.stop_fetching_twitch_data(user_id)
         print("\n\nENDED STREAM DATA FETCH.\n\n")

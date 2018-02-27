@@ -1,10 +1,11 @@
 """APScheduler job handlers."""
+import datetime
+import random
 from app_globals import scheduler
 import apscheduler_jobs as jobs
 import twitch_helpers
 import template_helpers
 import model
-import random
 
 
 def start_fetching_twitch_data(user_id):
@@ -32,6 +33,11 @@ def start_fetching_twitch_data(user_id):
 
 def stop_fetching_twitch_data(user_id):
     """End the currently running fetch_data job for the user."""
+    # Save end timestamp of stream session to close session.
+    user = model.User.get_user_from_id(user_id)
+    model.StreamSession.end_stream_session(user, datetime.datetime.utcnow())
+
+    # Turn user
     user_id = str(user_id)
     job_type = "fetch_data"
     stop_job(job_type, user_id)

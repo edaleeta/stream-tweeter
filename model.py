@@ -1,10 +1,11 @@
 """Models and database functions for Yet Another Twitch Toolkit."""
 
 import os
+import datetime
+from datetime import timezone
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import backref
 from sqlalchemy import desc, func
-from datetime import timezone
 
 db = SQLAlchemy()
 
@@ -334,6 +335,15 @@ class StreamSession(db.Model):
 
         t_session_id = stream_data["stream_id"]
         twitch_session = cls.get_session_from_twitch_session_id(t_session_id)
+
+        # If no stream session exists for the Twitch session id, 
+        # then this is a new stream. Ensure all prior sessions are closed
+        # if the ended_at is null.
+
+        # TODO: TEST THIS!!
+        if not twitch_session:
+            cls.end_all_user_sessions_now(user)
+
         # If a stream session is open and matches the current Twitch
         # stream ID, continue to use that session.
         # Otherwise, if the matched session has ended, create a new session.
@@ -347,11 +357,21 @@ class StreamSession(db.Model):
             db.session.add(new_session)
             db.session.commit()
             twitch_session = new_session
+        else:
+            print("\nOPEN SESSION FOUND. APPENDING TO CURRENT SESSION.")
 
         # Also add an entry in stream_data to store snapshot.
         StreamDatum.save_stream_data(twitch_session, stream_data)
 
         return twitch_session
+
+    @classmethod
+    def end_all_user_sessions_now(cls, user):
+        """Ends all currently open sessions for the user."""
+        for stream_session in cls.query.filter(user_id=user.user_id,
+                                               ended_at=None):
+            stream_session.ended_at = datetime.datetime.utcnow()
+            db.session.commit()
 
     @classmethod
     def end_stream_session(cls, user, timestamp):
