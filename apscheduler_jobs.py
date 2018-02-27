@@ -27,6 +27,8 @@ def fetch_twitch_data(user_id):
             print(user)
             stream_data = twitch_helpers.serialize_twitch_stream_data(user)
             print(stream_data)
+            if stream_data:
+                twitch_helpers.write_twitch_stream_data(user, stream_data)
     except Exception as e:
         print(e)
 
