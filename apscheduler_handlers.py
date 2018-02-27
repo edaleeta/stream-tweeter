@@ -71,4 +71,7 @@ def stop_tweeting(user_id):
 
 def stop_job(job_type, user_id):
     """Given a job type and user_id, stop the job."""
-    scheduler.delete_job(job_type + user_id)
+    try:
+        scheduler.delete_job(job_type + user_id)
+    except Exception:
+        pass
