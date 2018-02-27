@@ -215,7 +215,8 @@ def start_tweets_react():
 
         tweet_interval = current_user.tweet_interval or 30
         # Start sending tweets
-        handler.start_tweeting(int(current_user.user_id), tweet_interval)
+        # TODO: UNCOMMENT AFTER TESTING TWITCH HELPERS.
+        # handler.start_tweeting(int(current_user.user_id), tweet_interval)
 
         return jsonify(success=True)
 

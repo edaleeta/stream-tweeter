@@ -12,7 +12,7 @@ def start_fetching_twitch_data(user_id):
 
     # Do the first run of the task immediately
     user = model.User.get_user_from_id(user_id)
-    twitch_helpers.get_and_write_twitch_stream_data(user)
+    # twitch_helpers.get_and_write_twitch_stream_data(user)
 
     # Start job on interval
     interval = 30
