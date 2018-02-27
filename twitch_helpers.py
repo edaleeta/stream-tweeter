@@ -192,9 +192,10 @@ def generate_twitch_clip(user_id):
     """Generate a Twitch Clip from user's channel.
        Returns the URL and new clip object on success."""
 
+    # TODO: EDIT OUT TESTING VARS
     user = User.get_user_from_id(user_id)
     twitch_id = str(user.twitch_id)
-    token = user.twitch_token.access_token
+    test_id = str(37764822)
     payload_clips = {"broadcaster_id": twitch_id}
     r_clips = requests.post("https://api.twitch.tv/helix/clips",
                             data=payload_clips,

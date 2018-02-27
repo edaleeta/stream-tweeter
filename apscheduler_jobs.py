@@ -26,9 +26,7 @@ def send_tweets(user_id):
         with db.app.app_context():
             user = User.get_user_from_id(user_id)
             templates = [template.contents for template in user.templates]
-            print("\n\nAVAILABLE TEMPLATES: {}\n\n".format(templates))
             random_template = random.choice(templates)
-            print("\n\nRandom template is: {}\n\n".format(random_template))
 
             tweet_copy = template_helpers.populate_tweet_template(
                 random_template, user_id
@@ -36,10 +34,6 @@ def send_tweets(user_id):
             if tweet_copy:
                 template_helpers.publish_to_twitter(tweet_copy, user_id)
 
-            # TODO: UNCOMMENT AFTER TESTING.
-            # template_helpers.create_and_publish_to_twitter(random_template,
-            #                                                user_id)
-            print("TWEET TWEETED.")
 
     except Exception as e:
         print(e)

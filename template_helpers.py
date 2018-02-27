@@ -115,10 +115,11 @@ def publish_to_twitter(contents, user_id):
         response = api.update_status(contents)
         # Store sent tweet data in db
         SentTweet.store_sent_tweet(response, user_id, clip_id=clip_id)
+        print("TWEET TWEETED.")
+        return
     except tweepy.TweepError as error:
         # TODO: Set up better handler for errors.
         print(error.reason)
-    print("IF I CAN SEE THIS, MY HELPER FUNCTION WORKED.")
 
 
 if __name__ == "__main__":
