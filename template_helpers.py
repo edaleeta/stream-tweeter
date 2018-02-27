@@ -82,19 +82,18 @@ def get_twitch_template_data(user):
     return None
 
 
-def create_and_publish_to_twitter(template, user_id):
+def publish_to_twitter(contents, user_id):
     """Publishes given content to a user's Twitter account."""
+
+    # If given empty contents
+    if not contents:
+        return
 
     # Set up Twitter requirements
     user = User.get_user_from_id(user_id)
     token = user.twitter_token
     access_token = token.access_token
     access_token_secret = token.access_token_secret
-
-    # Use data from Twitch to populate template.
-    contents = populate_tweet_template(template, user_id)
-    if not contents:
-        return
 
     twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
                                        TWITTER_CONSUMER_SECRET)
@@ -104,13 +103,13 @@ def create_and_publish_to_twitter(template, user_id):
     # Clip id defaults to None.
     clip_id = None
     # Try to generate a Twitch Clip
-    new_clip, clip_url = twitch.generate_twitch_clip(user_id)
+    # new_clip, clip_url = twitch.generate_twitch_clip(user_id)
 
-    # If new clip is created, append to tweet and save clip id.
-    if new_clip:
-        contents += "\n{}".format(clip_url)
-        clip_id = new_clip.clip_id
-    print("\n\nABOUT TO SEND A TWEET!\n\n")
+    # # If new clip is created, append to tweet and save clip id.
+    # if new_clip:
+    #     contents += "\n{}".format(clip_url)
+    #     clip_id = new_clip.clip_id
+    # print("\n\nABOUT TO SEND A TWEET!\n\n")
     try:
         # Send Tweet and catch response
         response = api.update_status(contents)

@@ -212,7 +212,7 @@ def start_tweets_react():
     if twitch_helpers.is_twitch_online(current_user):
         # Starts job to fetch twitch data.
         # TODO: UNCOMMENT AFTER TESTING TWITTER HELPERS.
-        # handler.start_fetching_twitch_data(current_user.user_id)
+        handler.start_fetching_twitch_data(current_user.user_id)
 
         tweet_interval = current_user.tweet_interval or 30
         # Start sending tweets

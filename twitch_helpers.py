@@ -55,6 +55,7 @@ def get_stream_info(user):
     """Get user's stream info from Twitch API."""
 
     twitch_id = str(user.twitch_id)
+    test_id = str(37764822)
     payload_streams = {"user_id": twitch_id,    # Edit this to test
                        "first": 1,
                        "type": "live"}
@@ -134,8 +135,10 @@ def handle_check_stream_failures(user_id):
         CHECK_STREAM_FAILURES[user_id] = 0
         # Save end timestamp of stream session.
         StreamSession.end_stream_session(user, datetime.utcnow())
-        ap_handlers.stop_fetching_twitch_data(user_id)
         ap_handlers.stop_tweeting(user_id)
+        print("\n\nENDING TWEETS.\n\n")
+        ap_handlers.stop_fetching_twitch_data(user_id)
+        print("\n\nENDING STREAM DATA FETCH.\n\n")
     else:
         print("User {}'s stream might be offline. Will try again.".format(
             user_id
