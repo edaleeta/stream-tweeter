@@ -6,25 +6,12 @@ import twitch_helpers
 import template_helpers
 
 
-# def fetch_twitch_data(user_id):
-#     """Job: Grab data about user's stream."""
-#     try:
-#         with db.app.app_context():
-#             print("Fetching stream info for {} now.".format(user_id))
-#             user = User.get_user_from_id(user_id)
-#             print(user)
-#             twitch_helpers.get_and_write_twitch_stream_data(user)
-#     except Exception as e:
-#         print(e)
-
-
 def fetch_twitch_data(user_id):
     """Job: Grab data about user's stream. Write it to db."""
     try:
         with db.app.app_context():
             print("Fetching stream info for {} now.".format(user_id))
             user = User.get_user_from_id(user_id)
-            print(user)
             stream_data = twitch_helpers.serialize_twitch_stream_data(user)
             print(stream_data)
             if stream_data:

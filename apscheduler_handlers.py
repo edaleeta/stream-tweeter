@@ -12,10 +12,13 @@ def start_fetching_twitch_data(user_id):
 
     # Do the first run of the task immediately
     user = model.User.get_user_from_id(user_id)
-    # twitch_helpers.get_and_write_twitch_stream_data(user)
+    stream_data = twitch_helpers.serialize_twitch_stream_data(user)
+    print(stream_data)
+    if stream_data:
+        twitch_helpers.write_twitch_stream_data(user, stream_data)
 
     # Start job on interval
-    interval = 30
+    interval = 60
     print("Fetching data for user: {}".format(user_id))
     job_type = "fetch_data"
     job_id = job_type + str(user_id)
