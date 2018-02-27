@@ -7,7 +7,7 @@ from model import StreamSession, TwitchClip, User
 import apscheduler_handlers as ap_handlers
 
 # Stores user_id and corresponding number of failtures.
-get_stream_failures = {}
+CHECK_STREAM_FAILURES = {}
 
 
 def create_header(user):
@@ -65,9 +65,9 @@ def get_stream_info(user):
     return response
 
 
-def get_twitch_stream_data(user):
+def serialize_twitch_stream_data(user):
     """Get Twitch stream data for user's stream."""
-
+    user_id = user.user_id
     response = get_stream_info(user)
 
     try:
@@ -81,6 +81,7 @@ def get_twitch_stream_data(user):
     if not all_stream_data:
         # We want to increment failure counter.
         # Define a seperate function to handle that.
+        handle_check_stream_failures(user_id)
         return None
 
     # If the stream is live...
@@ -112,7 +113,38 @@ def get_twitch_stream_data(user):
                    "game_id": stream_game_id,
                    "game_name": stream_game_title,
                    "url": stream_url}
+    # Reset stream failures counter to 0
+    CHECK_STREAM_FAILURES[user_id] = 0
+
     return stream_data
+
+
+def handle_check_stream_failures(user_id):
+    """Handles stream offline events."""
+
+    user = User.query.get(user_id)
+
+    CHECK_STREAM_FAILURES[user_id] = CHECK_STREAM_FAILURES.get(user_id, 0) + 1
+    stream_failures = CHECK_STREAM_FAILURES[user_id]
+
+    if stream_failures > 1:
+        print("User's {} stream is offline! \
+              Ending session and jobs.".format(user_id))
+        # Reset failure counter.
+        CHECK_STREAM_FAILURES[user_id] = 0
+        # Save end timestamp of stream session.
+        StreamSession.end_stream_session(user, datetime.utcnow())
+        ap_handlers.stop_fetching_twitch_data(user_id)
+        ap_handlers.stop_tweeting(user_id)
+    else:
+        print("User {}'s stream might be offline. Will try again.".format(
+            user_id
+        ))
+
+
+def write_twitch_stream_data(user, stream_data):
+    """Write stream data to db."""
+    StreamSession.save_stream_session(user, stream_data)
 
 
 def get_and_write_twitch_stream_data(user):
@@ -176,7 +208,6 @@ def get_and_write_twitch_stream_data(user):
         get_stream_failures[user_id] = 0
         # Save endtimestamp of stream session.
         StreamSession.end_stream_session(user, datetime.utcnow())
-        # TODO: End the job that is sending tweets on an interval.
         ap_handlers.stop_fetching_twitch_data(user_id)
         ap_handlers.stop_tweeting(user_id)
     else:
