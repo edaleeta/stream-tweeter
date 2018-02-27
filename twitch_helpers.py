@@ -193,16 +193,15 @@ def generate_twitch_clip(user_id):
     twitch_id = str(user.twitch_id)
     token = user.twitch_token.access_token
     payload_clips = {"broadcaster_id": twitch_id}
-    headers = {"Authorization": "Bearer {}".format(token)}
     r_clips = requests.post("https://api.twitch.tv/helix/clips",
                             data=payload_clips,
-                            headers=headers)
+                            headers=create_header(user))
     if r_clips.status_code == 202:
         # Save the clip's slug; used as `id` in Twitch API
         clip_slug = r_clips.json().get("data")[0].get("id")
         # Send a request to Get Clips to confirm clip was created.
 
-        clip_info = get_clip_info(clip_slug, headers)
+        clip_info = get_clip_info(clip_slug, user)
         if clip_info:
             # Store the url
             url = clip_info.get("url")
@@ -215,7 +214,7 @@ def generate_twitch_clip(user_id):
     return None
 
 
-def get_clip_info(clip_id, headers):
+def get_clip_info(clip_id, user):
     """Use given clip id to fetch info from Twitch API."""
 
     # Note: Twitch recommends giving the API 15 seconds to fetch a newly
@@ -226,7 +225,7 @@ def get_clip_info(clip_id, headers):
     while failures <= 3:
         r_get_clip = requests.get("https://api.twitch.tv/helix/clips",
                                   params=payload_get_clip,
-                                  headers=headers)
+                                  headers=create_header(user))
         if r_get_clip.status_code == 200:
             clip_info = r_get_clip.json().get("data")
             try:
@@ -236,8 +235,6 @@ def get_clip_info(clip_id, headers):
                 failures += 1
                 time.sleep(5)
     return None
-
-
 
 if __name__ == "__main__":
     # Interact with db if we run this module directly.
