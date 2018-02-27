@@ -36,6 +36,14 @@ class UserModelTestCase(TestCase):
         db.session.close()
         db.reflect()
         db.drop_all()
+    
+    def test_get_id(self):
+        """Return a unicode string for flask-login."""
+        user_id = 4
+        user = m.User.get_user_from_id(user_id)
+
+        str_id = user.get_id()
+        self.assertEqual("4", str_id)
 
     def test_get_user_from_id(self):
         """Receive a User or None for given user id."""
