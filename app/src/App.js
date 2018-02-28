@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { PageHeader } from 'react-bootstrap';
 import { Switch, Route } from 'react-router-dom';
 import './App.css';
-import { NavBar } from './NavBar';
+import { MainNavBar } from './MainNavBar';
 import { WelcomeUser } from './WelcomeUser';
 import { Home } from './Home';
 import { Log } from './Log';
@@ -50,7 +50,7 @@ class App extends Component {
       return (
     <div>
       <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
-      <NavBar />
+      <MainNavBar />
       <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
       <Switch>
         <Route 
@@ -88,7 +88,7 @@ class App extends Component {
       return (
     <div>
     <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
-    <NavBar />
+    <MainNavBar />
     <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
     {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
     </div>
