@@ -594,8 +594,17 @@ class TemplateHelpersTestCase(TestCase):
 
         test_populate_tweet_template(self)
 
-        def test_create_and_publish_to_twitter(self):
+        def test_publish_to_twitter(self):
             """Tests creating and publishing a tweet."""
+
+            # Case 1: Function is given no contents.
+            temp_help.tweepy.API.update_status = mock.MagicMock()
+            self.assertIsNone(temp_help.publish_to_twitter(None, 4))
+            temp_help.tweepy.API.update_status.assert_not_called()
+
+            ###################################################################
+            # SET UP
+            ###################################################################
 
             template_contents = "${game} ${url} ${stream_title}"
 
@@ -638,7 +647,7 @@ class TemplateHelpersTestCase(TestCase):
                 )
             )
 
-            # Case 1: Twitter update posts successfully.
+            # Case 2: Twitter update posts successfully.
             temp_help.publish_to_twitter(
                 template_contents, user.user_id
             )
@@ -650,7 +659,7 @@ class TemplateHelpersTestCase(TestCase):
             temp_help.twitch.generate_twitch_clip.assert_called()
             temp_help.tweepy.API.update_status.assert_called()
 
-        test_create_and_publish_to_twitter(self)
+        test_publish_to_twitter(self)
 
 if __name__ == "__main__":
     import unittest

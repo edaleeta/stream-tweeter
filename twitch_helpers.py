@@ -6,7 +6,7 @@ import requests
 from model import StreamSession, TwitchClip, User
 import apscheduler_handlers as ap_handlers
 
-# Stores user_id and corresponding number of failtures.
+# Stores user_id and corresponding number of failures.
 CHECK_STREAM_FAILURES = {}
 
 
