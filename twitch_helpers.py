@@ -189,7 +189,6 @@ def generate_twitch_clip(user_id):
     """Generate a Twitch Clip from user's channel.
        Returns the URL and new clip object on success."""
 
-    # TODO: EDIT OUT TESTING VARS
     user = User.get_user_from_id(user_id)
     twitch_id = str(user.twitch_id)
     test_id = str(45867146)

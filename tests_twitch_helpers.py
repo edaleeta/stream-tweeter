@@ -46,12 +46,31 @@ def test_getting_user_when_response_is_ok(mock_get_streams):
 
 class TwitchHelpersTestCase(TestCase):
 
+    def setUp(self):
+        """Before each test..."""
+
+        # Connect to test db
+        connect_to_db(s.app, "postgresql:///testdb", False)
+
+        # Create tables and add sample data
+        db.create_all()
+        db.session.commit()
+        sample_data()
+
+    def tearDown(self):
+        """After every test..."""
+
+        db.session.close()
+        db.reflect()
+        db.drop_all()
+
     twitch_token = mock.Mock(spec=m.TwitchToken,
                              access_token="imagreattoken")
 
     user = mock.Mock(spec=m.User,
                      twitch_token=twitch_token,
-                     twitch_id=29389795)
+                     twitch_id=29389795,
+                     user_id=4)
 
     def test_create_header(self):
         """Checks for accurate header creation for Twitch API requests."""
@@ -196,7 +215,39 @@ class TwitchHelpersTestCase(TestCase):
         self.assertIsNone(twitch_helpers.get_twitch_game_data(
             game_id, self.user
         ))
+
+    @mock.patch("twitch_helpers.requests.post")
+    @mock.patch("twitch_helpers.get_clip_info")
+    def test_generate_twitch_clip(self, get_clip_info, requests_post):
+        """Test programmatic Twitch clip creation."""
+
+        # Set up mock objects
+        clip_slug = "ToastedPotatoPandas"
+        clip_url = "https://twitch.tv/clips/" + clip_slug
+        clip_data = {"url": clip_url}
+        create_clip_json = {"data": [{"id": clip_slug}]}
+        mock_response = mock.Mock()
+        mock_response.status_code = 202
+        mock_response.json.return_value = create_clip_json
         
+        requests_post.return_value = mock_response
+        get_clip_info.return_value = clip_data
+
+        # Case 1: Creating a clip and getting info succeed.
+        new_clip, created_url = twitch_helpers.generate_twitch_clip(
+            self.user.user_id)
+        self.assertEqual(created_url, clip_url)
+
+        # Case 2: Creating a clip fails.
+        get_clip_info.return_value = None
+
+        self.assertTupleEqual(
+            (None, None), twitch_helpers.generate_twitch_clip(
+                self.user.user_id
+            ))
+
+
+
 
 
 
