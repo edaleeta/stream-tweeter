@@ -222,7 +222,7 @@ def get_clip_info(clip_id, user):
     # assume that no clip was created.
     failures = 0
     payload_get_clip = {"id": clip_id}
-    while failures <= 3:
+    while failures < 3:
         r_get_clip = requests.get("https://api.twitch.tv/helix/clips",
                                   params=payload_get_clip,
                                   headers=create_header(user))

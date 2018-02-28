@@ -149,7 +149,7 @@ class TwitchHelpersTestCase(TestCase):
 
     @mock.patch("twitch_helpers.ap_handlers.stop_fetching_twitch_data")
     @mock.patch("twitch_helpers.ap_handlers.stop_tweeting")
-    def test_handle_check_stream_failures(self, stop_fetch, stop_tweet):
+    def test_handle_check_stream_failures(self, stop_tweet, stop_fetch):
         """A user's stream must be seen offline twice before ending jobs."""
 
         user_id = self.user.user_id
@@ -246,9 +246,31 @@ class TwitchHelpersTestCase(TestCase):
                 self.user.user_id
             ))
 
+    @mock.patch("twitch_helpers.time.sleep")
+    @mock.patch("twitch_helpers.requests.get")
+    def test_get_clip_info(self, requests_get, sleep):
+        """Tests getting clip info through Twitch API."""
 
+        clip_id = "ToastedPotatoPandas"
+        # Set up mock objects
+        json = {"data": ["clip_info"]}
+        sleep = mock.Mock()
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = json
+        requests_get.return_value = mock_response
+        clip_info = json.get("data")[0]
 
-
+        # Case 1: Clip info is returned the first time.
+        self.assertEqual(clip_info, twitch_helpers.get_clip_info(
+            clip_id, self.user
+        ))
+        # Case 2: Clip info fails
+        json = {"data": []}
+        mock_response.json.return_value = json
+        self.assertFalse(twitch_helpers.get_clip_info(
+            clip_id, self.user
+        ))
 
 
 
