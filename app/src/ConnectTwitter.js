@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Well } from 'react-bootstrap'
+
 export class ConnectTwitter extends Component {
 
   render() {
       if (this.props.isTwitterAuth) {
           return (
-              <p>
-                  Your Twitter is account is connected! <br />
-                  Let's make some Tweets!
-              </p>
+              <Well bsSize="small">
+                  Your Twitter is account is connected! Let's make some Tweets!
+              </Well>
           );
       }
       return (
-          <p>
+          <Well bsSize="small">
               To get started, please connect your Twitter account:<br />
               <a href="/auth-twitter">Connect Twitter</a>
-          </p>
+          </Well>
       )
   }
 }
