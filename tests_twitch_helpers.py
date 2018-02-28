@@ -85,7 +85,45 @@ class TwitchHelpersTestCase(TestCase):
 
         twitch_helpers.get_stream_info(self.user)
         self.assertTrue(twitch_helpers.get_stream_info(self.user))
-    
+
+    @mock.patch("twitch_helpers.get_stream_info")
+    def test_is_twitch_online(self, get_streams):
+        """Checks if returning t/f is accurate for user's online status."""
+
+        json = {
+            "data": [
+                {
+                    "id": "27629046016",
+                    "user_id": "29389795",
+                    "game_id": "497428",
+                    "community_ids": [],
+                    "type": "live",
+                    "title": "Testing the stream",
+                    "viewer_count": 1,
+                    "started_at": "2018-02-16T21:04:02Z",
+                    "language": "en",
+                    "thumbnail_url": "https://static-cdn.jtvnw.net/previews-ttv/live_user_pixxeltesting-{width}x{height}.jpg"
+                }
+            ],
+            "pagination": {
+                "cursor": "eyJiIjpudWxsLCJhIjp7Ik9mZnNldCI6MX19"
+            }
+        }
+
+        # Creates mock reponse to use.
+        mock_response = mock.Mock()
+        mock_response.json.return_value = json
+        mock_response.status_code = 200
+
+        get_streams.return_value = mock_response
+        
+        # Case 1: User is online.
+        self.assertTrue(twitch_helpers.is_twitch_online(self.user))
+
+        # Case 2 User is offline.
+        mock_response.json.return_value = {}
+        self.assertFalse(twitch_helpers.is_twitch_online(self.user))
+
 
 if __name__ == "__main__":
     import unittest
