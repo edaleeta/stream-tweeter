@@ -56,7 +56,7 @@ def get_stream_info(user):
 
     twitch_id = str(user.twitch_id)
     test_id = str(45867146)
-    payload_streams = {"user_id": test_id,    # Edit this to test
+    payload_streams = {"user_id": twitch_id,    # Edit this to test
                        "first": 1,
                        "type": "live"}
 
@@ -195,7 +195,7 @@ def generate_twitch_clip(user_id):
     user = User.get_user_from_id(user_id)
     twitch_id = str(user.twitch_id)
     test_id = str(45867146)
-    payload_clips = {"broadcaster_id": test_id}
+    payload_clips = {"broadcaster_id": twitch_id}
     r_clips = requests.post("https://api.twitch.tv/helix/clips",
                             data=payload_clips,
                             headers=create_header(user))

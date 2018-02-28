@@ -17,7 +17,7 @@ import twitch_helpers
 
 # Patching response for twitch users
 @mock.patch("twitch_helpers.requests.get")
-def test_getting_user_when_response_is_ok(mock_get_user):
+def test_getting_user_when_response_is_ok(mock_get_streams):
     twitch_user = {
         "data": [
             {
@@ -39,8 +39,9 @@ def test_getting_user_when_response_is_ok(mock_get_user):
     }
     # Mock will respond with 200 code status.
     # Mock has a `json()` method that returns Twitch user data
-    mock_get_user.return_value.status_code = 200
-    mock_get_user.return_value.json.return_value = twitch_user
+    mock_get_streams.return_value = mock.MagicMock(
+        status_code=200,
+        json=twitch_user)
 
 
 class TwitchHelpersTestCase(TestCase):
@@ -49,7 +50,8 @@ class TwitchHelpersTestCase(TestCase):
                              access_token="imagreattoken")
 
     user = mock.Mock(spec=m.User,
-                     twitch_token=twitch_token)
+                     twitch_token=twitch_token,
+                     twitch_id=29389795)
 
     def test_create_header(self):
         """Checks for accurate header creation for Twitch API requests."""
@@ -61,7 +63,7 @@ class TwitchHelpersTestCase(TestCase):
                          expected_header)
 
     def test_check_response_status(self):
-        """Tests checkin status code of Twitch responses."""
+        """Tests checking status code of Twitch responses."""
         ok_response = mock.Mock(status_code=200)
         unauth_response = mock.Mock(status_code=401)
         bad_response = mock.Mock(status_code=500)
@@ -74,6 +76,16 @@ class TwitchHelpersTestCase(TestCase):
                           twitch_helpers.check_response_status,
                           bad_response)
 
+    @mock.patch("twitch_helpers.requests.get")
+    def test_get_stream_info(self, get_streams):
+        """Checks if getting stream info works."""
+
+        get_streams.return_value = mock.Mock(
+            spec=twitch_helpers.requests.Response)
+
+        twitch_helpers.get_stream_info(self.user)
+        self.assertTrue(twitch_helpers.get_stream_info(self.user))
+    
 
 if __name__ == "__main__":
     import unittest
