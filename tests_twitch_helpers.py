@@ -120,8 +120,12 @@ class TwitchHelpersTestCase(TestCase):
         # Case 1: User is online.
         self.assertTrue(twitch_helpers.is_twitch_online(self.user))
 
-        # Case 2 User is offline.
+        # Case 2: User is offline.
         mock_response.json.return_value = {}
+        self.assertFalse(twitch_helpers.is_twitch_online(self.user))
+
+        # Case 3: Bad response from request
+        mock_response.status_code = 401
         self.assertFalse(twitch_helpers.is_twitch_online(self.user))
 
 
