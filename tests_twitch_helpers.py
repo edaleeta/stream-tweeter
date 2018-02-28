@@ -128,6 +128,24 @@ class TwitchHelpersTestCase(TestCase):
         mock_response.status_code = 401
         self.assertFalse(twitch_helpers.is_twitch_online(self.user))
 
+    @mock.patch("twitch_helpers.ap_handlers.stop_fetching_twitch_data")
+    @mock.patch("twitch_helpers.ap_handlers.stop_tweeting")
+    def test_handle_check_stream_failures(self, stop_fetch, stop_tweet):
+        """A user's stream must be seen offline twice before ending jobs."""
+
+        user_id = self.user.user_id
+
+        # Case 1: This is the first stream failure.
+        self.assertIsNone(twitch_helpers.handle_check_stream_failures(user_id))
+        stop_fetch.assert_not_called()
+        stop_tweet.assert_not_called()
+        self.assertEqual(twitch_helpers.CHECK_STREAM_FAILURES[user_id], 1)
+
+        # Case 2: This is the second stream failure.
+        twitch_helpers.handle_check_stream_failures(user_id)
+        stop_fetch.assert_called()
+        stop_tweet.assert_called()
+        self.assertEqual(twitch_helpers.CHECK_STREAM_FAILURES[user_id], 0)
 
 if __name__ == "__main__":
     import unittest

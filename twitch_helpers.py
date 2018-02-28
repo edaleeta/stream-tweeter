@@ -123,8 +123,6 @@ def serialize_twitch_stream_data(user):
 def handle_check_stream_failures(user_id):
     """Handles stream offline events."""
 
-    user = User.query.get(user_id)
-
     CHECK_STREAM_FAILURES[user_id] = CHECK_STREAM_FAILURES.get(user_id, 0) + 1
     stream_failures = CHECK_STREAM_FAILURES[user_id]
 
