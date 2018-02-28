@@ -25,7 +25,7 @@ export class TweetTemplates extends Component {
       return (
         <div>
           
-          <h3>Your Tweet Templates</h3>
+          <h2>Your Tweet Templates</h2>
           <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
           <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
         </div>
