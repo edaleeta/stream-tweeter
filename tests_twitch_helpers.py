@@ -60,6 +60,20 @@ class TwitchHelpersTestCase(TestCase):
         self.assertEqual(twitch_helpers.create_header(self.user),
                          expected_header)
 
+    def test_check_response_status(self):
+        """Tests checkin status code of Twitch responses."""
+        ok_response = mock.Mock(status_code=200)
+        unauth_response = mock.Mock(status_code=401)
+        bad_response = mock.Mock(status_code=500)
+
+        self.assertTrue(twitch_helpers.check_response_status(ok_response))
+        self.assertRaises(Exception,
+                          twitch_helpers.check_response_status,
+                          unauth_response)
+        self.assertRaises(Exception,
+                          twitch_helpers.check_response_status,
+                          bad_response)
+
 
 if __name__ == "__main__":
     import unittest
