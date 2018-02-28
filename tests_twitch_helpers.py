@@ -272,6 +272,73 @@ class TwitchHelpersTestCase(TestCase):
             clip_id, self.user
         ))
 
+    @mock.patch("twitch_helpers.handle_check_stream_failures")
+    @mock.patch("twitch_helpers.create_stream_url")
+    @mock.patch("twitch_helpers.get_twitch_game_data")
+    @mock.patch("twitch_helpers.datetime")
+    @mock.patch("twitch_helpers.get_stream_info")
+    def test_serialize_twitch_stream_data(self,
+                                          get_stream_info,
+                                          datetime_mock,
+                                          get_twitch_game_data,
+                                          create_stream_url,
+                                          handle_failures):
+
+        # Set up mock objects
+        json_stream_info = {
+            "data": [
+                {
+                    "id": "27739018896",
+                    "user_id": "71166086",
+                    "game_id": "313558",
+                    "community_ids": [],
+                    "type": "live",
+                    "title": "deadmau5 n stuff",
+                    "viewer_count": 606,
+                    "started_at": "2018-02-26T13:57:26Z",
+                    "language": "en",
+                    "thumbnail_url": "https://static-cdn.jtvnw.net/previews-ttv/live_user_deadmau5-{width}x{height}.jpg"
+                }
+            ],
+            "pagination": {
+                "cursor": "eyJiIjpudWxsLCJhIjp7Ik9mZnNldCI6MX19"
+            }
+        }
+        create_stream_url.return_value = "bar"
+        get_twitch_game_data.return_value = "foo"
+        datetime_mock.utcnow.return_value = datetime.datetime(2017, 1, 1)
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = json_stream_info
+        get_stream_info.return_value = mock_response
+        datetime_format = "%Y-%m-%dT%H:%M:%SZ"
+        started_at = datetime.datetime.strptime("2018-02-26T13:57:26Z",
+                                                datetime_format)
+        datetime_mock.strptime.return_value = datetime.datetime\
+            .strptime("2018-02-26T13:57:26Z", datetime_format)
+
+        expected_stream_data = {
+            "timestamp": datetime_mock.utcnow.return_value,
+            "stream_id": "27739018896",
+            "twitch_id": "71166086",
+            "stream_title": "deadmau5 n stuff",
+            "viewer_count": 606,
+            "started_at": started_at,
+            "game_id": "313558",
+            "game_name": "foo",
+            "url": "bar"
+        }
+
+        # Case 1: Stream is online
+        self.assertEqual(twitch_helpers.serialize_twitch_stream_data(
+            self.user), expected_stream_data)
+
+        # Case 2: Stream is offline.
+        mock_response.json.return_value = {"data": []}
+        self.assertIsNone(twitch_helpers.serialize_twitch_stream_data(
+            self.user))
+        handle_failures.assert_called()
 
 
 if __name__ == "__main__":
