@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap'
+import { FormGroup,
+         ControlLabel,
+         FormControl,
+         HelpBlock,
+         Button,
+         Row,
+         Col } from 'react-bootstrap'
 
 export class TweetOptionsInterval extends Component {
 
@@ -16,6 +22,8 @@ export class TweetOptionsInterval extends Component {
   }
 
   handleChange(e) {
+    e.target.value = e.target.value < 0 ? "" : e.target.value
+
     this.setState({
       value: e.target.value
     });
@@ -62,19 +70,30 @@ export class TweetOptionsInterval extends Component {
   }
 
   render() {
+
+    let minutesText = this.state.value <= 1 ? "Minute" : "Minutes"
+
     return (
       <div>
         <form>
           <FormGroup controlId="tweetSettingsForm" validationState={this.getValidationState()} bsSize="lg">
-          <ControlLabel>Tweet Interval in Minutes</ControlLabel>
-          <FormControl
-            type="number"
-            value={this.state.value}
-            onChange={this.handleChange}
-          />
-          <FormControl.Feedback/>
+          <Row>
+            <ControlLabel><h4>Tweet Interval in Minutes</h4></ControlLabel>
+          </Row>
+          <Row>
+            <Col md={4}>
+            <FormControl
+              type="number"
+              value={this.state.value}
+              onChange={this.handleChange}
+              />
+            <FormControl.Feedback/>
+            </Col>
+            <Col md={8}>
+              <Button bsSize="large" type="submit" onClick={this.handleClick} value={this.state.value} >Set to {this.state.value} {minutesText}</Button>
+            </Col>
+            </Row>
           <HelpBlock style={ this.getValidationState() === null ? {display: "none"} : {display: "block"} }>Don't spam your friends! Value must be greater than 30 minutes.</HelpBlock>
-          <Button type="submit" onClick={this.handleClick} value={this.state.value} >Tweet Every {this.state.value} minutes!</Button>
           </FormGroup>
         </form>
       </div>
