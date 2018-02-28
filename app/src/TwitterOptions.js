@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TweetOptionsInterval } from './TweetOptionsInterval'
 import { TweetOptionsRevoke } from './TweetOptionsRevoke'
+import { StartTweetingButton } from './StartTweetingButton'
 
 export class TweetOptions extends Component {
   
@@ -16,7 +17,7 @@ export class TweetOptions extends Component {
     if (this.props.isTwitterAuth) {
       return (
         <div>
-          <h2>Twitter Options</h2>
+          <h2>Tweet Options</h2>
           <TweetOptionsInterval
             userId={this.props.userId}
             tweetInterval={this.props.tweetInterval}
@@ -26,6 +27,7 @@ export class TweetOptions extends Component {
             tweetInterval={this.props.tweetInterval}
             onClick={this.props.onClick}
           />
+          <StartTweetingButton userId={this.props.userId} />
         </div>
       ); 
     } else {
