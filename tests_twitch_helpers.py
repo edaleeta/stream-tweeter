@@ -147,6 +147,34 @@ class TwitchHelpersTestCase(TestCase):
         stop_tweet.assert_called()
         self.assertEqual(twitch_helpers.CHECK_STREAM_FAILURES[user_id], 0)
 
+    @mock.patch("twitch_helpers.requests.get")          
+    def test_create_stream_url(self, requests_get):
+        """Checks that url is constructed correctly."""
+
+        twitch_id = self.user.twitch_id
+
+        # Set up mock objects
+        json = {"data": [{"login": "pixxeltesting"}]}
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = json
+        requests_get.return_value = mock_response
+        
+        # Case 1: Response ok
+        expected_url = "https://www.twitch.tv/pixxeltesting"
+        self.assertEqual(
+            twitch_helpers.create_stream_url(twitch_id, self.user),
+            expected_url
+        )
+
+        # Case 2: Respose !ok
+        mock_response.status_code = 401
+        self.assertIsNone(
+            twitch_helpers.create_stream_url(twitch_id, self.user)
+        )
+
+
+
 if __name__ == "__main__":
     import unittest
     unittest.main()
