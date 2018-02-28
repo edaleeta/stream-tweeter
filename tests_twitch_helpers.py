@@ -167,11 +167,37 @@ class TwitchHelpersTestCase(TestCase):
             expected_url
         )
 
-        # Case 2: Respose !ok
+        # Case 2: Bad response
         mock_response.status_code = 401
         self.assertIsNone(
             twitch_helpers.create_stream_url(twitch_id, self.user)
         )
+
+    @mock.patch("twitch_helpers.requests.get") 
+    def test_get_twitch_game_data(self, requests_get):
+        """Checks if game data is returned correctly."""
+
+        game_id = "123"
+        game_name = "Hello Kitty Adventure Island"
+        # Set up mock objects
+        json = {"data": [{"name": game_name}]}
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = json
+        requests_get.return_value = mock_response
+
+        # Case 1: Response ok
+        self.assertEqual(twitch_helpers.get_twitch_game_data(
+            game_id, self.user
+        ), game_name)
+
+        # Case 2: Bad response
+        mock_response.status_code = 401
+        self.assertIsNone(twitch_helpers.get_twitch_game_data(
+            game_id, self.user
+        ))
+        
+
 
 
 
