@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { TweetOptionsInterval } from './TweetOptionsInterval'
 import { TweetOptionsRevoke } from './TweetOptionsRevoke'
 import { StartTweetingButton } from './StartTweetingButton'
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, ButtonToolbar } from 'react-bootstrap';
 
 export class TweetOptions extends Component {
   
@@ -17,7 +17,7 @@ export class TweetOptions extends Component {
   render() {
     if (this.props.isTwitterAuth) {
       return (
-        <div>
+        <Col>
           <Row>
             <h2>Tweet Options</h2>
           </Row>
@@ -28,22 +28,24 @@ export class TweetOptions extends Component {
             />
           </Row>
           <Row>
-            <StartTweetingButton userId={this.props.userId} />
+            <ButtonToolbar>
+              <StartTweetingButton userId={this.props.userId} />
+              <TweetOptionsRevoke
+                userId={this.props.userId}
+                tweetInterval={this.props.tweetInterval}
+                onClick={this.props.onClick}
+              />
+            </ButtonToolbar>
           </Row>
-          <Row>
-            <TweetOptionsRevoke
-              userId={this.props.userId}
-              tweetInterval={this.props.tweetInterval}
-              onClick={this.props.onClick}
-            />
-          </Row>
-        </div>
+        </Col>
       ); 
     } else {
       return <div></div>
     }
   }
 }
+
+
 
 TweetOptions.propTypes = {
   isTwitterAuth: PropTypes.bool.isRequired,

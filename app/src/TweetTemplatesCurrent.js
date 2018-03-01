@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Col, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { TweetTemplateContainer } from './TweetTemplateContainer'
 
 export class TweetTemplatesCurrent extends Component {
@@ -46,7 +47,13 @@ export class TweetTemplatesCurrent extends Component {
   render() {
     if (this.state.templates) {
       return (this.state.templates.map((template, key) => (
-        <TweetTemplateContainer template={template} key={key} onClick={this.props.onClick} />
+      <Col xs={12}>
+        <ListGroup key={key}>
+          <ListGroupItem key={key}>
+            <TweetTemplateContainer template={template} key={key} onClick={this.props.onClick} />
+          </ListGroupItem>
+        </ListGroup>
+      </Col>
       )));
     } else {
       return <div></div>

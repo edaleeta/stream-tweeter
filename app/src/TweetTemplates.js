@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TweetTemplatesCurrent } from './TweetTemplatesCurrent'
-import { TweetTemplateCreateNew } from './TweetTemplateCreateNew'
+import { Row } from 'react-bootstrap';
+import { TweetTemplatesCurrent } from './TweetTemplatesCurrent';
+import { TweetTemplateCreateNew } from './TweetTemplateCreateNew';
 
 
 export class TweetTemplates extends Component {
@@ -24,10 +25,15 @@ export class TweetTemplates extends Component {
     if (this.props.isTwitterAuth) {
       return (
         <div>
-          
-          <h2>Your Tweet Templates</h2>
-          <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
-          <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
+          <Row>
+            <h2>Your Tweet Templates</h2>
+          </Row>
+          <Row>
+            <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
+          </Row>
+          <Row>
+            <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
+          </Row>
         </div>
       ); 
     } else {

@@ -11,17 +11,17 @@ export class Home extends Component {
     return (
       <Row>
           <Row>
-            <Col xs={12} md={8}>
+            <Col xs={12} md={7}>
               <ConnectTwitter isTwitterAuth={this.props.isTwitterAuth} />
             </Col>
           </Row>
           <Row>
-            <Col xs={12} md={8}>
+            <Col xs={12} md={7}>
               <TweetTemplates isTwitterAuth={this.props.isTwitterAuth}
                 userId={this.props.userId}
               />
             </Col>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={5}>
               <TweetOptions
                 isTwitterAuth={this.props.isTwitterAuth}
                 userId={this.props.userId}
