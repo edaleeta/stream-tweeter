@@ -364,6 +364,40 @@ class TwitchHelpersTestCase(TestCase):
         self.assertEqual(twitch_helpers.send_refresh_token_request(self.user),
                          mock_response)
 
+    @mock.patch("twitch_helpers.check_response_status")
+    def test_process_refresh_token_response(self, response_status):
+        """Tests processsing a refresh token response."""
+
+        # Sets up mock objects
+        user = m.User.query.first()
+        response = mock.Mock()
+        response.json.return_value = {
+            "access_token": "new_access_token",
+            "expires_in": 14412,
+            "refresh_token": "new_refresh_token",
+            "scope": ["clips:edit", "user:read:email"]
+        }
+
+        # Case 1: Response status is OK
+        response_status.return_value = True
+        twitch_helpers.process_refresh_token_response(response, user)
+
+        self.assertEqual(
+            user.twitch_token.access_token,
+            "new_access_token"
+        )
+        self.assertEqual(
+            user.twitch_token.refresh_token,
+            "new_refresh_token"
+        )
+        self.assertEqual(
+            user.twitch_token.expires_in,
+            14412
+        )
+        
+
+        
+        
 
 if __name__ == "__main__":
     import unittest

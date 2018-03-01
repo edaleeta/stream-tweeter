@@ -67,7 +67,7 @@ def get_stream_info(user):
     """Get user's stream info from Twitch API."""
 
     twitch_id = str(user.twitch_id)
-    test_id = str(45867146)
+    test_id = str(137512364)
     payload_streams = {"user_id": twitch_id,    # Edit this to test
                        "first": 1,
                        "type": "live"}
@@ -203,7 +203,7 @@ def generate_twitch_clip(user_id):
 
     user = User.get_user_from_id(user_id)
     twitch_id = str(user.twitch_id)
-    test_id = str(45867146)
+    test_id = str(137512364)
     payload_clips = {"broadcaster_id": twitch_id}
     r_clips = requests.post("https://api.twitch.tv/helix/clips",
                             data=payload_clips,
@@ -266,6 +266,28 @@ def send_refresh_token_request(user):
 
     return response
 
+
+def process_refresh_token_response(response, user):
+    """Processes refresh token response."""
+
+    try:
+        check_response_status(response)
+    except Exception as e:
+        print(str(e))
+        raise
+
+    token_data = response.json()
+
+    new_access_token = token_data.get("access_token")
+    new_refresh_token = token_data.get("refresh_token")
+    new_expires_in = token_data.get("expires_in")
+
+    user.update_twitch_access_token(
+        access_token=new_access_token,
+        refresh_token=new_refresh_token,
+        expires_in=new_expires_in
+    )
+    return user.twitch_token
 
 if __name__ == "__main__":
     # Interact with db if we run this module directly.
