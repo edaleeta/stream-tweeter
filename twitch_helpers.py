@@ -274,8 +274,7 @@ def process_refresh_token_response(response, user):
         check_response_status(response)
     except Exception as e:
         print(str(e))
-        raise
-
+        return
     token_data = response.json()
 
     new_access_token = token_data.get("access_token")

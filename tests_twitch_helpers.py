@@ -394,10 +394,15 @@ class TwitchHelpersTestCase(TestCase):
             user.twitch_token.expires_in,
             14412
         )
-        
 
-        
-        
+    def test_process_refresh_token_response_failed(self):
+        """Tests processing a refresh token when receiving a bad response."""
+        response = mock.Mock()
+        response.status_code = 400
+        # Case 2: Reponse status is not OK
+        self.assertIsNone(twitch_helpers.process_refresh_token_response(
+                response, self.user))
+
 
 if __name__ == "__main__":
     import unittest
