@@ -340,6 +340,30 @@ class TwitchHelpersTestCase(TestCase):
             self.user))
         handle_failures.assert_called()
 
+    @mock.patch("twitch_helpers.requests.post")
+    def test_token_refresh_request(self, mock_post):
+        """Tests token refresh request."""
+
+        # Set up mock objects
+        new_token = "foo"
+        new_refresh_token = "bar"
+        new_expires_in = 3600
+
+        json = {
+            "access_token": new_token,
+            "refresh_token": new_refresh_token,
+            "expires_in": 3600,
+            "scope": ["clips:edit", "user:read:email"]
+            }
+
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = json
+        mock_post.return_value = mock_response
+
+        self.assertEqual(twitch_helpers.send_refresh_token_request(self.user),
+                         mock_response)
+
 
 if __name__ == "__main__":
     import unittest

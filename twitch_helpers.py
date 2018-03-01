@@ -1,10 +1,22 @@
 """Twitch API Helper Functions for Stream Tweeter."""
 
 from datetime import datetime
+import os
 import time
 import requests
 from model import StreamSession, TwitchClip, User
 import apscheduler_handlers as ap_handlers
+
+
+# Twitch Requirements
+try:
+    TWITCH_CLIENT_ID = os.environ["TWITCH_CLIENT_ID"]
+except KeyError:
+    print("Please set the environment variable TWITCH_CLIENT_ID")
+try:
+    TWITCH_CLIENT_SECRET = os.environ["TWITCH_CLIENT_SECRET"]
+except KeyError:
+    print("Please set the environment variable TWITCH_CLIENT_SECRET")
 
 # Stores user_id and corresponding number of failures.
 CHECK_STREAM_FAILURES = {}
@@ -235,6 +247,25 @@ def get_clip_info(clip_id, user):
                 failures += 1
                 time.sleep(5)
     return None
+
+
+def send_refresh_token_request(user):
+    """Sends post request to refresh user's Twitch access token."""
+
+    refresh_token = user.twitch_token.refresh_token
+
+    payload = {
+        "client_id": TWITCH_CLIENT_ID,
+        "client_secret": TWITCH_CLIENT_SECRET,
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token
+    }
+
+    response = requests.post("https://id.twitch.tv/oauth2/token",
+                             data=payload)
+
+    return response
+
 
 if __name__ == "__main__":
     # Interact with db if we run this module directly.
