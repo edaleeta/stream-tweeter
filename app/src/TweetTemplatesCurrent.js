@@ -47,13 +47,11 @@ export class TweetTemplatesCurrent extends Component {
   render() {
     if (this.state.templates) {
       return (this.state.templates.map((template, key) => (
-      <Col xs={12}>
         <ListGroup key={key}>
           <ListGroupItem key={key}>
             <TweetTemplateContainer template={template} key={key} onClick={this.props.onClick} />
           </ListGroupItem>
         </ListGroup>
-      </Col>
       )));
     } else {
       return <div></div>

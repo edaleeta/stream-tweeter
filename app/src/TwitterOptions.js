@@ -17,25 +17,31 @@ export class TweetOptions extends Component {
   render() {
     if (this.props.isTwitterAuth) {
       return (
-        <Col>
+        <Col xs={12}>
           <Row>
-            <h2>Tweet Options</h2>
+            <Col xs={12}>
+              <h2>Tweet Options</h2>
+            </Col>
           </Row>
           <Row>
+            <Col xs={12}>
             <TweetOptionsInterval
               userId={this.props.userId}
               tweetInterval={this.props.tweetInterval}
             />
+            </Col>
           </Row>
           <Row>
-            <ButtonToolbar>
-              <StartTweetingButton userId={this.props.userId} />
-              <TweetOptionsRevoke
-                userId={this.props.userId}
-                tweetInterval={this.props.tweetInterval}
-                onClick={this.props.onClick}
-              />
-            </ButtonToolbar>
+            <Col xs={12}>
+              <ButtonToolbar>
+                <StartTweetingButton userId={this.props.userId} />
+                <TweetOptionsRevoke
+                  userId={this.props.userId}
+                  tweetInterval={this.props.tweetInterval}
+                  onClick={this.props.onClick}
+                />
+              </ButtonToolbar>
+            </Col>
           </Row>
         </Col>
       ); 

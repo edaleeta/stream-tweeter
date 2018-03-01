@@ -36,7 +36,12 @@ export class StartTweetingButton extends Component {
 
   render() {
     return (
-      <Button bsStyle="success" className="start-tweet-button" onClick={this.handleClick}>
+      <Button
+        bsSize="large"
+        bsStyle="success"
+        className="start-tweet-button"
+        onClick={this.handleClick}
+      >
         Start Tweeting
       </Button>
     );
