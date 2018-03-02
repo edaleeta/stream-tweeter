@@ -47,8 +47,14 @@ def is_twitch_online(user):
             return True
         # Otherwise, the stream is offline.
         return False
+    except Unauthorized as e:
+        if handle_check_stream_failures(user.user_id):
+            return
+        print(e)
+        refresh_users_token(user)
+        is_twitch_online(user)
     except Exception as e:
-        print(str(e))
+        print(e)
         return False
 
 
@@ -154,10 +160,12 @@ def handle_check_stream_failures(user_id):
         print("\n\nENDED STREAM DATA FETCH.\n\n")
         ap_handlers.stop_tweeting(user_id)
         print("\n\nENDED TWEETS.\n\n")
+        return True
     else:
         print("User {}'s stream might be offline. Will try again.".format(
             user_id
         ))
+        return False
 
 
 def write_twitch_stream_data(user, stream_data):

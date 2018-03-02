@@ -105,8 +105,10 @@ class TwitchHelpersTestCase(TestCase):
         twitch_helpers.get_stream_info(self.user)
         self.assertTrue(twitch_helpers.get_stream_info(self.user))
 
+    
+    @mock.patch("twitch_helpers.refresh_users_token")
     @mock.patch("twitch_helpers.get_stream_info")
-    def test_is_twitch_online(self, get_streams):
+    def test_is_twitch_online(self, get_streams, refresh_users_token):
         """Checks if returning t/f is accurate for user's online status."""
 
         json = {
@@ -146,6 +148,7 @@ class TwitchHelpersTestCase(TestCase):
         # Case 3: Bad response from request
         mock_response.status_code = 401
         self.assertFalse(twitch_helpers.is_twitch_online(self.user))
+        refresh_users_token.assert_called()
 
     @mock.patch("twitch_helpers.ap_handlers.stop_fetching_twitch_data")
     @mock.patch("twitch_helpers.ap_handlers.stop_tweeting")
@@ -155,7 +158,7 @@ class TwitchHelpersTestCase(TestCase):
         user_id = self.user.user_id
 
         # Case 1: This is the first stream failure.
-        self.assertIsNone(twitch_helpers.handle_check_stream_failures(user_id))
+        self.assertFalse(twitch_helpers.handle_check_stream_failures(user_id))
         stop_fetch.assert_not_called()
         stop_tweet.assert_not_called()
         self.assertEqual(twitch_helpers.CHECK_STREAM_FAILURES[user_id], 1)
