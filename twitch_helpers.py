@@ -8,6 +8,12 @@ from model import StreamSession, TwitchClip, User
 import apscheduler_handlers as ap_handlers
 
 
+class Unauthorized(Exception):
+    """Custom exception for unauthorized Twitch requests."""
+
+    def __init__(self):
+        super().__init__("Unauthorized request. User's Twitch token invalid.")
+
 # Twitch Requirements
 try:
     TWITCH_CLIENT_ID = os.environ["TWITCH_CLIENT_ID"]
