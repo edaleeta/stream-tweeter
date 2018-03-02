@@ -8,6 +8,9 @@ from model import StreamSession, TwitchClip, User
 import apscheduler_handlers as ap_handlers
 
 
+TEST_ID = None  #str(80145304)
+
+
 class Unauthorized(Exception):
     """Custom exception for unauthorized Twitch requests."""
 
@@ -89,8 +92,7 @@ def get_stream_info(user):
     """Get user's stream info from Twitch API."""
 
     twitch_id = str(user.twitch_id)
-    test_id = str(137512364)
-    payload_streams = {"user_id": twitch_id,    # Edit this to test
+    payload_streams = {"user_id": TEST_ID or twitch_id,
                        "first": 1,
                        "type": "live"}
 
@@ -236,8 +238,7 @@ def generate_twitch_clip(user_id):
 
     user = User.get_user_from_id(user_id)
     twitch_id = str(user.twitch_id)
-    test_id = str(137512364)
-    payload_clips = {"broadcaster_id": twitch_id}
+    payload_clips = {"broadcaster_id": TEST_ID or twitch_id}  # Edit this to test
     r_clips = requests.post("https://api.twitch.tv/helix/clips",
                             data=payload_clips,
                             headers=create_header(user))
