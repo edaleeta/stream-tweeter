@@ -25,7 +25,8 @@ except KeyError:
     print("Please set the environment variable TWITCH_CLIENT_SECRET")
 
 # Stores user_id and corresponding number of failures.
-CHECK_STREAM_FAILURES = {}
+CHECK_STREAM_ONLINE_FAILURES = {}
+TWITCH_API_FAILURES = {}
 
 
 def create_header(user):
@@ -40,7 +41,7 @@ def is_twitch_online(user):
 
     user_id = user.user_id
     response = get_stream_info(user)
-    while CHECK_STREAM_FAILURES.get(user_id, 0) < 2:
+    while CHECK_STREAM_ONLINE_FAILURES.get(user_id, 0) < 2:
         try:
             check_response_status(response)
             stream_data = response.json().get("data")
@@ -51,7 +52,7 @@ def is_twitch_online(user):
             return False
         except Unauthorized as e:
             # If there are too many failures, stop retrying.
-            if handle_check_stream_failures(user_id):
+            if handle_check_stream_online_failures(user_id):
                 return
             print(e)
             refresh_users_token(user)
@@ -98,7 +99,7 @@ def serialize_twitch_stream_data(user):
     response = get_stream_info(user)
     print(response.status_code)
 
-    while CHECK_STREAM_FAILURES.get(user_id, 0) < 2:
+    while CHECK_STREAM_ONLINE_FAILURES.get(user_id, 0) < 2:
         try:
             check_response_status(response)
 
@@ -107,7 +108,7 @@ def serialize_twitch_stream_data(user):
             if not all_stream_data:
                 # We want to increment failure counter.
                 # Define a seperate function to handle that.
-                handle_check_stream_failures(user_id)
+                handle_check_stream_online_failures(user_id)
                 return None
 
             # If the stream is live...
@@ -140,13 +141,13 @@ def serialize_twitch_stream_data(user):
                            "game_name": stream_game_title,
                            "url": stream_url}
             # Reset stream failures counter to 0
-            CHECK_STREAM_FAILURES[user_id] = 0
+            CHECK_STREAM_ONLINE_FAILURES[user_id] = 0
 
             return stream_data
         
         except Unauthorized as e:
             # If there are too many failures, stop retrying.
-            if handle_check_stream_failures(user.user_id):
+            if handle_check_stream_online_failures(user.user_id):
                 return None
             print(e)
             refresh_users_token(user)
@@ -156,17 +157,17 @@ def serialize_twitch_stream_data(user):
             return None
 
 
-def handle_check_stream_failures(user_id):
+def handle_check_stream_online_failures(user_id):
     """Handles stream offline events."""
 
-    CHECK_STREAM_FAILURES[user_id] = CHECK_STREAM_FAILURES.get(user_id, 0) + 1
-    stream_failures = CHECK_STREAM_FAILURES[user_id]
+    CHECK_STREAM_ONLINE_FAILURES[user_id] = CHECK_STREAM_ONLINE_FAILURES.get(user_id, 0) + 1
+    stream_failures = CHECK_STREAM_ONLINE_FAILURES[user_id]
 
     if stream_failures > 1:
         print("User's {} stream is offline! \
               Ending session and jobs.".format(user_id))
         # Reset failure counter.
-        CHECK_STREAM_FAILURES[user_id] = 0
+        CHECK_STREAM_ONLINE_FAILURES[user_id] = 0
 
         ap_handlers.stop_fetching_twitch_data(user_id)
         print("\n\nENDED STREAM DATA FETCH.\n\n")
