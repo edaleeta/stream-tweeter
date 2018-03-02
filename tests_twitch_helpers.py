@@ -403,6 +403,15 @@ class TwitchHelpersTestCase(TestCase):
         self.assertIsNone(twitch_helpers.process_refresh_token_response(
                 response, self.user))
 
+    @mock.patch("twitch_helpers.send_refresh_token_request")
+    @mock.patch("twitch_helpers.process_refresh_token_response")
+    def test_refresh_users_token(self, process_response, send_request):
+        "Tests refreshing user's token."
+        
+        twitch_helpers.refresh_users_token(self.user)
+        process_response.assert_called()
+        send_request.assert_called()
+
 
 if __name__ == "__main__":
     import unittest

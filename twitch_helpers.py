@@ -249,6 +249,14 @@ def get_clip_info(clip_id, user):
     return None
 
 
+def refresh_users_token(user):
+    """Refresh user's token."""
+
+    token_response = send_refresh_token_request(user)
+    new_token = process_refresh_token_response(token_response, user)
+    return new_token
+
+
 def send_refresh_token_request(user):
     """Sends post request to refresh user's Twitch access token."""
 
