@@ -110,7 +110,7 @@ class TwitchHelpersTestCase(TestCase):
         twitch_helpers.get_stream_info(self.user)
         self.assertTrue(twitch_helpers.get_stream_info(self.user))
 
-    @mock.patch("twitch_helpers.handle_check_stream_failures")
+    @mock.patch("twitch_helpers.handle_check_stream_online_failures")
     @mock.patch("twitch_helpers.refresh_users_token")
     @mock.patch("twitch_helpers.get_stream_info")
     def test_is_twitch_online(self,
@@ -159,22 +159,22 @@ class TwitchHelpersTestCase(TestCase):
 
     @mock.patch("twitch_helpers.ap_handlers.stop_fetching_twitch_data")
     @mock.patch("twitch_helpers.ap_handlers.stop_tweeting")
-    def test_handle_check_stream_failures(self, stop_tweet, stop_fetch):
+    def test_handle_check_stream_online_failures(self, stop_tweet, stop_fetch):
         """A user's stream must be seen offline twice before ending jobs."""
 
         user_id = self.user.user_id
 
         # Case 1: This is the first stream failure.
-        self.assertFalse(twitch_helpers.handle_check_stream_failures(user_id))
+        self.assertFalse(twitch_helpers.handle_check_stream_online_failures(user_id))
         stop_fetch.assert_not_called()
         stop_tweet.assert_not_called()
-        self.assertEqual(twitch_helpers.CHECK_STREAM_FAILURES[user_id], 1)
+        self.assertEqual(twitch_helpers.CHECK_STREAM_ONLINE_FAILURES[user_id], 1)
 
         # Case 2: This is the second stream failure.
-        twitch_helpers.handle_check_stream_failures(user_id)
+        twitch_helpers.handle_check_stream_online_failures(user_id)
         stop_fetch.assert_called()
         stop_tweet.assert_called()
-        self.assertEqual(twitch_helpers.CHECK_STREAM_FAILURES[user_id], 0)
+        self.assertEqual(twitch_helpers.CHECK_STREAM_ONLINE_FAILURES[user_id], 0)
 
     @mock.patch("twitch_helpers.requests.get")          
     def test_create_stream_url(self, requests_get):
@@ -282,7 +282,7 @@ class TwitchHelpersTestCase(TestCase):
             clip_id, self.user
         ))
 
-    @mock.patch("twitch_helpers.handle_check_stream_failures")
+    @mock.patch("twitch_helpers.handle_check_stream_online_failures")
     @mock.patch("twitch_helpers.create_stream_url")
     @mock.patch("twitch_helpers.get_twitch_game_data")
     @mock.patch("twitch_helpers.datetime")
@@ -351,7 +351,7 @@ class TwitchHelpersTestCase(TestCase):
         handle_failures.assert_called()
 
     # Case 3: Handle unauthorized response.
-    @mock.patch("twitch_helpers.handle_check_stream_failures")
+    @mock.patch("twitch_helpers.handle_check_stream_online_failures")
     @mock.patch("twitch_helpers.get_stream_info")
     def test_serialize_twitch_stream_data_fails(self,
                                                 get_stream_info,
