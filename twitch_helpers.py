@@ -63,7 +63,7 @@ def check_response_status(response):
     elif status_code == 401:
         # TODO: Create custom exception
         # so we can use this to refresh user's token.
-        raise Exception("Access token expired.")
+        raise Unauthorized
     else:
         raise Exception("Reaching Twitch API failed. Status code: {}"
                         .format(status_code))
