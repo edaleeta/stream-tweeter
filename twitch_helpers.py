@@ -41,9 +41,9 @@ def is_twitch_online(user):
 
     user_id = user.user_id
     response = get_stream_info(user)
-    while CHECK_STREAM_ONLINE_FAILURES.get(user_id, 0) < 2:
+    while TWITCH_API_FAILURES.get(user_id, 0) < 2:
         try:
-            check_response_status(response)
+            check_response_status(response, user)
             stream_data = response.json().get("data")
             # If stream_data has contents, the user is streaming.
             if stream_data:
@@ -61,13 +61,14 @@ def is_twitch_online(user):
             return False
 
 
-def check_response_status(response):
+def check_response_status(response, user):
     """Handles errors for response status codes."""
 
     status_code = response.status_code
 
     if status_code == 200:
         print("Response OK.")
+        reset_twitch_api_fail_counter(user)
         return True
     elif status_code == 401:
         # TODO: Create custom exception
@@ -76,6 +77,12 @@ def check_response_status(response):
     else:
         raise Exception("Reaching Twitch API failed. Status code: {}"
                         .format(status_code))
+
+
+def reset_twitch_api_fail_counter(user):
+    """Resets the Twitch API failure counter for user."""
+    user_id = user.user_id
+    TWITCH_API_FAILURES[user_id] = 0
 
 
 def get_stream_info(user):
@@ -99,10 +106,9 @@ def serialize_twitch_stream_data(user):
     response = get_stream_info(user)
     print(response.status_code)
 
-    while CHECK_STREAM_ONLINE_FAILURES.get(user_id, 0) < 2:
+    while TWITCH_API_FAILURES.get(user_id, 0) < 2:
         try:
-            check_response_status(response)
-
+            check_response_status(response, user)
             all_stream_data = response.json().get("data")
             # If the stream is offline, data will be an empty array.
             if not all_stream_data:
@@ -307,7 +313,7 @@ def process_refresh_token_response(response, user):
     """Processes refresh token response."""
 
     try:
-        check_response_status(response)
+        check_response_status(response, user)
     except Exception as e:
         print(str(e))
         return

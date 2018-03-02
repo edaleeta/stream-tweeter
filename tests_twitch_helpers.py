@@ -92,7 +92,9 @@ class TwitchHelpersTestCase(TestCase):
         unauth_response = mock.Mock(status_code=401)
         bad_response = mock.Mock(status_code=500)
 
-        self.assertTrue(twitch_helpers.check_response_status(ok_response))
+        self.assertTrue(twitch_helpers.check_response_status(
+            ok_response, self.user
+        ))
         self.assertRaises(Exception,
                           twitch_helpers.check_response_status,
                           unauth_response)
