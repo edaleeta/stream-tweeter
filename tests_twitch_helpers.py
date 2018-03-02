@@ -52,6 +52,11 @@ class TwitchHelpersTestCase(TestCase):
         # Connect to test db
         connect_to_db(s.app, "postgresql:///testdb", False)
 
+        # If we stop a test midway, let's make sure there's nothing in the db
+        # on the next start up.
+        db.reflect()
+        db.drop_all()
+
         # Create tables and add sample data
         db.create_all()
         db.session.commit()
@@ -343,6 +348,24 @@ class TwitchHelpersTestCase(TestCase):
             self.user))
         handle_failures.assert_called()
 
+    # Case 3: Handle unauthorized response.
+    @mock.patch("twitch_helpers.handle_check_stream_failures")
+    @mock.patch("twitch_helpers.get_stream_info")
+    def test_serialize_twitch_stream_data_fails(self,
+                                                get_stream_info,
+                                                stream_failures):
+        print("Testing 401!!")
+        mock_response = mock.Mock()
+        mock_response.status_code = 401
+        get_stream_info.return_value = mock_response
+        twitch_helpers.refresh_users_token = mock.Mock()
+
+        stream_failures.side_effect = [False, True]
+        self.assertIsNone(twitch_helpers.serialize_twitch_stream_data(
+            self.user
+        ))
+        stream_failures.assert_called()
+
     @mock.patch("twitch_helpers.requests.post")
     def test_token_refresh_request(self, mock_post):
         """Tests token refresh request."""
@@ -355,7 +378,7 @@ class TwitchHelpersTestCase(TestCase):
         json = {
             "access_token": new_token,
             "refresh_token": new_refresh_token,
-            "expires_in": 3600,
+            "expires_in": new_expires_in,
             "scope": ["clips:edit", "user:read:email"]
             }
 

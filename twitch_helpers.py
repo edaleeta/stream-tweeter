@@ -48,6 +48,7 @@ def is_twitch_online(user):
         # Otherwise, the stream is offline.
         return False
     except Unauthorized as e:
+        # If there are too many failures, stop retrying.
         if handle_check_stream_failures(user.user_id):
             return
         print(e)
@@ -94,54 +95,64 @@ def serialize_twitch_stream_data(user):
     """Get Twitch stream data for user's stream."""
     user_id = user.user_id
     response = get_stream_info(user)
+    print(response.status_code)
 
-    try:
-        check_response_status(response)
-        all_stream_data = response.json().get("data")
-    except Exception as e:
-        print(str(e))
-        return None
+    while CHECK_STREAM_FAILURES.get(user_id, 0) < 2:
+        try:
+            check_response_status(response)
 
-    # If the stream is offline, data will be an empty array.
-    if not all_stream_data:
-        # We want to increment failure counter.
-        # Define a seperate function to handle that.
-        handle_check_stream_failures(user_id)
-        return None
+            all_stream_data = response.json().get("data")
+            # If the stream is offline, data will be an empty array.
+            if not all_stream_data:
+                # We want to increment failure counter.
+                # Define a seperate function to handle that.
+                handle_check_stream_failures(user_id)
+                return None
 
-    # If the stream is live...
-    # print("Stream data: {}".format(all_stream_data))
-    all_stream_data = all_stream_data[0]
-    timestamp = datetime.utcnow()
-    stream_id = all_stream_data.get("id")
-    streamer_id = all_stream_data.get("user_id")
-    stream_title = all_stream_data.get("title")
-    stream_viewer_count = all_stream_data.get("viewer_count")
-    stream_started_at = all_stream_data.get("started_at")
-    stream_game_id = all_stream_data.get("game_id")
+            # If the stream is live...
+            # print("Stream data: {}".format(all_stream_data))
+            all_stream_data = all_stream_data[0]
+            timestamp = datetime.utcnow()
+            stream_id = all_stream_data.get("id")
+            streamer_id = all_stream_data.get("user_id")
+            stream_title = all_stream_data.get("title")
+            stream_viewer_count = all_stream_data.get("viewer_count")
+            stream_started_at = all_stream_data.get("started_at")
+            stream_game_id = all_stream_data.get("game_id")
 
-    # Helper function to get game info
-    stream_game_title = get_twitch_game_data(stream_game_id, user)
-    # Helper function to construct stream url
-    stream_url = create_stream_url(streamer_id, user)
-    # Convert started_at str to datetime
-    datetime_format = "%Y-%m-%dT%H:%M:%SZ"
-    stream_started_at = datetime.strptime(stream_started_at,
-                                          datetime_format)
+            # Helper function to get game info
+            stream_game_title = get_twitch_game_data(stream_game_id, user)
+            # Helper function to construct stream url
+            stream_url = create_stream_url(streamer_id, user)
+            # Convert started_at str to datetime
+            datetime_format = "%Y-%m-%dT%H:%M:%SZ"
+            stream_started_at = datetime.strptime(stream_started_at,
+                                                  datetime_format)
 
-    stream_data = {"timestamp": timestamp,
-                   "stream_id": stream_id,
-                   "twitch_id": streamer_id,
-                   "stream_title": stream_title,
-                   "viewer_count": stream_viewer_count,
-                   "started_at": stream_started_at,
-                   "game_id": stream_game_id,
-                   "game_name": stream_game_title,
-                   "url": stream_url}
-    # Reset stream failures counter to 0
-    CHECK_STREAM_FAILURES[user_id] = 0
+            stream_data = {"timestamp": timestamp,
+                           "stream_id": stream_id,
+                           "twitch_id": streamer_id,
+                           "stream_title": stream_title,
+                           "viewer_count": stream_viewer_count,
+                           "started_at": stream_started_at,
+                           "game_id": stream_game_id,
+                           "game_name": stream_game_title,
+                           "url": stream_url}
+            # Reset stream failures counter to 0
+            CHECK_STREAM_FAILURES[user_id] = 0
 
-    return stream_data
+            return stream_data
+        
+        except Unauthorized as e:
+            # If there are too many failures, stop retrying.
+            if handle_check_stream_failures(user.user_id):
+                return None
+            print(e)
+            refresh_users_token(user)
+
+        except Exception as e:
+            print(str(e))
+            return None
 
 
 def handle_check_stream_failures(user_id):
@@ -273,7 +284,6 @@ def refresh_users_token(user):
 
 def send_refresh_token_request(user):
     """Sends post request to refresh user's Twitch access token."""
-
     refresh_token = user.twitch_token.refresh_token
 
     payload = {
@@ -285,6 +295,8 @@ def send_refresh_token_request(user):
 
     response = requests.post("https://id.twitch.tv/oauth2/token",
                              data=payload)
+
+    print("Sent request to refresh user's token.")
 
     return response
 
