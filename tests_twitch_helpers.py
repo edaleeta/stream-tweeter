@@ -110,10 +110,11 @@ class TwitchHelpersTestCase(TestCase):
         twitch_helpers.get_stream_info(self.user)
         self.assertTrue(twitch_helpers.get_stream_info(self.user))
 
-    
+    @mock.patch("twitch_helpers.handle_check_stream_failures")
     @mock.patch("twitch_helpers.refresh_users_token")
     @mock.patch("twitch_helpers.get_stream_info")
-    def test_is_twitch_online(self, get_streams, refresh_users_token):
+    def test_is_twitch_online(self,
+        get_streams, refresh_users_token, check_failures):
         """Checks if returning t/f is accurate for user's online status."""
 
         json = {
@@ -152,6 +153,7 @@ class TwitchHelpersTestCase(TestCase):
 
         # Case 3: Bad response from request
         mock_response.status_code = 401
+        check_failures.side_effect = [False, True]
         self.assertFalse(twitch_helpers.is_twitch_online(self.user))
         refresh_users_token.assert_called()
 

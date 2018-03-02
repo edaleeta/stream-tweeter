@@ -38,25 +38,26 @@ def create_header(user):
 def is_twitch_online(user):
     """Check if user's Twitch stream is live."""
 
+    user_id = user.user_id
     response = get_stream_info(user)
-    try:
-        check_response_status(response)
-        stream_data = response.json().get("data")
-        # If stream_data has contents, the user is streaming.
-        if stream_data:
-            return True
-        # Otherwise, the stream is offline.
-        return False
-    except Unauthorized as e:
-        # If there are too many failures, stop retrying.
-        if handle_check_stream_failures(user.user_id):
-            return
-        print(e)
-        refresh_users_token(user)
-        is_twitch_online(user)
-    except Exception as e:
-        print(e)
-        return False
+    while CHECK_STREAM_FAILURES.get(user_id, 0) < 2:
+        try:
+            check_response_status(response)
+            stream_data = response.json().get("data")
+            # If stream_data has contents, the user is streaming.
+            if stream_data:
+                return True
+            # Otherwise, the stream is offline.
+            return False
+        except Unauthorized as e:
+            # If there are too many failures, stop retrying.
+            if handle_check_stream_failures(user_id):
+                return
+            print(e)
+            refresh_users_token(user)
+        except Exception as e:
+            print(e)
+            return False
 
 
 def check_response_status(response):
