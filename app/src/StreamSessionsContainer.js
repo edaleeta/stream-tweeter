@@ -27,14 +27,25 @@ export class StreamSessionsContainer extends Component {
     })        
   }
 
+  handleLoadMore() {
+    console.log("We're going to load more streams.");
+  }
+
   render() {
     if (this.state.streams) {
       console.log("Stream data fetched.")
       return (
+
+        <InfiniteScroll
+          loadMore={this.handleLoadMore}
+          hasMore={this.state.nextPage} // When this.state.nextPage does not exist, set to false.
+          loader={<div className="loader">Loading ...</div>}
+        >
           <StreamSessions
             streams={this.state.streams}
             userId={this.props.userId}
           />
+        </InfiniteScroll>
       ); 
     } else {
       return <div></div>
