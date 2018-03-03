@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StreamSessions } from './StreamSessions';
+import { StreamSessionsContainer } from './StreamSessionsContainer';
 import { Grid } from 'react-bootstrap';
 
 export class Log extends Component {
 
   render() {
+    console.log("Log rendering.")
     return (
       <Grid fluid={true}>
         <h3>Your Stream Tweeter History</h3>
-        <StreamSessions userId={this.props.userId} />
+        <StreamSessionsContainer userId={this.props.userId} />
       </Grid>
     )
   

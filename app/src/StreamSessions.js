@@ -4,32 +4,11 @@ import { ListGroup } from 'react-bootstrap';
 import { StreamSessionContainer } from './StreamSessionContainer';
 
 export class StreamSessions extends Component {
-  
-  constructor(props) {
-    super(props);
-    this.state = {
-      streams: "",
-      nextPage: ""
-    };
-  }
-
-  componentWillMount() {
-    fetch("/api/streams",
-    {credentials: 'same-origin'})
-    .then((response)=> response.json())
-    .then((data) => {
-      console.log("StreamSessions mounted!");
-      this.setState({
-        streams: data.streams,
-        nextPage: data.next
-      });
-    })        
-  }
 
   render() {
-    if (this.state.streams) {
+    if (this.props.streams) {
       return (
-        this.state.streams.map((stream, key) => (
+        this.props.streams.map((stream, key) => (
           <ListGroup key={key}>
             <StreamSessionContainer key={key} stream={stream} />
           </ListGroup>
@@ -42,5 +21,6 @@ export class StreamSessions extends Component {
 }
 
 StreamSessions.propTypes = {
-  userId: PropTypes.number.isRequired
+  userId: PropTypes.number.isRequired,
+  streams: PropTypes.array.isRequired
 }
