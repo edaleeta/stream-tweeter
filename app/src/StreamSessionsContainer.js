@@ -4,6 +4,9 @@ import { ListGroup } from 'react-bootstrap';
 import { StreamSessions } from './StreamSessions';
 import InfiniteScroll from 'react-infinite-scroller';
 
+// Store already fetched streams.
+let fetchedStreams;
+
 export class StreamSessionsContainer extends Component {
   
   constructor(props) {
@@ -12,6 +15,7 @@ export class StreamSessionsContainer extends Component {
       streams: "",
       nextPage: ""
     };
+    this.handleLoadMore = this.handleLoadMore.bind(this);
   }
 
   componentWillMount() {
@@ -20,6 +24,7 @@ export class StreamSessionsContainer extends Component {
     .then((response)=> response.json())
     .then((data) => {
       console.log("StreamSessionsContainer mounted!");
+      fetchedStreams = data.streams;
       this.setState({
         streams: data.streams,
         nextPage: data.next
@@ -29,16 +34,36 @@ export class StreamSessionsContainer extends Component {
 
   handleLoadMore() {
     console.log("We're going to load more streams.");
+    // Fetch next "page" of streams
+    // Add those to fetched streams array
+    // Push them to state
+    fetch(this.state.nextPage,
+    {credentials: 'same-origin'})
+    .then((response)=> response.json())
+    .then((data) => {
+      console.log("StreamSessionsContainer mounted!");
+      fetchedStreams.push(...data.streams)
+      console.log("FETCHED:");
+      console.log(data.streams);
+      console.log("ALL FETCHED STREAMS:");
+      console.log(fetchedStreams);
+      this.setState({
+        streams: fetchedStreams,
+        nextPage: data.next
+      });
+    })
+
   }
 
   render() {
     if (this.state.streams) {
       console.log("Stream data fetched.")
+      console.log(this.state.nextPage)
       return (
 
         <InfiniteScroll
           loadMore={this.handleLoadMore}
-          hasMore={this.state.nextPage} // When this.state.nextPage does not exist, set to false.
+          hasMore={this.state.nextPage ? true : false} // When this.state.nextPage does not exist, set to false.
           loader={<div className="loader">Loading ...</div>}
         >
           <StreamSessions
