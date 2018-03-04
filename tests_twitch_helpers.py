@@ -10,6 +10,7 @@ import twitch_helpers
 
 try:
     WEBHOOKS_BASE_URL = os.environ["WEBHOOKS_BASE_URL"]
+    TWITCH_CLIENT_ID = os.environ["TWITCH_CLIENT_ID"]
 except KeyError:
     print("Please set the environment variables.")
 
@@ -453,6 +454,17 @@ class TwitchHelpersTestCase(TestCase):
         self.assertEqual(
             expected_url,
             twitch_helpers.create_callback_url(self.user)
+        )
+
+    def test_create_webhooks_header(self):
+        """Checks if header for webhook requests is constructed correctly."""
+
+        expected_header = {"Client-ID": TWITCH_CLIENT_ID,
+                           "Content-Type": "application/json"}
+
+        self.assertEqual(
+            expected_header,
+            twitch_helpers.create_webhooks_header()
         )
 
     def test_subscribe_to_user_stream_events(self):

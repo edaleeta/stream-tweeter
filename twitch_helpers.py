@@ -338,6 +338,13 @@ def create_callback_url(user):
     return url
 
 
+def create_webhooks_header():
+    """Creates the header for a webhook subscription."""
+    header = {"Client-ID": TWITCH_CLIENT_ID,
+              "Content-Type": "application/json"}
+    return header
+
+
 def subscribe_to_user_stream_events(user):
     """Sends a request to Twitch to subscribe to user's stream events."""
 
