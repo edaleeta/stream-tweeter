@@ -11,7 +11,8 @@ const spinnerElement = (
     <FontAwesomeIcon
       icon={faCog}
       transform="grow-50 down-50"
-      spin />
+      spin
+    />
   </div>
 )
 
