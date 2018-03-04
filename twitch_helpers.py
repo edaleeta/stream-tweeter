@@ -350,21 +350,35 @@ def create_webhooks_payload(user):
 
     topic = ("https://api.twitch.tv/helix/streams?user_id=" +
              str(user.twitch_id))
-    
+
     callback_url = create_callback_url(user)
+    seconds = 864000
 
     payload = {
         "hub.mode": "subscribe",
         "hub.topic": topic,
-        "hub.callback": callback_url
+        "hub.callback": callback_url,
+        "hub.lease_seconds": seconds
     }
 
     return payload
 
+
 def subscribe_to_user_stream_events(user):
     """Sends a request to Twitch to subscribe to user's stream events."""
 
-    pass
+    endpoint = "https://api.twitch.tv/helix/webhooks/hub?"
+    payload = create_webhooks_payload(user)
+    header = create_webhooks_header()
+
+    response = requests.post(endpoint, json=payload, headers=header)
+    print(response.status_code)
+
+    if response.status_code == 202:
+        print("Subscription request successfully sent.")
+    else:
+        print(response.json())
+    return response
     
 
 if __name__ == "__main__":

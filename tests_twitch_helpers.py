@@ -448,7 +448,8 @@ class TwitchHelpersTestCase(TestCase):
                           str(self.user.twitch_id)),
             "hub.callback": (WEBHOOKS_BASE_URL +
                              "/api/hooks/streamstatus/" +
-                             str(self.user.user_id))
+                             str(self.user.user_id)),
+            "hub.lease_seconds": 864000
         }
 
         self.assertEqual(
@@ -456,9 +457,21 @@ class TwitchHelpersTestCase(TestCase):
             twitch_helpers.create_webhooks_payload(self.user)
         )
 
-    def test_subscribe_to_user_stream_events(self):
+    @mock.patch("twitch_helpers.requests.post")
+    def test_subscribe_to_user_stream_events(self, mock_post):
         """Tests sending request to subscribe to stream events for user."""
-        pass
+        
+        mock_response = mock.Mock()
+        mock_response.status_code = 202
+        mock_post.return_value = mock_response
+
+        self.assertEqual(
+            202,
+            twitch_helpers.subscribe_to_user_stream_events(self.user)
+            .status_code
+        )
+        mock_post.assert_called()
+        
 
 if __name__ == "__main__":
     import unittest
