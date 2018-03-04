@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { ListGroup } from 'react-bootstrap';
-import { StreamSessions } from './StreamSessions';
 import InfiniteScroll from 'react-infinite-scroller';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faCog from '@fortawesome/fontawesome-free-solid/faCog';
+import { StreamSessions } from './StreamSessions';
 
 // Store already fetched streams.
 let fetchedStreams;
+
+const loadingElement = (
+  <span>
+  Loading more past stream data... 
+  <FontAwesomeIcon
+    icon={faCog}
+    spin
+  />
+  </span>
+)
 
 export class StreamSessionsContainer extends Component {
   
@@ -64,7 +76,7 @@ export class StreamSessionsContainer extends Component {
         <InfiniteScroll
           loadMore={this.handleLoadMore}
           hasMore={this.state.nextPage ? true : false} // When this.state.nextPage does not exist, set to false.
-          loader={<div className="loader">Loading ...</div>}
+          loader={loadingElement}
         >
           <StreamSessions
             streams={this.state.streams}
