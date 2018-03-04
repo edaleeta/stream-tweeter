@@ -148,7 +148,6 @@ def update_current_user():
             {'ContentType': 'application/json'})
 
 
-
 @app.route("/api/current-user-templates.json")
 def get_current_user_templates():
     """Return jsonified info about current user's templates."""

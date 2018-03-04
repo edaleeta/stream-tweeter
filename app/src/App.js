@@ -28,12 +28,14 @@ class App extends Component {
           let twitchDisplayName = data.twitchDisplayName;
           let isTwitterAuth = data.isTwitterAuth;
           let tweetInterval = data.tweetInterval;
+          let isTweeting = data.isTweeting;
 
           this.setState({
               userId: userId,
               twitchDisplayName: twitchDisplayName,
               isTwitterAuth: isTwitterAuth,
               tweetInterval: tweetInterval,
+              isTweeting: isTweeting,
               fetched: true});
       })
   }
@@ -62,6 +64,7 @@ class App extends Component {
                   isTwitterAuth={this.state.isTwitterAuth}
                   userId={this.state.userId}
                   tweetInterval={this.state.tweetInterval}
+                  isTweeting={this.state.isTweeting}
                   onClick={this.onClickTwitterAccessRevoked}
                 />
               );

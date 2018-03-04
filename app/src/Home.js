@@ -26,6 +26,7 @@ export class Home extends Component {
                 isTwitterAuth={this.props.isTwitterAuth}
                 userId={this.props.userId}
                 tweetInterval={this.props.tweetInterval}
+                isTweeting={this.props.isTweeting}
                 onClick={this.props.onClick}
               />
             </Col>
@@ -40,6 +41,7 @@ Home.propTypes = {
   isTwitterAuth: PropTypes.bool.isRequired,
   userId: PropTypes.number.isRequired,
   tweetInterval: PropTypes.number.isRequired,
+  isTweeting: PropTypes.bool,
   onClick:PropTypes.func.isRequired
 }
 
