@@ -127,6 +127,28 @@ def get_current_user_json():
         return jsonify(error="Not logged in.")
 
 
+@app.route("/api/current-user.json", methods=["PUT"])
+def update_current_user():
+    """Updates current user's settings."""
+    # TODO: Consolidate with updating tweet interval.
+
+    new_is_tweeting = request.get_json().get("isTweeting")
+    if isinstance(new_is_tweeting, bool):
+        current_user.is_tweeting = new_is_tweeting
+        print("User {}'s is_tweeting set to {}.".format(
+            current_user.user_id, new_is_tweeting
+        ))
+
+        return jsonify(success=True)
+
+    error_message = "Bad request."
+    print(error_message)
+    return (flask.json.dumps({"error": error_message}),
+            400,
+            {'ContentType': 'application/json'})
+
+
+
 @app.route("/api/current-user-templates.json")
 def get_current_user_templates():
     """Return jsonified info about current user's templates."""
