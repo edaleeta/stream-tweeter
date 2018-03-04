@@ -214,8 +214,8 @@ def start_tweets_react():
         # TODO: UNCOMMENT AFTER TESTING TWITTER HELPERS.
         handler.start_fetching_twitch_data(current_user.user_id)
 
-        tweet_interval = current_user.tweet_interval or 30
         # Start sending tweets
+        tweet_interval = current_user.tweet_interval or 30
         handler.start_tweeting(current_user.user_id, tweet_interval)
 
         return jsonify(success=True)
@@ -392,6 +392,28 @@ def test_webhook(user_id):
     """Prints webhook response payload. """
     print("Data from Twitch: {}".format(request.get_json()))
     print("User {} stream state has changed.".format(user_id))
+
+    # Extract signature from parameters.
+    signature = request.headers.get('X-Hub-Signature')
+    if signature:
+        signature = signature.split("=")[1]
+    
+    body_json = request.get_json()
+    body_raw = request.get_data()
+
+    if twitch_helpers.is_auth_signature(body_raw, signature):
+        if body_json.get("data"):
+            print("\n\nI WOULD BE STARTING JOBS NOW.\n\n")
+            # # Starts job to fetch twitch data.
+            # handler.start_fetching_twitch_data(user_id)
+            # # Start sending tweets
+            # tweet_interval = user.tweet_interval or 30
+            # handler.start_tweeting(user_id, tweet_interval)
+        else:
+            print("\n\nI WOULD BE ENDING JOBS NOW.\n\n")
+            # # Stop gathering twitch data and stop tweeting.
+            # handler.stop_fetching_twitch_data(user_id)
+            # handler.stop_tweeting(user_id)
 
     return ('', 200)
 

@@ -11,6 +11,7 @@ import twitch_helpers
 try:
     WEBHOOKS_BASE_URL = os.environ["WEBHOOKS_BASE_URL"]
     TWITCH_CLIENT_ID = os.environ["TWITCH_CLIENT_ID"]
+    WEBHOOKS_SECRET = os.environ["WEBHOOKS_SECRET"]
 except KeyError:
     print("Please set the environment variables.")
 

@@ -3,6 +3,8 @@
 from datetime import datetime
 import os
 import time
+import hashlib
+import hmac
 import requests
 from model import StreamSession, TwitchClip, User
 import apscheduler_handlers as ap_handlers
@@ -22,6 +24,7 @@ try:
     TWITCH_CLIENT_ID = os.environ["TWITCH_CLIENT_ID"]
     TWITCH_CLIENT_SECRET = os.environ["TWITCH_CLIENT_SECRET"]
     WEBHOOKS_BASE_URL = os.environ["WEBHOOKS_BASE_URL"]
+    WEBHOOKS_SECRET = os.environ["WEBHOOKS_SECRET"]
 except KeyError:
     print("Please set the environment variables.")
 
@@ -358,7 +361,8 @@ def create_webhooks_payload(user):
         "hub.mode": "subscribe",
         "hub.topic": topic,
         "hub.callback": callback_url,
-        "hub.lease_seconds": seconds
+        "hub.lease_seconds": seconds,
+        "hub.secret": WEBHOOKS_SECRET
     }
 
     return payload
@@ -379,7 +383,15 @@ def subscribe_to_user_stream_events(user):
     else:
         print(response.json())
     return response
-    
+
+
+def is_auth_signature(body, signature):
+    """Confirms if request was signed by Twitch."""
+
+    auth_code = hmac.new(bytes(WEBHOOKS_SECRET, 'utf-8'), body, hashlib.sha256)
+    if auth_code.hexdigest() == signature:
+        return True
+    return False
 
 if __name__ == "__main__":
     # Interact with db if we run this module directly.
