@@ -2,6 +2,7 @@
 
 from model import StreamSession, SentTweet, TwitchClip
 
+
 def create_streams_payload(user, dt=None, limit=5):
     """Creates payload for returning stream session info."""
 
@@ -18,12 +19,15 @@ def create_streams_payload(user, dt=None, limit=5):
                    for stream
                    in user.sessions[:limit]]
 
-    # Get timestamp to be used as cursor
-    next_ts = streams[-1]["startedAt"]
+    if not streams:
+        payload["streams"] = []
+    else:
+        # Get timestamp to be used as cursor
+        next_ts = streams[-1]["startedAt"]
 
-    # Add data to payload.
-    payload["streams"] = streams
-    payload["next"] = f"/api/streams?ts={next_ts}&limit={limit}"
+        # Add data to payload.
+        payload["streams"] = streams
+        payload["next"] = f"/api/streams?ts={next_ts}&limit={limit}"
 
     return(payload)
 

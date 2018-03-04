@@ -49,7 +49,7 @@ export class StreamSessionsContainer extends Component {
       console.log(fetchedStreams);
       this.setState({
         streams: fetchedStreams,
-        nextPage: data.next
+        nextPage: data.next ? data.next : null
       });
     })
 
