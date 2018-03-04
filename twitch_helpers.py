@@ -20,12 +20,10 @@ class Unauthorized(Exception):
 # Twitch Requirements
 try:
     TWITCH_CLIENT_ID = os.environ["TWITCH_CLIENT_ID"]
-except KeyError:
-    print("Please set the environment variable TWITCH_CLIENT_ID")
-try:
     TWITCH_CLIENT_SECRET = os.environ["TWITCH_CLIENT_SECRET"]
+    WEBHOOKS_BASE_URL = os.environ["WEBHOOKS_BASE_URL"]
 except KeyError:
-    print("Please set the environment variable TWITCH_CLIENT_SECRET")
+    print("Please set the environment variables.")
 
 # Stores user_id and corresponding number of failures.
 CHECK_STREAM_ONLINE_FAILURES = {}
@@ -330,6 +328,21 @@ def process_refresh_token_response(response, user):
         expires_in=new_expires_in
     )
     return user.twitch_token
+
+
+def create_callback_url(user):
+    """Creates a callback url for webhook subsubscriptions."""
+
+    user_id = user.user_id
+    url = WEBHOOKS_BASE_URL + "/api/api/hooks/streamstatus/" + str(user_id)
+    return url
+
+
+def subscribe_to_user_stream_events(user):
+    """Sends a request to Twitch to subscribe to user's stream events."""
+
+    pass
+    
 
 if __name__ == "__main__":
     # Interact with db if we run this module directly.

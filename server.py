@@ -6,7 +6,7 @@ import datetime
 import flask
 from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
-                   request, session, url_for)
+                   request, session, url_for, make_response)
 from flask_login import current_user, LoginManager, login_user, logout_user
 from flask_oauthlib.client import OAuth
 from flask.json import jsonify
@@ -385,6 +385,29 @@ def get_sent_tweets_for_user_react():
                    user=current_user,
                    started=started_at,
                    ended=ended_at)))
+
+
+@app.route("/api/hooks/streamstatus/<int:user_id>", methods=["POST"])
+def test_webhook(user_id):
+    """Prints webhook response payload. """
+    print("Data from Twitch: {}".format(request.get_json()))
+    print("User {} stream state has changed.".format(user_id))
+
+    return ('', 200)
+
+
+@app.route("/api/hooks/streamstatus/<int:user_id>", methods=["GET"])
+def test_webhook_get(user_id):
+    """Echos back challenge for subscribing."""
+    print("Webhook Request: {}".format(list(request.args.items())))
+
+    if request.args.get("hub.mode") == "subscribe":
+        print("Subscribing to webhook for {}.".format(user_id))
+        challenge = request.args.get("hub.challenge")
+        return make_response(challenge)
+    else:
+        print("Subscription to webhook unsuccessful.")
+        return ('', 204)
  
 ###############################################################################
 # PAGE ROUTES
@@ -665,26 +688,26 @@ def get_twitter_token():
 ###############################################################################
 
 
-@app.route("/webhooktest", methods=["POST"])
-def test_webhook():
-    """Prints webhook response payload. """
-    print("Webhook Request: {}".format(request.get_json()))
-    print("User stream state has changed.")
+# @app.route("/webhooktest", methods=["POST"])
+# def test_webhook():
+#     """Prints webhook response payload. """
+#     print("Webhook Request: {}".format(request.get_json()))
+#     print("User stream state has changed.")
 
-    return ('', 204)
+#     return ('', 204)
 
 
-@app.route("/webhooktest", methods=["GET"])
-def test_webhook_get():
-    """Echos back challenge for subscribing."""
-    print("Webhook Request: {}".format(list(request.args.items())))
+# @app.route("/webhooktest", methods=["GET"])
+# def test_webhook_get():
+#     """Echos back challenge for subscribing."""
+#     print("Webhook Request: {}".format(list(request.args.items())))
 
-    if request.args.get("hub.mode") == "subscribe":
-        print("Successfully subscribed to webhook.")
-        return (request.args.get("hub.challenge"))
-    else:
-        print("Subscription to webhook unsuccessful.")
-        return ('', 204)
+#     if request.args.get("hub.mode") == "subscribe":
+#         print("Successfully subscribed to webhook.")
+#         return (request.args.get("hub.challenge"))
+#     else:
+#         print("Subscription to webhook unsuccessful.")
+#         return ('', 204)
 
 
 @twitch.tokengetter

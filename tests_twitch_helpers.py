@@ -1,15 +1,17 @@
 """Tests for twitch_helpers."""
 from unittest import TestCase, mock
-from io import StringIO
+import os
 import datetime
-import sqlalchemy
 import server as s
 import model as m
 from model import connect_to_db, db
 from seed_testdb import sample_data
-import template_helpers as temp_help
 import twitch_helpers
 
+try:
+    WEBHOOKS_BASE_URL = os.environ["WEBHOOKS_BASE_URL"]
+except KeyError:
+    print("Please set the environment variables.")
 
 ###############################################################################
 # TWITCH HELPERS TESTS
@@ -145,7 +147,7 @@ class TwitchHelpersTestCase(TestCase):
         mock_response.status_code = 200
 
         get_streams.return_value = mock_response
-        
+
         # Case 1: User is online.
         self.assertTrue(twitch_helpers.is_twitch_online(self.user))
 
@@ -178,7 +180,7 @@ class TwitchHelpersTestCase(TestCase):
         stop_tweet.assert_called()
         self.assertEqual(twitch_helpers.CHECK_STREAM_ONLINE_FAILURES[user_id], 0)
 
-    @mock.patch("twitch_helpers.requests.get")          
+    @mock.patch("twitch_helpers.requests.get")
     def test_create_stream_url(self, requests_get):
         """Checks that url is constructed correctly."""
 
@@ -190,7 +192,7 @@ class TwitchHelpersTestCase(TestCase):
         mock_response.status_code = 200
         mock_response.json.return_value = json
         requests_get.return_value = mock_response
-        
+
         # Case 1: Response ok
         expected_url = "https://www.twitch.tv/pixxeltesting"
         self.assertEqual(
@@ -204,7 +206,7 @@ class TwitchHelpersTestCase(TestCase):
             twitch_helpers.create_stream_url(twitch_id, self.user)
         )
 
-    @mock.patch("twitch_helpers.requests.get") 
+    @mock.patch("twitch_helpers.requests.get")
     def test_get_twitch_game_data(self, requests_get):
         """Checks if game data is returned correctly."""
 
@@ -241,7 +243,7 @@ class TwitchHelpersTestCase(TestCase):
         mock_response = mock.Mock()
         mock_response.status_code = 202
         mock_response.json.return_value = create_clip_json
-        
+
         requests_post.return_value = mock_response
         get_clip_info.return_value = clip_data
 
@@ -437,11 +439,25 @@ class TwitchHelpersTestCase(TestCase):
     @mock.patch("twitch_helpers.process_refresh_token_response")
     def test_refresh_users_token(self, process_response, send_request):
         "Tests refreshing user's token."
-        
+
         twitch_helpers.refresh_users_token(self.user)
         process_response.assert_called()
         send_request.assert_called()
 
+    def test_create_callback_url(self):
+        """Checks if callback url is constructed correctly."""
+        expected_url = (WEBHOOKS_BASE_URL +
+                        "/api/api/hooks/streamstatus/" +
+                        str(self.user.user_id))
+
+        self.assertEqual(
+            expected_url,
+            twitch_helpers.create_callback_url(self.user)
+        )
+
+    def test_subscribe_to_user_stream_events(self):
+        """Tests sending request to subscribe to stream events for user."""
+        pass
 
 if __name__ == "__main__":
     import unittest
