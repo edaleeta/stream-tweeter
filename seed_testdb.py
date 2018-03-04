@@ -23,7 +23,8 @@ def sample_data():
 
     # Execute raw SQL to import data from csv's in respective tables.
     project_path = os.getcwd()
-    fill_users = ("COPY users FROM '" + project_path + "/sql/users.csv'")
+    fill_users = ("COPY users FROM '" + project_path +
+                  "/sql/users.csv' DELIMITER ','")
     fill_twitch_clips = ("COPY twitch_clips FROM '" +
                          project_path + "/sql/twitch_clips.csv'")
     fill_templates = ("COPY templates FROM '" +
