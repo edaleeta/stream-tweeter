@@ -526,7 +526,7 @@ def authorize_twitch(resp):
         if current_twitch_user_id not in twitch_ids:
             return redirect("/register-twitch")
         # Else, login the user and overwrite current access token info in db.
-        # TODO: Implement overwriting access token.
+        # And renew webhook subscription.
         else:
             print("Twitch ID recognized. Logging you in.")
             login_user(User.get_user_from_twitch_id(current_twitch_user_id))
@@ -535,6 +535,8 @@ def authorize_twitch(resp):
                 refresh_token,
                 expires_in
             )
+            # Renews webhook subscription
+            twitch_helpers.subscribe_to_user_stream_events(current_user)
             flask.next = request.args.get('next')
             return (redirect(session["referrer_url"] or
                     flask.next or url_for('show_index')))
