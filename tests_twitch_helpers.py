@@ -18,34 +18,6 @@ except KeyError:
 # TWITCH HELPERS TESTS
 ###############################################################################
 
-# Patching response for twitch users
-@mock.patch("twitch_helpers.requests.get")
-def test_getting_user_when_response_is_ok(mock_get_streams):
-    twitch_user = {
-        "data": [
-            {
-                "id": "27629046016",
-                "user_id": "29389795",
-                "game_id": "497428",
-                "community_ids": [],
-                "type": "live",
-                "title": "Testing the stream",
-                "viewer_count": 1,
-                "started_at": "2018-02-16T21:04:02Z",
-                "language": "en",
-                "thumbnail_url": "https://static-cdn.jtvnw.net/previews-ttv/live_user_pixxeltesting-{width}x{height}.jpg"
-            }
-        ],
-        "pagination": {
-            "cursor": "eyJiIjpudWxsLCJhIjp7Ik9mZnNldCI6MX19"
-        }
-    }
-    # Mock will respond with 200 code status.
-    # Mock has a `json()` method that returns Twitch user data
-    mock_get_streams.return_value = mock.MagicMock(
-        status_code=200,
-        json=twitch_user)
-
 
 class TwitchHelpersTestCase(TestCase):
 
@@ -448,7 +420,7 @@ class TwitchHelpersTestCase(TestCase):
     def test_create_callback_url(self):
         """Checks if callback url is constructed correctly."""
         expected_url = (WEBHOOKS_BASE_URL +
-                        "/api/api/hooks/streamstatus/" +
+                        "/api/hooks/streamstatus/" +
                         str(self.user.user_id))
 
         self.assertEqual(
@@ -465,6 +437,23 @@ class TwitchHelpersTestCase(TestCase):
         self.assertEqual(
             expected_header,
             twitch_helpers.create_webhooks_header()
+        )
+
+    def test_create_webhooks_payload(self):
+        """Checks if payload for webhooks requests is correct."""
+
+        expected_payload = {
+            "hub.mode": "subscribe",
+            "hub.topic": ("https://api.twitch.tv/helix/streams?user_id=" +
+                          str(self.user.twitch_id)),
+            "hub.callback": (WEBHOOKS_BASE_URL +
+                             "/api/hooks/streamstatus/" +
+                             str(self.user.user_id))
+        }
+
+        self.assertEqual(
+            expected_payload,
+            twitch_helpers.create_webhooks_payload(self.user)
         )
 
     def test_subscribe_to_user_stream_events(self):

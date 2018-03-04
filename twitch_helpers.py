@@ -334,7 +334,7 @@ def create_callback_url(user):
     """Creates a callback url for webhook subsubscriptions."""
 
     user_id = user.user_id
-    url = WEBHOOKS_BASE_URL + "/api/api/hooks/streamstatus/" + str(user_id)
+    url = WEBHOOKS_BASE_URL + "/api/hooks/streamstatus/" + str(user_id)
     return url
 
 
@@ -344,6 +344,22 @@ def create_webhooks_header():
               "Content-Type": "application/json"}
     return header
 
+
+def create_webhooks_payload(user):
+    """Creates the payload for a webhook subscription request."""
+
+    topic = ("https://api.twitch.tv/helix/streams?user_id=" +
+             str(user.twitch_id))
+    
+    callback_url = create_callback_url(user)
+
+    payload = {
+        "hub.mode": "subscribe",
+        "hub.topic": topic,
+        "hub.callback": callback_url
+    }
+
+    return payload
 
 def subscribe_to_user_stream_events(user):
     """Sends a request to Twitch to subscribe to user's stream events."""
