@@ -110,7 +110,8 @@ def get_current_user_json():
             "email": current_user.email,
             "twitchDisplayName": current_user.twitch_displayname,
             "twitchId": current_user.twitch_id,
-            "tweetInterval": current_user.tweet_interval or 30
+            "tweetInterval": current_user.tweet_interval or 30,
+            "isTweeting": current_user.is_tweeting
         }
 
         # Add status of Twitter auth
@@ -215,6 +216,7 @@ def start_tweets_react():
         handler.start_fetching_twitch_data(current_user.user_id)
 
         # Start sending tweets
+        current_user.is_tweeting = True
         tweet_interval = current_user.tweet_interval or 30
         handler.start_tweeting(current_user.user_id, tweet_interval)
 
@@ -397,7 +399,7 @@ def test_webhook(user_id):
     signature = request.headers.get('X-Hub-Signature')
     if signature:
         signature = signature.split("=")[1]
-    
+
     body_json = request.get_json()
     body_raw = request.get_data()
 
@@ -407,9 +409,11 @@ def test_webhook(user_id):
             print("\n\nSTARTING JOBS NOW FOR USER {}.\n\n".format(user_id))
             # Starts job to fetch twitch data.
             handler.start_fetching_twitch_data(user_id)
-            # Start sending tweets
-            tweet_interval = user.tweet_interval or 30
-            handler.start_tweeting(user_id, tweet_interval)
+
+            if user.is_tweeting:
+                # Start sending tweets
+                tweet_interval = user.tweet_interval or 30
+                handler.start_tweeting(user_id, tweet_interval)
         else:
             print("\n\nENDING JOBS NOW FOR USER {}.\n\n".format(user_id))
             # Stop gathering twitch data and stop tweeting.
@@ -431,7 +435,7 @@ def test_webhook_get(user_id):
     else:
         print("Subscription to webhook unsuccessful.")
         return ('', 204)
- 
+
 ###############################################################################
 # PAGE ROUTES
 ###############################################################################
