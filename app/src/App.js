@@ -52,21 +52,24 @@ class App extends Component {
       return (
         <div>
           <MainNavBar />
-          <PageHeader>Stream Tweeter <br /><small>A social media automation tool for Twitch streamers.</small></PageHeader>
-          <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+          <Panel>
+            <Panel.Body>
+            {/* <PageHeader>Stream Tweeter <br /><small>A social media automation tool for Twitch streamers.</small></PageHeader> */}
+            <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
           <Switch>
             <Route 
               exact path="/"
               render={
                 (props) => {
                   return (
-                    <Home {...props}
-                      isTwitterAuth={this.state.isTwitterAuth}
-                      userId={this.state.userId}
-                      tweetInterval={this.state.tweetInterval}
-                      isTweeting={this.state.isTweeting}
-                      onClick={this.onClickTwitterAccessRevoked}
-                    />
+
+                      <Home {...props}
+                        isTwitterAuth={this.state.isTwitterAuth}
+                        userId={this.state.userId}
+                        tweetInterval={this.state.tweetInterval}
+                        isTweeting={this.state.isTweeting}
+                        onClick={this.onClickTwitterAccessRevoked}
+                      />
                   );
                 }
               }
@@ -76,14 +79,18 @@ class App extends Component {
               render={
                 (props) => {
                   return (
-                    <Log {...props}
-                      userId={this.state.userId}
-                    />
+
+                      <Log {...props}
+                        userId={this.state.userId}
+                      />
+                    
                   )
                 }
               }
             />
           </Switch>
+          </Panel.Body>
+          </Panel>
       </div>
       );
   } else if (this.state.fetched) {
