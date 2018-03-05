@@ -52,8 +52,7 @@ class App extends Component {
       return (
         <div>
           <MainNavBar />
-        <Panel fluid={true}>
-          <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
+          <PageHeader>Stream Tweeter <br /><small>A social media automation tool for Twitch streamers.</small></PageHeader>
           <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
           <Switch>
             <Route 
@@ -85,7 +84,6 @@ class App extends Component {
               }
             />
           </Switch>
-        </Panel>
       </div>
       );
   } else if (this.state.fetched) {
@@ -93,11 +91,9 @@ class App extends Component {
       return (
         <div>
           <MainNavBar />
-          <Panel>
           <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
             <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
             {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
-          </Panel>
         </div>
       );
   } else {
