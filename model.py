@@ -127,6 +127,12 @@ class User(db.Model):
                                                 user_id=self.user_id).one()
         temp_to_edit.contents = new_contents
         db.session.commit()
+    
+    def update_is_tweeting(self, is_tweeting):
+        """Updates is_tweeting setting for user."""
+
+        self.is_tweeting = is_tweeting
+        db.session.commit()
 
 
 class TwitchToken(db.Model):

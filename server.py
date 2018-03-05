@@ -131,15 +131,15 @@ def get_current_user_json():
 def update_current_user():
     """Updates current user's settings."""
     # TODO: Consolidate with updating tweet interval.
+    if current_user.is_authenticated:
+        new_is_tweeting = request.get_json().get("isTweeting")
+        if isinstance(new_is_tweeting, bool):
+            current_user.update_is_tweeting(new_is_tweeting)
+            print("User {}'s is_tweeting set to {}.".format(
+                current_user.user_id, new_is_tweeting
+            ))
 
-    new_is_tweeting = request.get_json().get("isTweeting")
-    if isinstance(new_is_tweeting, bool):
-        current_user.is_tweeting = new_is_tweeting
-        print("User {}'s is_tweeting set to {}.".format(
-            current_user.user_id, new_is_tweeting
-        ))
-
-        return jsonify(success=True)
+            return jsonify(success=True)
 
     error_message = "Bad request."
     print(error_message)
