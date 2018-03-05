@@ -435,11 +435,14 @@ def test_webhook(user_id):
     user = User.query.get(user_id)
     if twitch_helpers.is_auth_signature(body_raw, signature):
         if body_json.get("data"):
-            print("\n\nSTARTING JOBS NOW FOR USER {}.\n\n".format(user_id))
+            print("\n\nSTARTING DATA FETCH NOW FOR USER {}.\n\n"
+                  .format(user_id))
             # Starts job to fetch twitch data.
             handler.start_fetching_twitch_data(user_id)
 
             if user.is_tweeting:
+                print("\n\nSTARTING TWEETING NOW FOR USER {}.\n\n"
+                      .format(user_id))
                 # Start sending tweets
                 tweet_interval = user.tweet_interval or 30
                 handler.start_tweeting(user_id, tweet_interval)

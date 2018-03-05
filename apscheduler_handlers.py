@@ -47,25 +47,28 @@ def start_tweeting(user_id, interval):
     """Start tweeting for the given user on the specified interval."""
 
     user = model.User.get_user_from_id(user_id)
-    templates = [template.contents for template in user.templates]
-    random_template = random.choice(templates)
+    if user.is_tweeting:
+        templates = [template.contents for template in user.templates]
+        random_template = random.choice(templates)
 
-    tweet_copy = template_helpers.populate_tweet_template(
-        random_template, user_id
-    )
-    if tweet_copy:
-        template_helpers.publish_to_twitter(tweet_copy, user_id)
+        tweet_copy = template_helpers.populate_tweet_template(
+            random_template, user_id
+        )
+        if tweet_copy:
+            template_helpers.publish_to_twitter(tweet_copy, user_id)
 
-    # Interval will be defined in minutes.
-    # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.
-    job_type = "send_tweets"
-    job_id = job_type + str(user_id)
-    scheduler.add_job(func=jobs.send_tweets,
-                      id=job_id,
-                      trigger="interval",
-                      args=[user_id],
-                      replace_existing=True,
-                      seconds=interval)
+        # Interval will be defined in minutes.
+        # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.
+        job_type = "send_tweets"
+        job_id = job_type + str(user_id)
+        scheduler.add_job(func=jobs.send_tweets,
+                          id=job_id,
+                          trigger="interval",
+                          args=[user_id],
+                          replace_existing=True,
+                          minutes=interval)
+    else:
+        print("\nTweet Job not started; disabled by User {}".format(user_id))
 
 
 def stop_tweeting(user_id):
