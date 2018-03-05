@@ -17,12 +17,12 @@ const spinnerElement = (
 )
 
 const loaderForegroundConfig = {
-  color: "black",
+  color: "white",
   fontWeight: "bold"
 }
 
 const loaderBackgroundConfig = {
-  backgroundColor: "rgba(255, 255, 255, 1)"
+  backgroundColor: "#32383e"
 }
 
 export class ClipContainer extends Component {

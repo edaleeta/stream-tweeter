@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
-import { PageHeader, Row } from 'react-bootstrap';
+import { PageHeader, Row, Panel, Col } from 'react-bootstrap';
 import { Switch, Route } from 'react-router-dom';
 import './App.css';
 import { MainNavBar } from './MainNavBar';
@@ -50,51 +50,51 @@ class App extends Component {
   if (this.state.fetched && this.state.userId) {
       // When the initial data has been fetched, and we receive the logged in user...
       return (
-    <Row>
-      <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
-      <MainNavBar />
-      <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
-      <Switch>
-        <Route 
-          exact path="/"
-          render={
-            (props) => {
-              return (
-                <Home {...props}
-                  isTwitterAuth={this.state.isTwitterAuth}
-                  userId={this.state.userId}
-                  tweetInterval={this.state.tweetInterval}
-                  isTweeting={this.state.isTweeting}
-                  onClick={this.onClickTwitterAccessRevoked}
-                />
-              );
-            }
-          }
-        />
-        <Route
-          exact path="/log"
-          render={
-            (props) => {
-              return (
-                <Log {...props}
-                  userId={this.state.userId}
-                />
-              )
-            }
-          }
-        />
-      </Switch>
-    </Row>
+        <Panel fluid={true}>
+          <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
+          <MainNavBar />
+          <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+          <Switch>
+            <Route 
+              exact path="/"
+              render={
+                (props) => {
+                  return (
+                    <Home {...props}
+                      isTwitterAuth={this.state.isTwitterAuth}
+                      userId={this.state.userId}
+                      tweetInterval={this.state.tweetInterval}
+                      isTweeting={this.state.isTweeting}
+                      onClick={this.onClickTwitterAccessRevoked}
+                    />
+                  );
+                }
+              }
+            />
+            <Route
+              exact path="/log"
+              render={
+                (props) => {
+                  return (
+                    <Log {...props}
+                      userId={this.state.userId}
+                    />
+                  )
+                }
+              }
+            />
+          </Switch>
+        </Panel>
       );
   } else if (this.state.fetched) {
       // If we don't have a logged in user, show this...
       return (
-        <Row>
-          <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
-          <MainNavBar />
-          <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
-          {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
-        </Row>
+        <div>
+              <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
+              <MainNavBar />
+              <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+              {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
+        </div>
       );
   } else {
       // If our fetch hasn't completed, do not render anything.

@@ -11,20 +11,9 @@ const navLinks = {
 
 // Navigation 
 export class MainNavBar extends Component {
-  // render() {
-  //   return (
-  //     <ul>
-  //     <li><Link to={navLinks.home}>Home</Link></li>
-  //     <li><a href={navLinks.login}>Login</a></li>
-  //     <li><a href={navLinks.logout}>Logout</a></li>
-  //     <li><Link to={navLinks.log}>Log</Link></li>
-  //   </ul>
-  //   );
-  // }
-
   render() {
     return (
-      <Navbar>
+      <Navbar fluid={true}>
         <Navbar.Header>
           <Navbar.Brand>
             <Link to={navLinks.home}>Stream Tweeter</Link>
@@ -48,7 +37,7 @@ export class MainNavBar extends Component {
             </NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem eventKey={4} href="#">
+            <NavItem eventKey={1} href="#">
               Help
             </NavItem>
           </Nav>

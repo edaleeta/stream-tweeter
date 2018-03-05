@@ -8,7 +8,7 @@ import { Grid } from 'react-bootstrap';
 
 ReactDOM.render((
   <BrowserRouter>
-    <Grid>
+    <Grid fluid={false}>
       <App />
     </Grid>
   </BrowserRouter>

@@ -9,29 +9,29 @@ export class Home extends Component {
 
   render() {
     return (
-      <Row>
-          <Row>
-            <Col xs={12} md={7}>
-              <ConnectTwitter isTwitterAuth={this.props.isTwitterAuth} />
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} md={7}>
-              <TweetTemplates isTwitterAuth={this.props.isTwitterAuth}
-                userId={this.props.userId}
-              />
-            </Col>
-            <Col xs={12} md={5}>
-              <TweetOptions
-                isTwitterAuth={this.props.isTwitterAuth}
-                userId={this.props.userId}
-                tweetInterval={this.props.tweetInterval}
-                isTweeting={this.props.isTweeting}
-                onClick={this.props.onClick}
-              />
-            </Col>
-          </Row>
-      </Row>
+      <div>
+        <Row>
+          <Col xs={12} md={7}>
+            <ConnectTwitter isTwitterAuth={this.props.isTwitterAuth} />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12} md={7}>
+            <TweetTemplates isTwitterAuth={this.props.isTwitterAuth}
+              userId={this.props.userId}
+            />
+          </Col>
+          <Col xs={12} md={5}>
+            <TweetOptions
+              isTwitterAuth={this.props.isTwitterAuth}
+              userId={this.props.userId}
+              tweetInterval={this.props.tweetInterval}
+              isTweeting={this.props.isTweeting}
+              onClick={this.props.onClick}
+            />
+          </Col>
+        </Row>
+      </div>
     )
   
   }

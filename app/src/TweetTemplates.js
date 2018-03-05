@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { TweetTemplatesCurrent } from './TweetTemplatesCurrent';
 import { TweetTemplateCreateNew } from './TweetTemplateCreateNew';
 
@@ -26,13 +26,19 @@ export class TweetTemplates extends Component {
       return (
         <div>
           <Row>
-            <h2>Your Tweet Templates</h2>
+              <Col xs={12}>
+                <h2>Your Tweet Templates</h2>
+              </Col>
           </Row>
           <Row>
-            <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
+            <Col xs={12}>
+              <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
+            </Col>
           </Row>
           <Row>
-            <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
+            <Col xs={12}>
+              <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
+            </Col>
           </Row>
         </div>
       ); 
