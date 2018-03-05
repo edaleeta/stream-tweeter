@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './ConnectTwitter.css';
 import { Well } from 'react-bootstrap'
 
 export class ConnectTwitter extends Component {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './WelcomeUser.css';
 
 export class WelcomeUser extends Component {
 
@@ -13,7 +14,9 @@ export class WelcomeUser extends Component {
     } else {
         return (
           <h2>
-            Welcome! <a href="/login/twitch">Log in with Twitch</a> to get started!
+            Welcome! <a href="/login/twitch" className="primary">
+                Log in with Twitch
+              </a> to get started!
           </h2>
         );
     }

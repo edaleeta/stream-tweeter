@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Col, ListGroup, ListGroupItem } from 'react-bootstrap';
-import { TweetTemplateContainer } from './TweetTemplateContainer'
+import { TweetTemplateContainer } from './TweetTemplateContainer';
+import './TweetTemplatesCurrent.css';
 
 export class TweetTemplatesCurrent extends Component {
   constructor(props) {
@@ -48,7 +49,7 @@ export class TweetTemplatesCurrent extends Component {
     if (this.state.templates) {
       return (this.state.templates.map((template, key) => (
         <ListGroup key={key}>
-          <ListGroupItem key={key}>
+          <ListGroupItem key={key} className="tweet-templates">
             <TweetTemplateContainer template={template} key={key} onClick={this.props.onClick} />
           </ListGroupItem>
         </ListGroup>

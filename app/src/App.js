@@ -50,9 +50,10 @@ class App extends Component {
   if (this.state.fetched && this.state.userId) {
       // When the initial data has been fetched, and we receive the logged in user...
       return (
+        <div>
+          <MainNavBar />
         <Panel fluid={true}>
           <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
-          <MainNavBar />
           <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
           <Switch>
             <Route 
@@ -85,15 +86,18 @@ class App extends Component {
             />
           </Switch>
         </Panel>
+      </div>
       );
   } else if (this.state.fetched) {
       // If we don't have a logged in user, show this...
       return (
         <div>
-              <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
-              <MainNavBar />
-              <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
-              {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
+          <MainNavBar />
+          <Panel>
+          <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
+            <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+            {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
+          </Panel>
         </div>
       );
   } else {

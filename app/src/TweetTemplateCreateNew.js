@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import './TweetTemplateCreateNew.css'
+
 export class TweetTemplateCreateNew extends Component {
   constructor(props) {
     super(props);
@@ -59,7 +61,7 @@ export class TweetTemplateCreateNew extends Component {
 
   render() {
     return (
-      <form>
+      <form className="create-new">
         <FormGroup>
           <ControlLabel>Create a new Tweet Template: </ControlLabel>
           <FormControl

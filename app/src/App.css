@@ -1,4 +1,14 @@
 .panel {
+  margin-top: 5rem;
   padding-left: 5rem;
   padding-right: 5rem;
+  padding-bottom: 3rem;
+  background-color:	rgba(239, 239, 239, 0.8);
+  /* background: linear-gradient(rgba(240,238,240,1), rgba(240,238,240,0.5)); */
+  border-radius: 0px;
+  border-color: #efefef;
+}
+
+h1 > small {
+  color: #6441A5;
 }
