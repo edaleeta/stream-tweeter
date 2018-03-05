@@ -132,12 +132,20 @@ def update_current_user():
     """Updates current user's settings."""
     # TODO: Consolidate with updating tweet interval.
     if current_user.is_authenticated:
+        # Update is_tweeting setting for user.
         new_is_tweeting = request.get_json().get("isTweeting")
         if isinstance(new_is_tweeting, bool):
             current_user.update_is_tweeting(new_is_tweeting)
             print("User {}'s is_tweeting set to {}.".format(
                 current_user.user_id, new_is_tweeting
             ))
+            # If the user enabled tweeting, renew webhook subscription.
+            if new_is_tweeting:
+                twitch_helpers.subscribe_to_user_stream_events(current_user)
+            
+            # If the user disabled tweeting, end tweeting job.
+            if not new_is_tweeting:
+                handler.stop_tweeting(current_user.user_id)
 
             return jsonify(success=True)
 

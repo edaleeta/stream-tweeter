@@ -34,12 +34,12 @@ export class TweetOptions extends Component {
           </Row>
           <Row>
             <Col xs={12}>
+              <EnableTweeting
+                userId={this.props.userId}
+                isTweeting={this.props.isTweeting}
+              />
               <ButtonToolbar>
                 {/* <StartTweetingButton userId={this.props.userId} /> */}
-                <EnableTweeting
-                  userId={this.props.userId}
-                  isTweeting={this.props.isTweeting}
-                />
                 <TweetOptionsRevoke
                   userId={this.props.userId}
                   tweetInterval={this.props.tweetInterval}

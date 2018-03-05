@@ -51,7 +51,7 @@ export class EnableTweeting extends Component {
 
     return (
       <label htmlFor="enable-tweeting-switch">
-        <span>{labelText}</span><br />
+          <span>{labelText}</span><br />
         <Switch
           onChange={this.handleChange}
           checked={this.state.enabled}
