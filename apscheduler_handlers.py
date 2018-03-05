@@ -18,7 +18,7 @@ def start_fetching_twitch_data(user_id):
     if stream_data:
         twitch_helpers.write_twitch_stream_data(user, stream_data)
 
-    # Start job on interval
+    # Start job on 60 second interval
     interval = 60
     print("Fetching data for user: {}".format(user_id))
     job_type = "fetch_data"
@@ -31,13 +31,36 @@ def start_fetching_twitch_data(user_id):
                       seconds=interval)
 
 
+def renew_webhook(user_id):
+    """Begin renewing webhook subscription for user's stream on interval."""
+
+    interval = 9
+    job_type = "renew_webhook"
+    job_id = job_type + str(user_id)
+
+    # Start job on 9 day interval
+    scheduler.add_job(func=jobs.renew_stream_webhook,
+                      id=job_id,
+                      trigger="interval",
+                      args=[user_id],
+                      replace_existing=True,
+                      days=interval)
+
+
+def stop_renew_webhook(user_id):
+    """End the webhook renewal job."""
+
+    user_id = str(user_id)
+    job_type = "renew_webhook"
+    stop_job(job_type, user_id)
+
+
 def stop_fetching_twitch_data(user_id):
     """End the currently running fetch_data job for the user."""
     # Save end timestamp of stream session to close session.
     user = model.User.get_user_from_id(user_id)
     model.StreamSession.end_stream_session(user, datetime.datetime.utcnow())
 
-    # Turn user
     user_id = str(user_id)
     job_type = "fetch_data"
     stop_job(job_type, user_id)
@@ -57,8 +80,7 @@ def start_tweeting(user_id, interval):
         if tweet_copy:
             template_helpers.publish_to_twitter(tweet_copy, user_id)
 
-        # Interval will be defined in minutes.
-        # TODO: WORK IN PROGRESS. REMOVE WHEN COMPLETE.
+        # Sets up job for tweeting at regular interval.
         job_type = "send_tweets"
         job_id = job_type + str(user_id)
         scheduler.add_job(func=jobs.send_tweets,

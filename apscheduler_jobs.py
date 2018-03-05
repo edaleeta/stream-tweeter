@@ -33,10 +33,21 @@ def send_tweets(user_id):
             )
             if tweet_copy:
                 template_helpers.publish_to_twitter(tweet_copy, user_id)
-
-
     except Exception as e:
         print(e)
+
+
+def renew_stream_webhook(user_id):
+    """Job: Renews webhook for user's stream."""
+    try:
+        with db.app.app_context():
+            print("Renewing User {}'s webhook now.".format(user_id))
+            user = User.get_user_from_id(user_id)
+            twitch_helpers.subscribe_to_user_stream_events(user)
+    except Exception as e:
+        print(e)
+
+
 
 
 if __name__ == "__main__":

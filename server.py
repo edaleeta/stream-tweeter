@@ -142,10 +142,14 @@ def update_current_user():
             # If the user enabled tweeting, renew webhook subscription.
             if new_is_tweeting:
                 twitch_helpers.subscribe_to_user_stream_events(current_user)
+                # Start or replace job to renew every 9 days.
+                handler.renew_webhook(current_user.user_id)
             
             # If the user disabled tweeting, end tweeting job.
+            # Also let the webhook expire.
             if not new_is_tweeting:
                 handler.stop_tweeting(current_user.user_id)
+                handler.stop_renew_webhook(current_user.user_id)
 
             return jsonify(success=True)
 
@@ -594,8 +598,12 @@ def authorize_twitch(resp):
                 refresh_token,
                 expires_in
             )
+
             # Renews webhook subscription
             twitch_helpers.subscribe_to_user_stream_events(current_user)
+            # Starts/replaces job to renew subscription every 9 days.
+            handler.renew_webhook(current_user.user_id)
+
             flask.next = request.args.get('next')
             return (redirect(session["referrer_url"] or
                     flask.next or url_for('show_index')))
