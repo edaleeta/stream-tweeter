@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './Log.css'
+// import './Log.css'
 import { StreamSessionsContainer } from './StreamSessionsContainer';
 import { Grid } from 'react-bootstrap';
 

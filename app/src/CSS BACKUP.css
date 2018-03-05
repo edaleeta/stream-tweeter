@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Work+Sans:300,700');
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #efefef;
+  background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23a9a9a9' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+  background-attachment: fixed;
+  color: #16181F;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+  color: #a9a9a9;
+  text-transform: lowercase;
+  text-shadow: none;
+}
+
+h1 {
+  color: #702c94;
+}
+
+h2, h3, h4 {
+  color: #a9a9a9;
+  display: inline;
+  /* background: orange; */
+  background-color:rgba(202,235,242,0.5);
+  box-shadow: -20px 0px rgba(202,235,242,0.5), 10px 0px rgba(202,235,242,0.5);
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.btn-danger{
+  background: #f44336;
+}
+
+.btn-success{
+  background: #477f51;
+}
+
+.btn-info{
+  background: #191d20;
+}
+
+.btn-primary{
+  background: #3c0f54;
+}
+
+.btn-warning{
+  background: #c56f19;
+}
+
+
+/* WelcomeUser.css */
+.primary {
+  color: #6441A5;
+  font-weight: bold;
+}
+
+
+/* TweetTemplatesCurrent.css */
+
+.list-group-item.tweet-templates {
+  background-color:#FFFFFF;
+  font-size: 2rem;
+  letter-spacing: .1rem;
+  box-shadow: 0 10px 20px -12px rgba(169,169,169, 0.42), 0 3px 20px 0px rgba(169,169,169, 0.12), 0 8px 10px -5px rgba(169,169,169, 0.2)å;
+  border-radius: 0;
+  border-color: #702c94;
+}
+
+/* ConnectTwitter.css */
+.well {
+  background-color: #477f51;
+  color: #F0EEF0;
+}
+
+/* Log.css */
+
+.log .list-group-item {
+  background-color:#FFFFFF;
+  font-size: 100%;
+  box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.42), 0 3px 20px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+  margin-left: 3rem;
+  margin-bottom: 1rem;
+}
+
+.log .list-group-item a {
+  color: #6441A5;
+}
+
+.log .list-group-item a.btn {
+  color: #FFFFFF;
+}
+
+.log .btn-toolbar{
+  margin-left: 3rem;
+}
+
+
+/* MainNavBar.css */
+
+.navbar {
+  background-color: #702c94;
+  background-image:none; 
+  border-radius: 0;  
+  border-color: #efefef;
+  
+}
+.navbar-default .navbar-brand {
+  color: #efefef;
+  text-transform: lowercase;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 600;
+}
+
+.navbar-default .navbar-nav>li>a {
+  color: #efefef;
+  text-transform: uppercase;
+}
+
+/* App.css */
+.panel {
+  margin-top: 5rem;
+  padding-left: 5rem;
+  padding-right: 5rem;
+  padding-bottom: 3rem;
+  background-color:	rgba(239, 239, 239, 0.8);
+  /* background: linear-gradient(rgba(240,238,240,1), rgba(240,238,240,0.5)); */
+  border-radius: 0px;
+  border-color: #efefef;
+}
+
+h1 > small {
+  color: #6441A5;
+}
+
+/* TweetTemplateCreateNew.css */
+.list-group-item.tweet-templates {
+  background-color:#FFFFFF;
+  font-size: 2rem;
+  letter-spacing: .1rem;
+  box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.42), 0 3px 20px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+.create-new label {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.create-new textarea {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}

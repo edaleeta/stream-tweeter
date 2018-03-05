@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Col, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { TweetTemplateContainer } from './TweetTemplateContainer';
-import './TweetTemplatesCurrent.css';
+// import './TweetTemplatesCurrent.css';
 
 export class TweetTemplatesCurrent extends Component {
   constructor(props) {

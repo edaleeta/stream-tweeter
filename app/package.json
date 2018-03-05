@@ -42,5 +42,8 @@
     "/auth-twitter": {
       "target": "http://localhost:7000"
     }
+  },
+  "devDependencies": {
+    "less": "^3.0.1"
   }
 }

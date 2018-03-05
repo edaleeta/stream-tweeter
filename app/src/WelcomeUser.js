@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './WelcomeUser.css';
+// import './WelcomeUser.css';
 
 export class WelcomeUser extends Component {
 
