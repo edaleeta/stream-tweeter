@@ -15,8 +15,7 @@ export class ConnectTwitter extends Component {
       }
       return (
           <Well bsSize="small">
-              To get started, please connect your Twitter account:<br />
-              <a href="/auth-twitter">Connect Twitter</a>
+              To get started, please <a href="/auth-twitter" className="connect">connect your Twitter account.</a><br />
           </Well>
       )
   }

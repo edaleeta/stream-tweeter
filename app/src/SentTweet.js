@@ -68,13 +68,13 @@ export class SentTweet extends Component {
 
     return (
       <Row>
-        <Col xs={12} md={4}>
+        <Col xs={12} md={5}>
           <Row>
             <ListGroupItem
               header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
               target="_blank"
             >
-              <span>Message: </span><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
+              <span>Message</span><br /><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
               <br /><br />
             </ListGroupItem>
           </Row>
@@ -90,7 +90,7 @@ export class SentTweet extends Component {
             </ButtonToolbar>
           </Row>
         </Col>
-        <Col xs={12} md={8}>
+        <Col xs={12} md={7}>
           {clipContainer}
         </Col>
       </Row>

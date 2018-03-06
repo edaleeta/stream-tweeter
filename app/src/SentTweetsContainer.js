@@ -8,7 +8,6 @@ export class SentTweetsContainer extends Component {
   render() {
     return (
       this.props.tweets.map((tweet, key)=> (
-
           <ListGroup key={key}>
             <SentTweet
               key={key}

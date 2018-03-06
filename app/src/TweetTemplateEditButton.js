@@ -12,6 +12,7 @@ export class TweetTemplateEditButton extends Component {
       <Button
         value={this.props.templateId}
         onClick={this.props.onClick}
+        bsStyle="primary"
       >
         {buttonText}
       </Button>

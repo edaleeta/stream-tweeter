@@ -6792,3 +6792,16 @@ body {
   text-transform: lowercase;
   font-weight: 600;
 }
+.connect {
+  background-color: #559660;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  margin-left: 0.3rem;
+  border-radius: 3px;
+  color: #ffffff;
+}
+a.connect:hover {
+  color: #ffffff;
+}
