@@ -6751,6 +6751,7 @@ body {
   border-width: 0px;
   padding-top: 5rem;
   padding-bottom: 5rem;
+  box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.42), 0 3px 20px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
 }
 .landing .login {
   background-color: #eff0ec;
@@ -6780,4 +6781,14 @@ body {
 }
 .aligner-item--bottom {
   align-self: flex-end;
+}
+.navbar {
+  font-family: "Work Sans", sans-serif;
+}
+.navbar a {
+  text-transform: uppercase;
+}
+.navbar .navbar-brand {
+  text-transform: lowercase;
+  font-weight: 600;
 }
