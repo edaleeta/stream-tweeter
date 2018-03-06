@@ -6805,3 +6805,15 @@ body {
 a.connect:hover {
   color: #ffffff;
 }
+.placeholders .placeholder {
+  margin-left: 1rem;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+  background-color: #5b4f71;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  border-radius: 3px;
+}

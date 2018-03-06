@@ -77,7 +77,7 @@ export class TweetTemplateCreateNew extends Component {
     )
 
     const placeholders = (
-      <span>
+      <span className="placeholders">
         <TweetPlaceholder
           name="${url}"
           helpText={urlHelp}
