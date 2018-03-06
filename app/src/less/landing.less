@@ -1,0 +1,49 @@
+.landing {
+  color: #ffffff;
+
+  .panel {
+    background-color: rgba(0,0,0,0.5);
+    border-width:0px;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    box-shadow: 0 10px 20px -12px rgba(0,0,0,0.42), 0 3px 20px 0px rgba(0,0,0,0.12), 0 8px 10px -5px rgba(0,0,0,0.2);
+    
+  }
+
+  .login {
+    background-color: rgba(239, 240 ,236,1);
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: .3rem;
+    padding-bottom: .3rem;
+    border-radius: @border-radius-small;
+  }
+
+  h1 { 
+    text-transform: lowercase;
+    font-weight: 600;
+    margin-bottom: 4rem;
+  }
+
+}
+
+// Center landing page content.
+.aligner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60rem;
+}
+
+.aligner-item {
+  flex: auto;
+  text-align: center;
+}
+
+.aligner-item--top {
+  align-self: flex-start;
+}
+
+.aligner-item--bottom {
+  align-self: flex-end;
+}

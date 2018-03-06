@@ -5,6 +5,7 @@ import { Switch, Route } from 'react-router-dom';
 // import './App.css';
 import { MainNavBar } from './MainNavBar';
 import { WelcomeUser } from './WelcomeUser';
+import { Landing } from './Landing';
 import { Home } from './Home';
 import { Log } from './Log';
 
@@ -79,7 +80,6 @@ class App extends Component {
               render={
                 (props) => {
                   return (
-
                       <Log {...props}
                         userId={this.state.userId}
                       />
@@ -97,9 +97,10 @@ class App extends Component {
       // If we don't have a logged in user, show this...
       return (
         <div>
-          <MainNavBar />
-          <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader>
-            <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+          {/* <MainNavBar /> */}
+          <Landing />
+          {/* <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader> */}
+            {/* <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} /> */}
             {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
         </div>
       );
