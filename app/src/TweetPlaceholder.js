@@ -14,7 +14,7 @@ export class TweetPlaceholder extends Component {
 
     return (
       <OverlayTrigger placement="top" overlay={tooltip}>
-        <span>{this.props.name}</span>
+        <span className="placeholder">{this.props.name}</span>
       </OverlayTrigger>
     );
   }
