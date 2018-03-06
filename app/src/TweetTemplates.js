@@ -26,18 +26,26 @@ export class TweetTemplates extends Component {
       return (
         <div>
           <Row>
-              <Col xs={12}>
-                <h2>Your Tweet Templates</h2>
-              </Col>
-          </Row>
-          <Row>
             <Col xs={12}>
-              <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
+              <h2>Create a new Tweet Template</h2>
             </Col>
           </Row>
           <Row>
             <Col xs={12}>
-              <TweetTemplateCreateNew onClick={this.onClickUpdateTweetTemplatesCurrent} />
+              <TweetTemplateCreateNew
+                onClick={this.onClickUpdateTweetTemplatesCurrent}
+                twitchDisplayName={this.props.twitchDisplayName}
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <h2>Your Tweet Templates</h2>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
             </Col>
           </Row>
         </div>
@@ -50,5 +58,6 @@ export class TweetTemplates extends Component {
 
 TweetTemplates.propTypes = {
   isTwitterAuth: PropTypes.bool.isRequired,
-  userId: PropTypes.number.isRequired
+  userId: PropTypes.number.isRequired,
+  twitchDisplayName: PropTypes.string
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
-// import './TweetTemplateCreateNew.css'
+import { TweetPlaceholder } from './TweetPlaceholder'
 
 export class TweetTemplateCreateNew extends Component {
   constructor(props) {
@@ -12,6 +13,7 @@ export class TweetTemplateCreateNew extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
+    this.createPlaceholders = this.createPlaceholders.bind(this);
   }
 
   handleClick(e) {
@@ -59,11 +61,44 @@ export class TweetTemplateCreateNew extends Component {
     }
   }
 
+  createPlaceholders() {
+    const lowerTwitchDisplayName = this.props.twitchDisplayName.toLowerCase()
+    const urlHelp = (
+      <p>
+        Include {"${url}"} to include the link to your live stream in your tweet.
+        <br />
+        Ex: https://twitch.tv/{lowerTwitchDisplayName}
+      </p>
+    )
+    const gameHelp = (
+      <p>
+        Include {"${game}"} to include the name of the game you're streaming in your tweet.
+      </p>
+    )
+
+    const placeholders = (
+      <span>
+        <TweetPlaceholder
+          name="${url}"
+          helpText={urlHelp}
+        />
+
+        <TweetPlaceholder
+        name="${game}"
+        helpText={gameHelp}
+        />
+      </span>
+    )
+
+    return placeholders;
+  }
+
+
   render() {
     return (
       <form className="create-new">
         <FormGroup>
-          <ControlLabel>Create a new Tweet Template: </ControlLabel>
+          <ControlLabel>Available placeholders: {this.createPlaceholders()}</ControlLabel>
           <FormControl
             onFocus={this.handleFocus}
             onChange={this.handleChange}
@@ -80,4 +115,9 @@ export class TweetTemplateCreateNew extends Component {
       </form>
     );
   }
+}
+
+TweetTemplateCreateNew.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  twitchDisplayName: PropTypes.string.isRequired
 }

@@ -63,13 +63,13 @@ class App extends Component {
               render={
                 (props) => {
                   return (
-
                       <Home {...props}
                         isTwitterAuth={this.state.isTwitterAuth}
                         userId={this.state.userId}
                         tweetInterval={this.state.tweetInterval}
                         isTweeting={this.state.isTweeting}
                         onClick={this.onClickTwitterAccessRevoked}
+                        twitchDisplayName={this.state.twitchDisplayName}
                       />
                   );
                 }

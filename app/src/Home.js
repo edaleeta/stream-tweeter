@@ -19,6 +19,7 @@ export class Home extends Component {
           <Col xs={12} md={7}>
             <TweetTemplates isTwitterAuth={this.props.isTwitterAuth}
               userId={this.props.userId}
+              twitchDisplayName={this.props.twitchDisplayName}
             />
           </Col>
           <Col xs={12} md={5}>
@@ -42,7 +43,8 @@ Home.propTypes = {
   userId: PropTypes.number.isRequired,
   tweetInterval: PropTypes.number.isRequired,
   isTweeting: PropTypes.bool,
-  onClick:PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  twitchDisplayName: PropTypes.string
 }
 
 
