@@ -65,14 +65,24 @@ export class TweetTemplateCreateNew extends Component {
     const lowerTwitchDisplayName = this.props.twitchDisplayName.toLowerCase()
     const urlHelp = (
       <p>
-        Include {"${url}"} to include the link to your live stream in your tweet.
+        Input {"${url}"} to include the link to your live stream in your tweet.
         <br />
         Ex: https://twitch.tv/{lowerTwitchDisplayName}
       </p>
     )
     const gameHelp = (
       <p>
-        Include {"${game}"} to include the name of the game you're streaming in your tweet.
+        Input {"${game}"} to include the name of the game you're streaming in your tweet.
+      </p>
+    )
+    const titleHelp = (
+      <p>
+        Input {"${stream_title}"} to include the title of your stream in your tweet.
+      </p>
+    )
+    const viewersHelp = (
+      <p>
+        Input {"${viewers}"} to include the viewer count of your stream.
       </p>
     )
 
@@ -86,6 +96,16 @@ export class TweetTemplateCreateNew extends Component {
         <TweetPlaceholder
         name="${game}"
         helpText={gameHelp}
+        />
+
+        <TweetPlaceholder
+          name="${stream_title}"
+          helpText={titleHelp}
+        />
+
+        <TweetPlaceholder
+          name="${viewers}"
+          helpText={viewersHelp}
         />
       </span>
     )
@@ -106,7 +126,9 @@ export class TweetTemplateCreateNew extends Component {
             value={this.state.contents}
           >
           </FormControl>
-          <Button type="submit"
+          <Button
+            type="submit"
+            bsStyle="success"
             onClick={this.handleClick}
           >
             Save Tweet Template

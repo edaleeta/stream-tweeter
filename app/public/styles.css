@@ -6805,7 +6805,17 @@ body {
 a.connect:hover {
   color: #ffffff;
 }
-.placeholders .placeholder {
+.create-new textarea {
+  margin: 1rem 0;
+}
+.create-new button {
+  background-color: #559660;
+  color: #ffffff;
+}
+.create-new .placeholders {
+  margin-bottom: 2rem;
+}
+.create-new .placeholders .placeholder {
   margin-left: 1rem;
   font-family: "Work Sans", sans-serif;
   font-weight: 300;
