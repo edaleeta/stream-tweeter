@@ -23,13 +23,14 @@ export class MainNavBar extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <NavItem eventKey={1} href={navLinks.login}>
-              Login
+          <NavItem eventKey={1}
+              componentClass={Link}
+              href="/"
+              to="/"
+            >
+              Home
             </NavItem>
-            <NavItem eventKey={2} href={navLinks.logout}>
-              Logout
-            </NavItem>
-            <NavItem eventKey={3}
+            <NavItem eventKey={2}
               componentClass={Link}
               href="/log"
               to="/log"
@@ -38,8 +39,11 @@ export class MainNavBar extends Component {
             </NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem eventKey={1} href="#">
+            <NavItem eventKey={3} href="#">
               Help
+            </NavItem>
+            <NavItem eventKey={4} href={navLinks.logout}>
+              Logout
             </NavItem>
           </Nav>
         </Navbar.Collapse>
