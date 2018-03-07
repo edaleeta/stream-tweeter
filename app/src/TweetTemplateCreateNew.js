@@ -36,12 +36,10 @@ export class TweetTemplateCreateNew extends Component {
     .then(res => res.json())
     .catch(error => console.error('Error:', error))
     .then(response => {
-        console.log('Success:', response);
-        // Tells Tweet Templates that we saved a new Template!
         this.props.onClick();
         // Clear contents of textbox after submitting.
         this.setState({
-          contents: ""
+          contents: "Your new template has been saved!"
         });
     })
   }
@@ -118,7 +116,7 @@ export class TweetTemplateCreateNew extends Component {
     return (
       <form className="create-new">
         <FormGroup>
-          <ControlLabel>Available placeholders: {this.createPlaceholders()}</ControlLabel>
+          <ControlLabel><h4 style={{display: "inline"}}>Available placeholders:</h4>{this.createPlaceholders()}</ControlLabel>
           <FormControl
             onFocus={this.handleFocus}
             onChange={this.handleChange}
