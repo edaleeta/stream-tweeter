@@ -89,7 +89,6 @@ export class TweetOptionsInterval extends Component {
               value={this.state.value}
               onChange={this.handleChange}
               />
-            <FormControl.Feedback/>
             </Col>
             <Col md={8}>
               <Button bsSize="large" type="submit" onClick={this.handleClick} value={this.state.value} >Set to {this.state.value} {minutesText}</Button>

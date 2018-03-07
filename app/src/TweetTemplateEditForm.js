@@ -73,7 +73,11 @@ export class TweetTemplateEditForm extends Component {
         <form>
           <FormGroup>
             <ControlLabel>Update Tweet Template: </ControlLabel>
-            <FormControl onChange={this.handleChange} componentClass="textarea" value={this.state.contents}>
+            <FormControl
+              onChange={this.handleChange}
+              componentClass="textarea"
+              value={this.state.contents}
+              rows={3}>
             </FormControl>
             <ButtonToolbar>
               <Button type="submit" onClick={this.handleSaveClick}>Save Changes</Button>
