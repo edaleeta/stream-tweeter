@@ -56,13 +56,15 @@ class App extends Component {
           <Panel>
             <Panel.Body>
             {/* <PageHeader>Stream Tweeter <br /><small>A social media automation tool for Twitch streamers.</small></PageHeader> */}
-            <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
+
           <Switch>
             <Route 
               exact path="/"
               render={
                 (props) => {
                   return (
+                    <div>
+                      <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
                       <Home {...props}
                         isTwitterAuth={this.state.isTwitterAuth}
                         userId={this.state.userId}
@@ -71,6 +73,7 @@ class App extends Component {
                         onClick={this.onClickTwitterAccessRevoked}
                         twitchDisplayName={this.state.twitchDisplayName}
                       />
+                    </div>
                   );
                 }
               }
