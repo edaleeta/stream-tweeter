@@ -7,7 +7,7 @@ export class TweetTemplateCreateNew extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!",
+      contents: "Enter your tweet here!\r\nUse placeholders, such as ${game}, to include your streamed game's title!",
       defaultContents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!"
     };
     this.handleClick = this.handleClick.bind(this);

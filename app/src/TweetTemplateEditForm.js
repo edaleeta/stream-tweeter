@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, FormControl, Button , ButtonToolbar } from 'react-bootstrap';
+import { FormGroup,
+         ControlLabel,
+         FormControl,
+         Button,
+         ButtonToolbar,
+        Collapse} from 'react-bootstrap';
 
 export class TweetTemplateEditForm extends Component {
 
@@ -62,30 +67,27 @@ export class TweetTemplateEditForm extends Component {
   }
 
   render() {
-    if (this.props.hidden) {
-      return(
-        <div>
-        </div>
-      )
-    }
+
     return (
-      <div>
-        <form>
-          <FormGroup>
-            <ControlLabel>Update Tweet Template: </ControlLabel>
-            <FormControl
-              onChange={this.handleChange}
-              componentClass="textarea"
-              value={this.state.contents}
-              rows={3}>
-            </FormControl>
-            <ButtonToolbar>
-              <Button type="submit" onClick={this.handleSaveClick}>Save Changes</Button>
-              <Button onClick={this.handleResetClick}>Reset Changes</Button>
-            </ButtonToolbar>
-          </FormGroup>
-        </form>
-      </div>
+      <Collapse in={!this.props.hidden}>
+        <div>
+          <form>
+            <FormGroup>
+              <ControlLabel><h4>Update Tweet Template</h4></ControlLabel>
+              <FormControl
+                onChange={this.handleChange}
+                componentClass="textarea"
+                value={this.state.contents}
+                rows={3}>
+              </FormControl>
+              <ButtonToolbar style={{marginTop: "0.5rem"}}>
+                <Button type="submit" onClick={this.handleSaveClick}>Save Changes</Button>
+                <Button onClick={this.handleResetClick}>Reset Changes</Button>
+              </ButtonToolbar>
+            </FormGroup>
+          </form>
+        </div>
+      </Collapse>
     )
   }
 }
