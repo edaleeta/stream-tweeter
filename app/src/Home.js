@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { ConnectTwitter } from './ConnectTwitter'
 import { TweetTemplates } from './TweetTemplates'
 import { TweetOptions } from './TwitterOptions'
+import { WelcomeUser } from './WelcomeUser';
 import { Row, Col } from 'react-bootstrap';
 
 export class Home extends Component {
@@ -12,11 +13,8 @@ export class Home extends Component {
       <div>
         <Row>
           <Col xs={12} md={7}>
+            <WelcomeUser twitchDisplayName={this.props.twitchDisplayName} />
             <ConnectTwitter isTwitterAuth={this.props.isTwitterAuth} />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12} md={7}>
             <TweetTemplates isTwitterAuth={this.props.isTwitterAuth}
               userId={this.props.userId}
               twitchDisplayName={this.props.twitchDisplayName}

@@ -4,7 +4,7 @@ import { PageHeader, Row, Panel, Col } from 'react-bootstrap';
 import { Switch, Route } from 'react-router-dom';
 // import './App.css';
 import { MainNavBar } from './MainNavBar';
-import { WelcomeUser } from './WelcomeUser';
+
 import { Landing } from './Landing';
 import { Home } from './Home';
 import { Log } from './Log';
@@ -64,7 +64,6 @@ class App extends Component {
                 (props) => {
                   return (
                     <div>
-                      <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} />
                       <Home {...props}
                         isTwitterAuth={this.state.isTwitterAuth}
                         userId={this.state.userId}

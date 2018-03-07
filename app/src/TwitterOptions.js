@@ -18,7 +18,7 @@ export class TweetOptions extends Component {
   render() {
     if (this.props.isTwitterAuth) {
       return (
-        <Col xs={12}>
+        <Col xs={12} className="tweet-optons">
           <Row>
             <Col xs={12}>
               <h2>Tweet Options</h2>
