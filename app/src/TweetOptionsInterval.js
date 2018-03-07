@@ -79,7 +79,7 @@ export class TweetOptionsInterval extends Component {
           <FormGroup controlId="tweetSettingsForm" validationState={this.getValidationState()} bsSize="lg">
           <Row>
             <Col xs={12}>
-              <ControlLabel><h4>Tweet Interval in Minutes</h4></ControlLabel>
+              <ControlLabel><h4>Set Tweet interval in minutes.</h4></ControlLabel>
             </Col>
           </Row>
           <Row>

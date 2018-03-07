@@ -36,14 +36,17 @@ export class TweetOptionsRevoke extends Component {
 
   render() {
     return (
-      <Button
-        bsSize="small"
-        bsStyle="danger"
-        value={this.props.userId}
-        onClick={this.handleClick}
-      >
-        Disconnect Twitter Account
-      </Button>
+      <div>
+        <h4>Connect a new Twitter account.</h4>
+        <Button
+          bsSize="small"
+          bsStyle="danger"
+          value={this.props.userId}
+          onClick={this.handleClick}
+        >
+          Disconnect Twitter Account
+        </Button>
+      </div>
     )
   }
 }
