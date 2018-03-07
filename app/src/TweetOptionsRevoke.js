@@ -37,7 +37,7 @@ export class TweetOptionsRevoke extends Component {
   render() {
     return (
       <Button
-        bsSize="large"
+        bsSize="small"
         bsStyle="danger"
         value={this.props.userId}
         onClick={this.handleClick}
