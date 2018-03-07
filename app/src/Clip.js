@@ -10,20 +10,19 @@ export class Clip extends Component {
 
   render() {
     const clip = (
+      <div class="embed-responsive embed-responsive-16by9">
         <iframe
           src={"https://clips.twitch.tv/embed?clip="+this.props.clipSlug+"&autoplay=false"}
           title={this.props.clipSlug}
-          height={300}
-          width={550}
           frameBorder={0}
           scrolling="no"
           allowFullScreen={false}
           preload="none"
-          className="center-block"
+          className="embed-responsive-item"
           onLoad={this.props.onLoad}
         >
         </iframe>
-
+      </div>
     );
     return this.props.hidden ? <div></div> : clip
   }
