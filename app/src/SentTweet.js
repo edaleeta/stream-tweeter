@@ -67,9 +67,7 @@ export class SentTweet extends Component {
     }
 
     return (
-      <Row>
-        <Col xs={12} md={5}>
-          <Row>
+<div>
             <ListGroupItem
               header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
               target="_blank"
@@ -77,8 +75,6 @@ export class SentTweet extends Component {
               <br /><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
               <br /><br />
             </ListGroupItem>
-          </Row>
-          <Row>
             <ButtonToolbar>
               <Button 
                 href={this.props.permalink}
@@ -88,12 +84,10 @@ export class SentTweet extends Component {
               </Button>
               {viewClipButton}
             </ButtonToolbar>
-          </Row>
-        </Col>
-        <Col xs={12} md={7}>
+
           {clipContainer}
-        </Col>
-      </Row>
+</div>
+
     )
   }
 }

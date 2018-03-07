@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ListGroupItem } from 'react-bootstrap';
+import { ListGroupItem, Row } from 'react-bootstrap';
 import { convertTimeStampToDateTime } from './services/log'
 import { SentTweetsContainer } from './SentTweetsContainer';
 import { StreamSessionChartContainer } from './StreamSessionChartContainer';
@@ -43,7 +43,9 @@ export class StreamSessionContainer extends Component {
           <StreamSessionChartContainer streamId={this.props.stream.streamId} />
         </ListGroupItem>
         <ListGroupItem>
-          {tweetsContainer}
+          <Row>
+            {tweetsContainer}
+          </Row>
         </ListGroupItem>
       </ListGroupItem>
     )
