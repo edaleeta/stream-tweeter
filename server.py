@@ -825,9 +825,9 @@ def publish_to_twitter(content, access_token,
 if __name__ == "__main__":
     from app_globals import scheduler
     # Debug mode enabled for Flask Debug Toolbar
-    app.debug = True
+    # app.debug = True
     # Don't cache templates.
-    app.jinja_env.auto_reload = app.debug
+    # app.jinja_env.auto_reload = app.debug
 
     # Scheduler config
     class Config(object):
@@ -845,11 +845,12 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use Debug Toolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     # Enable scheduler
 
     scheduler.init_app(app)
     scheduler.start()
     # Run the app
-    app.run(port=7000, threaded=True, host='0.0.0.0')
+    # app.run(port=7000, threaded=True, host='0.0.0.0')
+    app.run()
