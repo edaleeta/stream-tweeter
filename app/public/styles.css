@@ -6808,10 +6808,6 @@ a.connect:hover {
 .create-new textarea {
   margin: 1rem 0;
 }
-.create-new button {
-  background-color: #559660;
-  color: #ffffff;
-}
 .create-new .placeholders {
   margin-bottom: 2rem;
 }

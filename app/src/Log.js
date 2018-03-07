@@ -10,7 +10,7 @@ export class Log extends Component {
     console.log("Log rendering.")
     return (
       <Grid fluid={true} className="log">
-        <h3>Your Stream Tweeter History</h3>
+        <h1>Your Stream Tweeter History</h1>
         <StreamSessionsContainer userId={this.props.userId} />
       </Grid>
     )

@@ -9,7 +9,7 @@ export class ConnectTwitter extends Component {
       if (this.props.isTwitterAuth) {
           return (
               <Well bsSize="small">
-                  Your Twitter is account is connected! Let's make some Tweets!
+                  Your Twitter is account is connected! Let's make some Tweets.
               </Well>
           );
       }

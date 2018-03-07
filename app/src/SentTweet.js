@@ -74,7 +74,7 @@ export class SentTweet extends Component {
               header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
               target="_blank"
             >
-              <span>Message</span><br /><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
+              <br /><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
               <br /><br />
             </ListGroupItem>
           </Row>
