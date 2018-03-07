@@ -5419,7 +5419,7 @@ button.list-group-item-danger.active:focus {
 }
 .panel {
   margin-bottom: 20px;
-  background-color: #eff0ec;
+  background-color: #EFF0EC;
   border: 1px solid transparent;
   border-radius: 8px;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
@@ -6822,4 +6822,31 @@ a.connect:hover {
   padding-top: 0.3rem;
   padding-bottom: 0.3rem;
   border-radius: 3px;
+}
+.log .clip-container {
+  margin: 1rem 0;
+}
+.log .list-group-item {
+  background-color: #5b4f71;
+}
+.log .list-group-item .sent-tweets-container.list-group-item {
+  background-color: #EFF0EC;
+}
+.log .list-group-item .list-group-item {
+  background-color: #ffffff;
+}
+.log .list-group-item .list-group-item .tweet-container {
+  margin: 0 1rem 2rem 1rem;
+  padding-bottom: .5rem;
+  box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.42), 0 3px 20px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+.log .list-group-item .list-group-item .tweet-container .tweet-card {
+  margin-bottom: 0.5rem;
+  border: 0;
+}
+.log .list-group-item .list-group-item .tweet-container .btn-toolbar {
+  margin-bottom: 1rem;
+  margin-left: 1rem;
 }

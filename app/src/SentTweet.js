@@ -67,26 +67,26 @@ export class SentTweet extends Component {
     }
 
     return (
-<div>
-            <ListGroupItem
-              header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
-              target="_blank"
-            >
-              <br /><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
-              <br /><br />
-            </ListGroupItem>
-            <ButtonToolbar>
-              <Button 
-                href={this.props.permalink}
-                target="_blank"
-              >
-                View on Twitter
-              </Button>
-              {viewClipButton}
-            </ButtonToolbar>
-
-          {clipContainer}
-</div>
+      <div className="tweet-container">
+        <ListGroupItem
+          header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
+          target="_blank"
+          className="tweet-card"
+        >
+          <br /><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
+          <br /><br />
+        </ListGroupItem>
+        <ButtonToolbar>
+          <Button 
+            href={this.props.permalink}
+            target="_blank"
+          >
+            View on Twitter
+          </Button>
+          {viewClipButton}
+        </ButtonToolbar>
+        {clipContainer}
+      </div>
 
     )
   }
