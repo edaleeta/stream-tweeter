@@ -40,7 +40,7 @@ export class StreamSessionChartDynamic extends Component {
             name="Viewers"
             type="monotone"
             dataKey="value"
-            stroke="#8884d8"
+            stroke="#5b4f71"
             strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>

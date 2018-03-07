@@ -27,7 +27,7 @@ export class StreamSessionChart extends Component {
         <YAxis />
         <Tooltip labelFormatter={convertTimeStampToTime} />
         <Legend />
-        <Line type="monotone" dataKey="viewers" stroke="#8884d8" strokeWidth={2} />
+        <Line type="monotone" dataKey="viewers" stroke="#000000" strokeWidth={2} />
       </LineChart>
     )
   }

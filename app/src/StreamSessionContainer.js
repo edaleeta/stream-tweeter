@@ -33,7 +33,7 @@ export class StreamSessionContainer extends Component {
     if (this.state.tweets.length > 0) {
       tweetsContainer = <SentTweetsContainer tweets={this.state.tweets} />;
     } else {
-      tweetsContainer = <h4>No tweets sent!</h4>
+      tweetsContainer = <h4 className="no-tweets">No tweets sent!</h4>
     }
 
     return (

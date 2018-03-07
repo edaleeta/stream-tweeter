@@ -6823,6 +6823,9 @@ a.connect:hover {
   padding-bottom: 0.3rem;
   border-radius: 3px;
 }
+.log .no-tweets {
+  margin-left: 1rem;
+}
 .log .clip-container {
   margin: 1rem 0;
 }
@@ -6845,6 +6848,16 @@ a.connect:hover {
 .log .list-group-item .list-group-item .tweet-container .tweet-card {
   margin-bottom: 0.5rem;
   border: 0;
+}
+.log .list-group-item .list-group-item .tweet-container .tweet-card .list-group-item-heading {
+  background-color: #78B8D4;
+  padding-left: 0.8rem;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-left: 0.3rem;
+  border-radius: 3px;
+  color: #ffffff;
 }
 .log .list-group-item .list-group-item .tweet-container .btn-toolbar {
   margin-bottom: 1rem;

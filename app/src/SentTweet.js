@@ -57,7 +57,9 @@ export class SentTweet extends Component {
       )
       viewClipButton = (
         <Button
-          onClick={this.handleClickToggleClip}>
+          onClick={this.handleClickToggleClip}
+          bsStyle="primary"
+        >
             {clipButtonText}
         </Button>
       )
@@ -80,6 +82,7 @@ export class SentTweet extends Component {
           <Button 
             href={this.props.permalink}
             target="_blank"
+            bsStyle="primary"
           >
             View on Twitter
           </Button>
