@@ -4,7 +4,7 @@ import { PageHeader, Row, Panel, Col } from 'react-bootstrap';
 import { Switch, Route } from 'react-router-dom';
 // import './App.css';
 import { MainNavBar } from './MainNavBar';
-
+import { MadeWithLove } from './MadeWithLove';
 import { Landing } from './Landing';
 import { Home } from './Home';
 import { Log } from './Log';
@@ -53,10 +53,9 @@ class App extends Component {
       return (
         <div>
           <MainNavBar />
-          <Panel>
+          <Panel className="main-content">
             <Panel.Body>
             {/* <PageHeader>Stream Tweeter <br /><small>A social media automation tool for Twitch streamers.</small></PageHeader> */}
-
           <Switch>
             <Route 
               exact path="/"
@@ -93,6 +92,7 @@ class App extends Component {
           </Switch>
           </Panel.Body>
           </Panel>
+          <MadeWithLove />
       </div>
       );
   } else if (this.state.fetched) {
