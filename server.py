@@ -53,7 +53,7 @@ except KeyError:
 twitch_base_url = "https://api.twitch.tv/helix/"
 twitch_authorize_url = "https://api.twitch.tv/kraken/oauth2/authorize"
 twitch_access_token_url = "https://api.twitch.tv/kraken/oauth2/token"
-redirect_uri = "http://localhost:7000/login-twitch-redirect"
+redirect_uri = "http://35.167.37.217/login-twitch-redirect"
 params = {"scope": "clips:edit user:read:email"}
 
 twitch = twitch_oauth.remote_app(
@@ -74,7 +74,7 @@ twitch = twitch_oauth.remote_app(
 ###############################################################################
 TWITTER_CONSUMER_KEY = os.environ["TWITTER_CONSUMER_KEY"]
 TWITTER_CONSUMER_SECRET = os.environ["TWITTER_CONSUMER_SECRET"]
-TWITTER_REDIRECT_URL = "http://localhost:7000/auth-twitter/authorized"
+TWITTER_REDIRECT_URL = "http://35.167.37.217/auth-twitter/authorized"
 
 ###############################################################################
 # NL2BR CUSTOM JINJA FILTER
