@@ -6,4 +6,4 @@ connect_to_db(server.app, "postgresql:///yattk")
 
 db.create_all()
 db.session.commit()
-sample_data()
+# sample_data()
