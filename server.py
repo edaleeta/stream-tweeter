@@ -529,7 +529,12 @@ def process_user_registration():
 
     # Add base templates for user.
     temp_help.add_basic_templates(new_user)
-    # flash("Account created successfully.")
+
+    # Subscribes to webhooks for user.
+    twitch_helpers.subscribe_to_user_stream_events(new_user)
+    # Starts job to renew subscription every 9 days.
+    handler.renew_webhook(new_user.user_id)
+
     # Login new user
     login_user(new_user)
 
