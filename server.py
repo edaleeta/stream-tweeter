@@ -37,6 +37,19 @@ login_manager.login_view = "/"
 # APScheduler
 # scheduler = APScheduler()
 
+
+# DEBUGGING FOR OAUTH LIB
+import sys
+import logging
+log = logging.getLogger('flask_oauthlib')
+log.addHandler(logging.StreamHandler(sys.stdout))
+log.setLevel(logging.DEBUG)
+
+@app.before_request
+def session_management():
+    # make the session last indefinitely until it is cleared
+    session.permanent = True
+    print("Session:", session)
 ###############################################################################
 # Twitch OAuth2 Requirements
 ###############################################################################
@@ -74,7 +87,6 @@ twitch = twitch_oauth.remote_app(
 ###############################################################################
 TWITTER_CONSUMER_KEY = os.environ["TWITTER_CONSUMER_KEY"]
 TWITTER_CONSUMER_SECRET = os.environ["TWITTER_CONSUMER_SECRET"]
-TWITTER_REDIRECT_URL = "http://localhost:7000/auth-twitter/authorized"
 
 ###############################################################################
 # NL2BR CUSTOM JINJA FILTER
@@ -517,7 +529,7 @@ def process_user_registration():
 
     # Add base templates for user.
     temp_help.add_basic_templates(new_user)
-    flash("Account created successfully.")
+    # flash("Account created successfully.")
     # Login new user
     login_user(new_user)
 
@@ -547,6 +559,9 @@ def show_login():
 def login_with_twitch():
     """Logs in user with Twitch account."""
     callback_uri = url_for("authorize_twitch", _external=True)
+    print(callback_uri)
+
+
     print("\n\nAt /login/twitch\n\n")
     print("\nNext URL is: {}".format(request.referrer))
     session["referrer_url"] = request.referrer
@@ -566,7 +581,7 @@ def authorize_twitch(resp):
 
     # Redirect with message if user does not authorize Twitch account.
     if resp is None:
-        flash('You denied the request to sign in.')
+        # flash('You denied the request to sign in.')
         return redirect(next_url)
 
     session["twitch_access_token"] = resp
@@ -706,7 +721,7 @@ def send_test_tweet():
 @app.route("/auth-twitter")
 def authorize_twitter():
     """Authorize a user's Twitter account."""
-
+    TWITTER_REDIRECT_URL = url_for("get_twitter_token", _external=True)
     twitter_oauth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
                                         TWITTER_CONSUMER_SECRET,
                                         TWITTER_REDIRECT_URL)
