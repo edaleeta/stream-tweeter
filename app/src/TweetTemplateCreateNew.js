@@ -116,7 +116,7 @@ export class TweetTemplateCreateNew extends Component {
     return (
       <form className="create-new">
         <FormGroup>
-          <ControlLabel><h4 style={{display: "inline"}}>Available placeholders:</h4>{this.createPlaceholders()}</ControlLabel>
+          <ControlLabel><h4 style={{display: "block"}}>Available placeholders:</h4>{this.createPlaceholders()}</ControlLabel>
           <FormControl
             onFocus={this.handleFocus}
             onChange={this.handleChange}

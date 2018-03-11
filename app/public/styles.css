@@ -6821,6 +6821,9 @@ a.connect:hover {
 .create-new .placeholders {
   margin-bottom: 2rem;
 }
+.create-new .placeholders .placeholder:first-child {
+  margin-left: 0;
+}
 .create-new .placeholders .placeholder {
   margin-left: 1rem;
   font-family: "Work Sans", sans-serif;
