@@ -20,6 +20,8 @@ import apscheduler_handlers as handler
 import template_helpers as temp_help
 import twitch_helpers
 import api_helpers
+# Trying threading!
+from threading import Thread
 
 app = Flask(__name__)
 
@@ -448,6 +450,15 @@ def test_webhook(user_id):
     body_json = request.get_json()
     body_raw = request.get_data()
 
+    t = Thread(target=process_webhook_request,
+               args=(user_id, body_json, body_raw, signature))
+    t.start()
+
+    return ('', 200)
+
+
+def process_webhook_request(user_id, body_json, body_raw, signature):
+    """Carries out tasks based on webhook request asynchronously."""
     user = User.query.get(user_id)
     if twitch_helpers.is_auth_signature(body_raw, signature):
         if body_json.get("data"):
@@ -467,8 +478,6 @@ def test_webhook(user_id):
             # Stop gathering twitch data and stop tweeting.
             handler.stop_fetching_twitch_data(user_id)
             handler.stop_tweeting(user_id)
-
-    return ('', 200)
 
 
 @app.route("/api/hooks/streamstatus/<int:user_id>", methods=["GET"])
