@@ -872,5 +872,4 @@ if __name__ == "__main__":
     scheduler.init_app(app)
     scheduler.start()
     # Run the app
-    # app.run(port=7000, threaded=True, host='0.0.0.0')
-    app.run()
+    app.run(port=7000, threaded=True, host='0.0.0.0')
