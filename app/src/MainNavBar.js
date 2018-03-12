@@ -20,7 +20,6 @@ export class MainNavBar extends Component {
     };
   }
 
-
   render() {
     return (
       <Navbar fluid={true}>
@@ -56,7 +55,10 @@ export class MainNavBar extends Component {
             </NavItem>
           </Nav>
         </Navbar.Collapse>
-        <HelpModal show={this.state.showHelp} onHide={() => this.setState({showHelp: false})} />
+        <HelpModal
+          show={this.state.showHelp}
+          onHide={() => this.setState({showHelp: false})}
+        />
       </Navbar>
     );
   }

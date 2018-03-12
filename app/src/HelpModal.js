@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button, Modal, ListGroup, ListGroupItem } from 'react-bootstrap';
 
 export class HelpModal extends Component {
@@ -43,5 +44,9 @@ export class HelpModal extends Component {
       </Modal>
     );
   }
+}
 
+HelpModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onHide: PropTypes.func.isRequired
 }
