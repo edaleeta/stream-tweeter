@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ListGroupItem, Button, ButtonToolbar, Col, Row } from 'react-bootstrap';
+import { ListGroupItem, Button, ButtonToolbar } from 'react-bootstrap';
 import { convertTimeStampToDateTime } from './services/log'
 import Autolinker from 'autolinker';
 import { ClipContainer } from './ClipContainer'

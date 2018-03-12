@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
-import { PageHeader, Row, Panel, Col } from 'react-bootstrap';
+import { Panel } from 'react-bootstrap';
 import { Switch, Route } from 'react-router-dom';
-// import './App.css';
 import { MainNavBar } from './MainNavBar';
 import { MadeWithLove } from './MadeWithLove';
 import { Landing } from './Landing';

@@ -25,9 +25,11 @@ export class HelpModal extends Component {
                 The tweet text will be randomly selected from your configured "Tweet Templates" and will include a
                 Twitch Clip of your stream at publishing time.
               </p>
+              {/* eslint-disable no-template-curly-in-string */}
               <p>
                 Use placeholders, such as {"${url}"} or {"${game}"} in your Tweet Template and they'll be filled in automatically when your tweet is published.
               </p>
+              {/* eslint-enable no-template-curly-in-string */}
               <p>
                 Hit 'View Log' in the menu to see your live stream stats, published tweets, and generated Twitch Clips from your stream sessions.
               </p>

@@ -7,7 +7,9 @@ export class TweetTemplateCreateNew extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // eslint-disable-next-line
       contents: "Enter your tweet here!\r\nUse placeholders, such as ${game}, to include your streamed game's title!",
+      // eslint-disable-next-line
       defaultContents: "Enter your tweet here! Use placeholders, such as ${game}, to include your streamed game's title!"
     };
     this.handleClick = this.handleClick.bind(this);
@@ -63,6 +65,7 @@ export class TweetTemplateCreateNew extends Component {
     const lowerTwitchDisplayName = this.props.twitchDisplayName.toLowerCase()
     const urlHelp = (
       <p>
+        {/* eslint-disable no-template-curly-in-string */}
         Input {"${url}"} to include the link to your live stream in your tweet.
         <br />
         Ex: https://twitch.tv/{lowerTwitchDisplayName}
@@ -81,15 +84,17 @@ export class TweetTemplateCreateNew extends Component {
     const viewersHelp = (
       <p>
         Input {"${viewers}"} to include the viewer count of your stream.
+        {/* eslint-enable no-template-curly-in-string */}
       </p>
     )
 
     const placeholders = (
       <span className="placeholders">
+      {/* eslint-disable no-template-curly-in-string */}
         <TweetPlaceholder
           name="${url}"
           helpText={urlHelp}
-        />
+          />
 
         <TweetPlaceholder
         name="${game}"
@@ -99,12 +104,13 @@ export class TweetTemplateCreateNew extends Component {
         <TweetPlaceholder
           name="${stream_title}"
           helpText={titleHelp}
-        />
+          />
 
         <TweetPlaceholder
           name="${viewers}"
           helpText={viewersHelp}
-        />
+          />
+      {/* eslint-enable no-template-curly-in-string */}
       </span>
     )
 

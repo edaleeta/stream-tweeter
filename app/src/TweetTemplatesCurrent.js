@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Col, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { TweetTemplateContainer } from './TweetTemplateContainer';
 // import './TweetTemplatesCurrent.css';
 
@@ -19,7 +19,6 @@ export class TweetTemplatesCurrent extends Component {
     {credentials: 'same-origin'})
     .then((response)=> response.json())
     .then((data) => {
-      console.log("TweetTemplatesCurrent mounted!");
       this.setState({
         templates: data
       });
@@ -31,7 +30,6 @@ export class TweetTemplatesCurrent extends Component {
     {credentials: 'same-origin'})
     .then((response)=> response.json())
     .then((data) => {
-      console.log("TweetTemplatesCurrent is receiving props!");
       this.setState({
         templates: data
       });

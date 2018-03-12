@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col, Panel } from 'react-bootstrap';
+import {Panel } from 'react-bootstrap';
 
 export class Landing extends Component {
 

@@ -10,11 +10,9 @@ export class EnableTweeting extends Component {
     }
     this.handleChange = this.handleChange.bind(this);
 
-    console.log(this.state.enabled);
   }
 
   handleChange(e) {
-    console.log(this.props.userId)
 
     this.setState({
       enabled: this.state.enabled ? false : true
@@ -28,7 +26,6 @@ export class EnableTweeting extends Component {
       isTweeting: nextState.enabled
     });
 
-    console.log(payload);
     fetch(url, {
       credentials: 'same-origin',
       method: 'PUT',
@@ -40,7 +37,6 @@ export class EnableTweeting extends Component {
     .then(res => res.json())
     .catch(error => console.error('Error:', error))
     .then(response => {
-      console.log('Success:', response);
     })
   }
 

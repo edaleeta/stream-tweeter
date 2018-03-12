@@ -25,7 +25,7 @@ export class TweetTemplateEditForm extends Component {
   handleSaveClick(e) {
     e.preventDefault();
     console.log(this.state.contents.trim());
-    if (this.state.contents.trim() == "") {
+    if (this.state.contents.trim() === "") {
       this.setState({
         validationState: "warning"
       });
@@ -79,7 +79,7 @@ export class TweetTemplateEditForm extends Component {
 
   render() {
     let helpText;
-    if (this.state.validationState == "warning") {
+    if (this.state.validationState === "warning") {
       helpText = (
         <HelpBlock>Your Tweet must contain text!</HelpBlock>
       )
