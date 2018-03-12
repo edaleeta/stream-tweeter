@@ -10,7 +10,7 @@ export class MadeWithLove extends Component {
   render() {
     return (
       <small className="made-with-love">
-        made with {heart} by <a href="http://edaleeta.com" target="_blank">edaleeta</a>. &copy; 2018
+        made with {heart} by <a href="http://edaleeta.com" target="_blank" rel="noopener noreferrer">edaleeta</a>. &copy; 2018
       </small>
     )
   }

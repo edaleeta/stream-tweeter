@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { HelpModal } from './HelpModal'
 // import './MainNavBar.css';
 
 const navLinks = {
@@ -12,6 +13,14 @@ const navLinks = {
 
 // Navigation 
 export class MainNavBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showHelp: false
+    };
+  }
+
+
   render() {
     return (
       <Navbar fluid={true}>
@@ -39,7 +48,7 @@ export class MainNavBar extends Component {
             </NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem eventKey={3} href="#">
+            <NavItem eventKey={3} onClick={()=>this.setState({showHelp: true})}>
               Help
             </NavItem>
             <NavItem eventKey={4} href={navLinks.logout}>
@@ -47,7 +56,8 @@ export class MainNavBar extends Component {
             </NavItem>
           </Nav>
         </Navbar.Collapse>
-    </Navbar>
+        <HelpModal show={this.state.showHelp} onHide={() => this.setState({showHelp: false})} />
+      </Navbar>
     );
   }
 
