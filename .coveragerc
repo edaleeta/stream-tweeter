@@ -5,6 +5,7 @@ omit=
   *_sandbox*
   seed_*
   *tests*
+  wsgi.py
 
 [report]
 exclude_lines =

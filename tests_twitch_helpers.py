@@ -450,6 +450,7 @@ class TwitchHelpersTestCase(TestCase):
             "hub.callback": (WEBHOOKS_BASE_URL +
                              "/api/hooks/streamstatus/" +
                              str(self.user.user_id)),
+            "hub.secret": os.environ["WEBHOOKS_SECRET"],
             "hub.lease_seconds": 864000
         }
 
