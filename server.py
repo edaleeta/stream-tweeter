@@ -748,30 +748,8 @@ def get_twitter_token():
     return redirect(session["referrer_url"] or "/")
 
 ###############################################################################
-# TEST ROUTES
+# FLASK OAUTH TOKEN GETTER
 ###############################################################################
-
-
-# @app.route("/webhooktest", methods=["POST"])
-# def test_webhook():
-#     """Prints webhook response payload. """
-#     print("Webhook Request: {}".format(request.get_json()))
-#     print("User stream state has changed.")
-
-#     return ('', 204)
-
-
-# @app.route("/webhooktest", methods=["GET"])
-# def test_webhook_get():
-#     """Echos back challenge for subscribing."""
-#     print("Webhook Request: {}".format(list(request.args.items())))
-
-#     if request.args.get("hub.mode") == "subscribe":
-#         print("Successfully subscribed to webhook.")
-#         return (request.args.get("hub.challenge"))
-#     else:
-#         print("Subscription to webhook unsuccessful.")
-#         return ('', 204)
 
 
 @twitch.tokengetter
