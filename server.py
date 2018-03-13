@@ -777,24 +777,6 @@ def add_template_to_db(user, temp_contents):
     db.session.commit()
 
 
-def publish_to_twitter(content, access_token,
-                       access_token_secret, user_id):
-    """Publishes given content to a user's Twitter account."""
-    twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY,
-                                       TWITTER_CONSUMER_SECRET)
-    twitter_auth.set_access_token(access_token, access_token_secret)
-    api = tweepy.API(twitter_auth)
-
-    try:
-        # Send Tweet and catch response
-        response = api.update_status(content)
-        # Store sent tweet data in db
-        SentTweet.store_sent_tweet(response, user_id)
-    except tweepy.TweepError as error:
-        # TODO: Set up better handler for errors.
-        print(error.reason)
-
-
 if __name__ == "__main__":
     from app_globals import scheduler
     # Debug mode enabled for Flask Debug Toolbar
