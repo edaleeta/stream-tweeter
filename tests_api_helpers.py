@@ -106,6 +106,28 @@ class APIHelpersTestCase(TestCase):
         returned_payload = api_helpers.create_streamdata_payload(user, 9000)
         self.assertEqual(expected_payload, returned_payload)
 
+    def test_create_clip_payload(self):
+        """Tests creating payload of clip data for given clip id."""
+
+        user = m.User.query.get(4)
+
+        # Construct expected payload
+        clip_serialized = m.TwitchClip.query.get(9).serialize
+
+        # Case 1: Clip ID provided and found.
+        expected_payload = {"clips": [clip_serialized]}
+        returned_payload = api_helpers.create_clip_payload(9)
+        self.assertEqual(expected_payload, returned_payload)
+
+        # Case 2: Clip ID provided but not found.
+        expected_payload = {}
+        returned_payload = api_helpers.create_clip_payload(9000)
+        self.assertEqual(expected_payload, returned_payload)
+
+        # Case 3: No Clip ID provided.
+        expected_payload = {}
+        returned_payload = api_helpers.create_clip_payload()
+        self.assertEqual(expected_payload, returned_payload)
 
 
 if __name__ == "__main__":

@@ -73,10 +73,14 @@ def create_clip_payload(clip_id=None):
     """Returns clip data for given clip id."""
 
     payload = {}
+
+    if not clip_id:
+        return payload
+
     clip = TwitchClip.query.get(clip_id)
 
     if not clip:
-        return {}
+        return payload
 
     payload["clips"] = [clip.serialize]  # May generalize this to work for 1+
     return payload
