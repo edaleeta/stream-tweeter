@@ -68,7 +68,7 @@ class APIHelpersTestCase(TestCase):
         self.assertEqual(expected_payload, received_payload)
 
     def test_create_senttweets_payload(self):
-        """Tests creating payload for returning tweets created between times."""
+        """Tests creating payload for tweets created between times."""
 
         # Construct expected payload.
         user = m.User.query.get(4)
@@ -83,6 +83,29 @@ class APIHelpersTestCase(TestCase):
         )
 
         self.assertEqual(expected_payload, returned_payload)
+
+    def test_create_streamdata_payload(self):
+        """Tests creating payload of stream data points for given stream id."""
+
+        user = m.User.query.get(4)
+        # Construct expected payload.
+        stream_session = m.StreamSession.query.get(18)
+        data_points = [data_point.serialize
+                       for data_point
+                       in stream_session.data]
+        
+        # Case 1: Stream data points found for stream session.
+        expected_payload = {"data": data_points}
+        returned_payload = api_helpers.create_streamdata_payload(
+            user, 18
+        )
+        self.assertEqual(expected_payload, returned_payload)
+
+        # Case 2: Stream data points not found for stream session.
+        expected_payload = {}
+        returned_payload = api_helpers.create_streamdata_payload(user, 9000)
+        self.assertEqual(expected_payload, returned_payload)
+
 
 
 if __name__ == "__main__":
