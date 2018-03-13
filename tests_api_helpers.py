@@ -51,7 +51,7 @@ class APIHelpersTestCase(TestCase):
             "streams": user_streams,
             "next": f"/api/streams?ts={next_ts}&limit=5"
         }
-        
+
         # Case 1: No date time and limit provided.
         received_payload = api_helpers.create_streams_payload(user)
         self.assertEqual(expected_payload, received_payload)
@@ -66,7 +66,24 @@ class APIHelpersTestCase(TestCase):
         expected_payload = {"streams": []}
         received_payload = api_helpers.create_streams_payload(user, limit=0)
         self.assertEqual(expected_payload, received_payload)
-        
+
+    def test_create_senttweets_payload(self):
+        """Tests creating payload for returning tweets created between times."""
+
+        # Construct expected payload.
+        user = m.User.query.get(4)
+        tweet = m.SentTweet.query.get(1)
+        tweet_serialized = tweet.serialize
+        started_dt = tweet.created_at
+        ended_dt = tweet.created_at
+
+        expected_payload = {"tweets": [tweet_serialized]}
+        returned_payload = api_helpers.create_senttweets_payload(
+            user, started_dt, ended_dt
+        )
+
+        self.assertEqual(expected_payload, returned_payload)
+
 
 if __name__ == "__main__":
     import unittest

@@ -29,7 +29,7 @@ def create_streams_payload(user, dt=None, limit=5):
         payload["streams"] = streams
         payload["next"] = f"/api/streams?ts={next_ts}&limit={limit}"
 
-    return(payload)
+    return payload
 
 
 def create_senttweets_payload(user, started, ended):
@@ -45,7 +45,7 @@ def create_senttweets_payload(user, started, ended):
 
     payload["tweets"] = tweets
 
-    return(payload)
+    return payload
 
 
 def create_streamdata_payload(user, stream_id):
