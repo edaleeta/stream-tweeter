@@ -23,7 +23,7 @@ import api_helpers
 app = Flask(__name__)
 
 # Set so we can use Flask's default toolbar
-app.secret_key = "18db2d51c63606dece6e98a196c6a262c2026c6f9cbc3e4f"
+app.secret_key = os.environ["FLASK_SECRET"]
 
 # Login manager for Flask-Login
 login_manager = LoginManager()
