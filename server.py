@@ -32,11 +32,11 @@ login_manager.login_view = "/"
 
 # TODO: Update to validate Twitch token before each /api request per
 # Twitch rules.
-# @app.before_request
-# def session_management():
-#     # make the session last indefinitely until it is cleared
-#     session.permanent = True
-#     print("Session:", session)
+@app.before_request
+def session_management():
+    # make the session last indefinitely until it is cleared
+    session.permanent = True
+    print("Session:", session)
 
 ###############################################################################
 # Twitch OAuth2 Requirements
@@ -532,7 +532,6 @@ def login_with_twitch():
     callback_uri = url_for("authorize_twitch", _external=True)
     print(callback_uri)
 
-
     print("\n\nAt /login/twitch\n\n")
     print("\nNext URL is: {}".format(request.referrer))
     session["referrer_url"] = request.referrer
@@ -548,7 +547,7 @@ def authorize_twitch(resp):
     print("\n\nAt /login/twitch/authorized\n\n")
     print("\nNext URL is: {}".format(request.args.get("next")))
 
-    next_url = request.args.get('next') or url_for('show_index')
+    next_url = request.args.get('next')
 
     # Redirect with message if user does not authorize Twitch account.
     if resp is None:
@@ -592,7 +591,7 @@ def authorize_twitch(resp):
 
             flask.next = request.args.get('next')
             return (redirect(session["referrer_url"] or
-                    flask.next or url_for('show_index')))
+                    flask.next))
 
 
 @app.route("/logout")
