@@ -1,8 +1,8 @@
 """Yet Another Twitch Toolkit."""
 
 import os
-import re
 import datetime
+from threading import Thread
 import flask
 from flask import (Flask, flash, get_template_attribute,
                    render_template, redirect,
@@ -11,7 +11,6 @@ from flask_login import current_user, LoginManager, login_user, logout_user
 from flask_oauthlib.client import OAuth
 from flask.json import jsonify
 from flask_debugtoolbar import DebugToolbarExtension
-from jinja2 import StrictUndefined, evalcontextfilter, Markup, escape
 import tweepy
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from model import *
@@ -20,38 +19,25 @@ import apscheduler_handlers as handler
 import template_helpers as temp_help
 import twitch_helpers
 import api_helpers
-# Trying threading!
-from threading import Thread
 
 app = Flask(__name__)
 
 # Set so we can use Flask's default toolbar
 app.secret_key = "18db2d51c63606dece6e98a196c6a262c2026c6f9cbc3e4f"
 
-# Raise an exception if we use an undefined variable in Jinja.
-app.jinja_env.undefined = StrictUndefined
-
 # Login manager for Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "/"
 
-# APScheduler
-# scheduler = APScheduler()
+# TODO: Update to validate Twitch token before each /api request per
+# Twitch rules.
+# @app.before_request
+# def session_management():
+#     # make the session last indefinitely until it is cleared
+#     session.permanent = True
+#     print("Session:", session)
 
-
-# DEBUGGING FOR OAUTH LIB
-import sys
-import logging
-log = logging.getLogger('flask_oauthlib')
-log.addHandler(logging.StreamHandler(sys.stdout))
-log.setLevel(logging.DEBUG)
-
-@app.before_request
-def session_management():
-    # make the session last indefinitely until it is cleared
-    session.permanent = True
-    print("Session:", session)
 ###############################################################################
 # Twitch OAuth2 Requirements
 ###############################################################################
@@ -90,21 +76,6 @@ twitch = twitch_oauth.remote_app(
 TWITTER_CONSUMER_KEY = os.environ["TWITTER_CONSUMER_KEY"]
 TWITTER_CONSUMER_SECRET = os.environ["TWITTER_CONSUMER_SECRET"]
 
-###############################################################################
-# NL2BR CUSTOM JINJA FILTER
-###############################################################################
-# Regex for custom nlbr filter
-_paragraph_re = re.compile(r'(?:\r)?')
-
-
-@app.template_filter()
-@evalcontextfilter
-def nl2br(eval_ctx, value):
-    result = u'\n\n'.join(u'%s' % p.replace('\n', '<br>\n')
-                          for p in _paragraph_re.split(escape(value)))
-    if eval_ctx.autoescape:
-        result = Markup(result)
-    return result
 
 ###############################################################################
 # API ROUTES
@@ -202,8 +173,8 @@ def add_user_created_template_react():
         template_contents = temp_help.replace_nl_with_carriage(
             template_contents
         )
-        # TODO: Need to add messaging that plays nicely with AJAX.
-        # flash("You entered something!")
+
+        # TODO: Update add template function so it can be removed from server.
         add_template_to_db(current_user, template_contents)
         return (flask.json.dumps({'success': True}),
                 200,
@@ -496,24 +467,8 @@ def test_webhook_get(user_id):
         return ('', 204)
 
 ###############################################################################
-# PAGE ROUTES
+# LOGIN / LOGOUT / OAUTH ROUTES TODO: Reorg.
 ###############################################################################
-
-
-@app.route("/")
-def show_index():
-    "Show homepage."
-    if current_user:
-        return render_template("add-tweet-template.html")
-
-    return render_template("index.html")
-
-
-@app.route("/index-react")
-def show_index_react():
-    "Show homepage using React."
-
-    return render_template("index-react.html")
 
 
 @app.route("/register-twitch")
@@ -653,51 +608,6 @@ def logout_user_cleanup():
     return redirect(request.referrer)
 
 
-@app.route("/add-tweet-template", methods=["POST"])
-def add_user_created_template():
-    """Adds template the current user created to DB."""
-    # TODO: Handle trimming of whitespace and validation post trim in JS
-    template_contents = request.form.get("contents", "").strip()
-    if template_contents:
-        # TODO: Need to add messaging that plays nicely with AJAX.
-        # flash("You entered something!")
-        add_template_to_db(current_user, template_contents)
-    else:
-        # flash("You didn't enter anything.")
-        return redirect("/")
-
-    tweet_template_list = get_template_attribute("macros.html",
-                                                 "tweet_template_list")
-    return tweet_template_list(current_user)
-
-
-@app.route("/delete-tweet-template", methods=["POST"])
-def delete_template_for_user():
-    """Deletes a specific template owned by user."""
-
-    temp_to_del = request.form.get("template_id")
-    current_user.delete_template(temp_to_del)
-
-    tweet_template_list = get_template_attribute("macros.html",
-                                                 "tweet_template_list")
-    return tweet_template_list(current_user)
-
-
-@app.route("/edit-tweet-template", methods=["POST"])
-def edit_template_for_user():
-    """Edits a specific template owned by a user."""
-    # TODO: Handle trimming of whitespace and validation post trim in JS
-    temp_to_edit = request.form.get("template_id").strip()
-    contents = request.form.get("contents")
-
-    current_user.edit_template(temp_to_edit, contents)
-
-    tweet_template_list = get_template_attribute("macros.html",
-                                                 "tweet_template_list")
-
-    return tweet_template_list(current_user)
-
-
 @app.route("/auth-twitter")
 def authorize_twitter():
     """Authorize a user's Twitter account."""
@@ -803,8 +713,8 @@ if __name__ == "__main__":
     # DebugToolbarExtension(app)
 
     # Enable scheduler
-
     scheduler.init_app(app)
     scheduler.start()
+
     # Run the app
     app.run(port=7000, threaded=True, host='0.0.0.0')
