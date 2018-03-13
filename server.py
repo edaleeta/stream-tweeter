@@ -698,42 +698,6 @@ def edit_template_for_user():
     return tweet_template_list(current_user)
 
 
-@app.route("/send-test-tweet", methods=["POST"])
-def send_test_tweet():
-    """Sends a test tweet using received tweet template id."""
-
-    template_id = request.form.get("template_id")
-    template_contents = Template.get_template_from_id(template_id).contents
-
-    # Fill in tweet template with data.
-    populated_tweet_template = temp_help.populate_tweet_template(template_contents,
-                                                                 current_user.user_id)
-    if populated_tweet_template:
-    # Post the tweet to Twitter
-    # TODO: UNCOMMENT WHEN DONE TESTING TWITCH API
-    #
-        # publish_to_twitter(populated_tweet_template,
-        #                    current_user.twitter_token.access_token,
-        #                    current_user.twitter_token.access_token_secret,
-        #                    current_user.user_id)
-
-        # Currently sending back the populated tweet for confirmation alert.abs
-
-        # TODO: WORK IN PROGRESS
-        # Start fetching twitch data
-        handler.start_fetching_twitch_data(int(current_user.user_id)) # UNCOMMENT
-
-        # Start sending tweets
-        # TODO: Update hardcoded interval to a user's choice.
-        tweet_interval = current_user.tweet_interval
-        handler.start_tweeting(int(current_user.user_id), tweet_interval)
-
-        return populated_tweet_template
-
-    # TODO: Error handler for case when stream is offline.
-    return "Stream is offline."
-
-
 @app.route("/auth-twitter")
 def authorize_twitter():
     """Authorize a user's Twitter account."""
