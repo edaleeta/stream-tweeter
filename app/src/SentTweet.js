@@ -7,17 +7,12 @@ import { ClipContainer } from './ClipContainer'
 
 export class SentTweet extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      clipHidden: true,
-      clipLoaderShown: false
-    }
-    this.handleClickToggleClip = this.handleClickToggleClip.bind(this);
-    this.handleOnLoadEmbed = this.handleOnLoadEmbed.bind(this);
+  state = {
+    clipHidden: true,
+    clipLoaderShown: false,
   }
 
-  handleClickToggleClip(e) {
+  handleClickToggleClip = (e) => {
     this.setState({
       clipHidden: this.state.clipHidden ? false : true,
       clipLoaderShown: true,
@@ -31,66 +26,72 @@ export class SentTweet extends Component {
     }
   }
 
-  handleOnLoadEmbed() {
+  handleOnLoadEmbed = () => {
     // Hide some spinner element when clip embed loads...
     this.setState({
       clipLoaderShown: false
     })
   }
 
-  render() {
-    let messageHTML = Autolinker.link(this.props.message, {
-      newWindow : true,
-      truncate  : 30
-    });
+  renderClipContainer = () => {
+    const { clipId, } = this.props;
+    const { clipHidden, clipLoaderShown } = this.state;
+    return clipId
+      ? (
+          <ClipContainer
+            clipId={clipId}
+            clipHidden={clipHidden}
+            clipLoaderShown={clipLoaderShown}
+            onLoadEmbed={this.handleOnLoadEmbed}
+          />
+        )
+      : <div />;
+  }
 
-    let clipButtonText = this.state.clipHidden ? "View Clip" : "Hide Clip"
-    let clipContainer, viewClipButton;
-    if (this.props.clipId) {
-      clipContainer = (
-        <ClipContainer
-          clipId={this.props.clipId}
-          clipHidden={this.state.clipHidden}
-          clipLoaderShown={this.state.clipLoaderShown}
-          onLoadEmbed={this.handleOnLoadEmbed}
-        />
-      )
-      viewClipButton = (
+  renderViewClipButton = () => {
+    const clipButtonText = this.state.clipHidden ? "View Clip" : "Hide Clip";
+    return this.props.clipId
+    ? (
         <Button
           onClick={this.handleClickToggleClip}
           bsStyle="primary"
         >
-            {clipButtonText}
+          {clipButtonText}
         </Button>
       )
-    } else {
-      clipContainer = <div></div>
-      viewClipButton = <span></span>
-    }
+    : <span />
+  }
+
+  render() {
+    const { createdAt, message, permalink } = this.props;
+    const messageHTML = Autolinker.link(message, {
+      newWindow : true,
+      truncate  : 30
+    });
 
     return (
       <div className="tweet-container">
         <ListGroupItem
-          header={"Tweet Created: " + convertTimeStampToDateTime(this.props.createdAt)}
+          header={"Tweet Created: " + convertTimeStampToDateTime(createdAt)}
           target="_blank"
           className="tweet-card"
         >
-          <br /><span dangerouslySetInnerHTML={{__html: messageHTML}}></span>
-          <br /><br />
+          <br />
+          <span dangerouslySetInnerHTML={{__html: messageHTML}} />
+          <p />
         </ListGroupItem>
         <ButtonToolbar>
           <Button 
-            href={this.props.permalink}
+            href={permalink}
             target="_blank"
             bsStyle="primary"
           >
             View on Twitter
           </Button>
-          {viewClipButton}
+          {this.renderViewClipButton()}
         </ButtonToolbar>
-        {clipContainer}
+        {this.renderClipContainer()}
       </div>
-
     )
   }
 }

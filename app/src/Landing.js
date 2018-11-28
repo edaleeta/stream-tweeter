@@ -6,7 +6,7 @@ export class Landing extends Component {
   render() {
     return(
       <div className="aligner landing">
-        <div class="aligner-item aligner-item--top"></div>
+        <div className="aligner-item aligner-item--top"></div>
         <div className="aligner-item">
           <Panel>
             <h1>Stream Tweeter<br />
@@ -19,7 +19,7 @@ export class Landing extends Component {
           </h2>
           </Panel>
          </div>
-        <div class="aligner-item aligner-item--bottom"></div>
+        <div className="aligner-item aligner-item--bottom"></div>
       </div>
     )
   }

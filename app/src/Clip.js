@@ -4,10 +4,6 @@ import PropTypes from 'prop-types';
 
 export class Clip extends Component {
 
-  componentWillMount() {
-    // Fetch to get clip info.
-  }
-
   render() {
     const clip = (
       <div className="embed-responsive embed-responsive-16by9 clip-container">

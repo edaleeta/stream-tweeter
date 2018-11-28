@@ -97,13 +97,7 @@ class App extends Component {
   } else if (this.state.fetched) {
       // If we don't have a logged in user, show this...
       return (
-        <div>
-          {/* <MainNavBar /> */}
           <Landing />
-          {/* <PageHeader>Stream Tweeter <small>A social media automation tool for Twitch streamers.</small></PageHeader> */}
-            {/* <WelcomeUser twitchDisplayName={this.state.twitchDisplayName} /> */}
-            {/* Perhaps include some other info we'll want to a show a non-logged in user. */}
-        </div>
       );
   } else {
       // If our fetch hasn't completed, do not render anything.

@@ -53,7 +53,6 @@ export class ClipContainer extends Component {
 
   render() {
     return (
-      <div> 
         <Loader
           show={this.props.clipLoaderShown}
           message={spinnerElement}
@@ -68,8 +67,6 @@ export class ClipContainer extends Component {
             loaded={this.state.loaded}
           />
         </Loader>
-
-      </div>
     )
   }
 }

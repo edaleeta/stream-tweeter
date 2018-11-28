@@ -13,7 +13,6 @@ export class EnableTweeting extends Component {
   }
 
   handleChange(e) {
-
     this.setState({
       enabled: this.state.enabled ? false : true
     });
@@ -42,8 +41,9 @@ export class EnableTweeting extends Component {
 
   render() {
 
-    let labelText = this.state.enabled ? "Tweets currently enabled." : 
-      "Tweets currently disabled."
+    let labelText = this.state.enabled
+      ? "Tweets currently enabled."
+      : "Tweets currently disabled."
 
     return (
       <label htmlFor="enable-tweeting-switch">

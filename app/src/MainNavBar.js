@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { HelpModal } from './HelpModal'
-// import './MainNavBar.css';
 
 const navLinks = {
   home: "/",
@@ -11,7 +10,6 @@ const navLinks = {
   log: "/log"
 }
 
-// Navigation 
 export class MainNavBar extends Component {
   constructor(props) {
     super(props);
