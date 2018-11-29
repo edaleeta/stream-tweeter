@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { FormGroup,
-         ControlLabel,
-         FormControl,
-         Button,
-         ButtonToolbar,
-         Collapse,
-         HelpBlock } from 'react-bootstrap';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  Button,
+  ButtonToolbar,
+  Collapse,
+  HelpBlock
+} from "react-bootstrap";
 
 export class TweetTemplateEditForm extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -33,10 +34,10 @@ export class TweetTemplateEditForm extends Component {
     } else {
       this.setState({
         validationState: null
-      })
+      });
     }
 
-    let url = "/api/edit-tweet-template"
+    let url = "/api/edit-tweet-template";
     let payload = JSON.stringify({
       templateId: this.props.templateId,
       contents: this.state.contents.trim()
@@ -45,24 +46,24 @@ export class TweetTemplateEditForm extends Component {
     console.log(payload);
 
     fetch(url, {
-      credentials: 'same-origin',
-      method: 'POST',
-      body: payload, 
+      credentials: "same-origin",
+      method: "POST",
+      body: payload,
       headers: new Headers({
-      'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       })
     })
-    .then(res => res.json())
-    .catch(error => console.error('Error:', error))
-    .then(response => {
-      console.log('Success:', response);
-      // Tells Tweet Templates that we saved a new Template!
-      this.props.onClick();
-      // On successful update, update originalContents with new contents.
-      this.setState({
-        originalContents: this.state.contents.trim()
+      .then(res => res.json())
+      .catch(error => console.error("Error:", error))
+      .then(response => {
+        console.log("Success:", response);
+        // Tells Tweet Templates that we saved a new Template!
+        this.props.onClick();
+        // On successful update, update originalContents with new contents.
+        this.setState({
+          originalContents: this.state.contents.trim()
+        });
       });
-    })
   }
 
   handleResetClick(e) {
@@ -80,11 +81,9 @@ export class TweetTemplateEditForm extends Component {
   render() {
     let helpText;
     if (this.state.validationState === "warning") {
-      helpText = (
-        <HelpBlock>Your Tweet must contain text!</HelpBlock>
-      )
+      helpText = <HelpBlock>Your Tweet must contain text!</HelpBlock>;
     } else {
-      helpText = <span></span>
+      helpText = <span />;
     }
 
     return (
@@ -92,23 +91,27 @@ export class TweetTemplateEditForm extends Component {
         <div>
           <form>
             <FormGroup validationState={this.state.validationState}>
-              <ControlLabel><h4>Update Tweet Template</h4></ControlLabel>
+              <ControlLabel>
+                <h4>Update Tweet Template</h4>
+              </ControlLabel>
               <FormControl
                 onChange={this.handleChange}
                 componentClass="textarea"
                 value={this.state.contents}
-                rows={3}>
-              </FormControl>
+                rows={3}
+              />
               {helpText}
-              <ButtonToolbar style={{marginTop: "0.5rem"}}>
-                <Button type="submit" onClick={this.handleSaveClick}>Save Changes</Button>
+              <ButtonToolbar style={{ marginTop: "0.5rem" }}>
+                <Button type="submit" onClick={this.handleSaveClick}>
+                  Save Changes
+                </Button>
                 <Button onClick={this.handleResetClick}>Reset Changes</Button>
               </ButtonToolbar>
             </FormGroup>
           </form>
         </div>
       </Collapse>
-    )
+    );
   }
 }
 
@@ -116,4 +119,4 @@ TweetTemplateEditForm.propTypes = {
   hidden: PropTypes.bool.isRequired,
   contents: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired
-}
+};

@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Row, Col } from 'react-bootstrap';
-import { TweetTemplatesCurrent } from './TweetTemplatesCurrent';
-import { TweetTemplateCreateNew } from './TweetTemplateCreateNew';
-
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Row, Col } from "react-bootstrap";
+import { TweetTemplatesCurrent } from "./TweetTemplatesCurrent";
+import { TweetTemplateCreateNew } from "./TweetTemplateCreateNew";
 
 export class TweetTemplates extends Component {
-  
   constructor(props) {
     super(props);
     this.state = {
       isUpdated: false
     };
-    this.onClickUpdateTweetTemplatesCurrent = this.onClickUpdateTweetTemplatesCurrent.bind(this);
+    this.onClickUpdateTweetTemplatesCurrent = this.onClickUpdateTweetTemplatesCurrent.bind(
+      this
+    );
   }
 
   onClickUpdateTweetTemplatesCurrent() {
@@ -45,13 +45,16 @@ export class TweetTemplates extends Component {
           </Row>
           <Row>
             <Col xs={12}>
-              <TweetTemplatesCurrent onClick={this.onClickUpdateTweetTemplatesCurrent} isUpdated={this.state.isUpdated}/>
+              <TweetTemplatesCurrent
+                onClick={this.onClickUpdateTweetTemplatesCurrent}
+                isUpdated={this.state.isUpdated}
+              />
             </Col>
           </Row>
         </div>
-      ); 
+      );
     } else {
-      return <div></div>
+      return <div />;
     }
   }
 }
@@ -60,4 +63,4 @@ TweetTemplates.propTypes = {
   isTwitterAuth: PropTypes.bool.isRequired,
   userId: PropTypes.number.isRequired,
   twitchDisplayName: PropTypes.string
-}
+};

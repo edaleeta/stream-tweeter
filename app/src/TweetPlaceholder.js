@@ -1,16 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Tooltip, OverlayTrigger } from "react-bootstrap";
 
 export class TweetPlaceholder extends Component {
-
   render() {
-
-    let tooltip = (
-      <Tooltip id={this.props.name}>
-        {this.props.helpText}
-      </Tooltip>
-    )
+    let tooltip = <Tooltip id={this.props.name}>{this.props.helpText}</Tooltip>;
 
     return (
       <OverlayTrigger placement="top" overlay={tooltip}>
@@ -23,4 +17,4 @@ export class TweetPlaceholder extends Component {
 TweetPlaceholder.propTypes = {
   name: PropTypes.string.isRequired,
   helpText: PropTypes.object.isRequired
-}
+};

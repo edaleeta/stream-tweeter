@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
-import { HelpModal } from './HelpModal'
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { Navbar, Nav, NavItem } from "react-bootstrap";
+import { HelpModal } from "./HelpModal";
 
 const navLinks = {
   home: "/",
   login: "/login/twitch",
   logout: "/logout",
   log: "/log"
-}
+};
 
 export class MainNavBar extends Component {
   constructor(props) {
@@ -29,23 +29,18 @@ export class MainNavBar extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-          <NavItem eventKey={1}
-              componentClass={Link}
-              href="/"
-              to="/"
-            >
+            <NavItem eventKey={1} componentClass={Link} href="/" to="/">
               Home
             </NavItem>
-            <NavItem eventKey={2}
-              componentClass={Link}
-              href="/log"
-              to="/log"
-            >
+            <NavItem eventKey={2} componentClass={Link} href="/log" to="/log">
               View Log
             </NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem eventKey={3} onClick={()=>this.setState({showHelp: true})}>
+            <NavItem
+              eventKey={3}
+              onClick={() => this.setState({ showHelp: true })}
+            >
               Help
             </NavItem>
             <NavItem eventKey={4} href={navLinks.logout}>
@@ -55,10 +50,9 @@ export class MainNavBar extends Component {
         </Navbar.Collapse>
         <HelpModal
           show={this.state.showHelp}
-          onHide={() => this.setState({showHelp: false})}
+          onHide={() => this.setState({ showHelp: false })}
         />
       </Navbar>
     );
   }
-
 }

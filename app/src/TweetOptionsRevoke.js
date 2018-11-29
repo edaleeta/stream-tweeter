@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Button } from "react-bootstrap";
 
 export class TweetOptionsRevoke extends Component {
-
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
@@ -13,25 +12,25 @@ export class TweetOptionsRevoke extends Component {
     console.log(e.target.value);
 
     let url = "/api/revoke-twitter";
-    let payload = JSON.stringify({"userId": this.props.userId});
+    let payload = JSON.stringify({ userId: this.props.userId });
 
     fetch(url, {
-      credentials: 'same-origin',
-      method: 'POST',
-      body: payload, 
+      credentials: "same-origin",
+      method: "POST",
+      body: payload,
       headers: new Headers({
-      'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       })
     })
-    .then(res => res.json())
-    .catch(error => console.error('Error:', error))
-    .then(response => {
-      console.log('Success:', response);
-      if ("success" in response) {
-        // Tells App that Twitter is no longer authenticated
-        this.props.onClick();
-      }
-    });
+      .then(res => res.json())
+      .catch(error => console.error("Error:", error))
+      .then(response => {
+        console.log("Success:", response);
+        if ("success" in response) {
+          // Tells App that Twitter is no longer authenticated
+          this.props.onClick();
+        }
+      });
   }
 
   render() {
@@ -47,11 +46,11 @@ export class TweetOptionsRevoke extends Component {
           Disconnect Twitter Account
         </Button>
       </div>
-    )
+    );
   }
 }
 
 TweetOptionsRevoke.propTypes = {
   userId: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired
-}
+};

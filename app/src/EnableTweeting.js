@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import Switch from "react-switch";
 
 export class EnableTweeting extends Component {
@@ -7,9 +7,8 @@ export class EnableTweeting extends Component {
     super(props);
     this.state = {
       enabled: this.props.isTweeting
-    }
+    };
     this.handleChange = this.handleChange.bind(this);
-
   }
 
   handleChange(e) {
@@ -19,31 +18,29 @@ export class EnableTweeting extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    let url = "/api/current-user.json"
+    let url = "/api/current-user.json";
     let payload = JSON.stringify({
       userId: this.props.userId,
       isTweeting: nextState.enabled
     });
 
     fetch(url, {
-      credentials: 'same-origin',
-      method: 'PUT',
-      body: payload, 
+      credentials: "same-origin",
+      method: "PUT",
+      body: payload,
       headers: new Headers({
-      'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       })
     })
-    .then(res => res.json())
-    .catch(error => console.error('Error:', error))
-    .then(response => {
-    })
+      .then(res => res.json())
+      .catch(error => console.error("Error:", error))
+      .then(response => {});
   }
 
   render() {
-
     let labelText = this.state.enabled
       ? "Tweets currently enabled."
-      : "Tweets currently disabled."
+      : "Tweets currently disabled.";
 
     return (
       <label htmlFor="enable-tweeting-switch">
@@ -62,4 +59,4 @@ export class EnableTweeting extends Component {
 EnableTweeting.propTypes = {
   userId: PropTypes.number.isRequired,
   isTweeting: PropTypes.bool
-}
+};

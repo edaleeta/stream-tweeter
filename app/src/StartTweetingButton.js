@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Button } from 'react-bootstrap';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Button } from "react-bootstrap";
 
 export class StartTweetingButton extends Component {
   constructor(props) {
@@ -10,28 +10,28 @@ export class StartTweetingButton extends Component {
 
   handleClick(e) {
     console.log(e);
-    console.log(this.props.userId)
+    console.log(this.props.userId);
 
-    let url = "/api/start-tweeting"
+    let url = "/api/start-tweeting";
     let payload = JSON.stringify({
-      userId: this.props.userId,
+      userId: this.props.userId
     });
 
     console.log(payload);
 
     fetch(url, {
-      credentials: 'same-origin',
-      method: 'POST',
-      body: payload, 
+      credentials: "same-origin",
+      method: "POST",
+      body: payload,
       headers: new Headers({
-      'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       })
     })
-    .then(res => res.json())
-    .catch(error => console.error('Error:', error))
-    .then(response => {
-      console.log('Success:', response);
-    })
+      .then(res => res.json())
+      .catch(error => console.error("Error:", error))
+      .then(response => {
+        console.log("Success:", response);
+      });
   }
 
   render() {
@@ -50,4 +50,4 @@ export class StartTweetingButton extends Component {
 
 StartTweetingButton.propTypes = {
   userId: PropTypes.number.isRequired
-}
+};
