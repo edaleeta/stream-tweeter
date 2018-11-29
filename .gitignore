@@ -2,7 +2,6 @@ env
 *.pyc
 *-private*
 *_sandbox*
-.vscode
 .pylintrc
 .DS_Store
 
