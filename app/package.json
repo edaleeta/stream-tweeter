@@ -9,7 +9,7 @@
     "autolinker": "^1.6.2",
     "d3-collection": "^1.0.4",
     "moment": "^2.20.1",
-    "moment-timezone": "^0.5.14",
+    "moment-timezone": "^0.5.35",
     "npm": "^5.7.1",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
