@@ -21,7 +21,7 @@
     "react-scripts": "1.1.1",
     "react-spinners": "^0.2.6",
     "react-switch": "^2.3.0",
-    "recharts": "^1.0.0-beta.10"
+    "recharts": "^2.1.14"
   },
   "scripts": {
     "start": "react-scripts start",
